@@ -4,25 +4,20 @@
 
 package catan;
 
-/************************************************************/
 /**
- * 
+ * The ActionType enum represents the different actions a player can make during their turn.
+ *
+ * @author Maria Shashati
+ * @version 1.0
+ *
  */
 public enum ActionType {
-	/**
-	 * 
-	 */
+	
 	BUILD_ROAD,
-	/**
-	 * 
-	 */
+	
 	BUILD_SETTLEMENT,
-	/**
-	 * 
-	 */
+	
 	BUILD_CITY,
-	/**
-	 * 
-	 */
+	
 	PASS;
 }
