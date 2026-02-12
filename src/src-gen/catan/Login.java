@@ -3,20 +3,10 @@
 // --------------------------------------------------------
 
 package catan;
+import java.util.List;
 
-/************************************************************/
-/**
- * 
- */
 public class Login {
-	/**
-	 * 
-	 */
 	private String actionFormatTemplate;
-
-	/**
-	 * 
-	 */
 	public void Login() {
 	}
 
@@ -28,7 +18,9 @@ public class Login {
 	 * @return 
 	 */
 	public void printTurnAction(int roundNumber, int playerId, String actionText) {
+		System.out.println(String.format(actionFormatTemplate, roundNumber, playerId, actionText))
 	}
+
 
 	/**
 	 * 
@@ -36,6 +28,9 @@ public class Login {
 	 * @return 
 	 */
 	public void printGameStart(int maxRounds) {
+		System.out.println("=== START GAME ===");
+        System.out.println("Max Rounds: " + maxRounds);
+        System.out.println("\n");
 	}
 
 	/**
@@ -45,5 +40,14 @@ public class Login {
 	 * @return 
 	 */
 	public void printGameOver(Player winnerOrNull, int roundNumber) {
+		System.out.println("=== GAME OVER (Round " + roundNumber + ") ===");
+        if (winnerOrNull == null) {
+            System.out.println("No player reached points needed to win.");
+        } 
+		else {
+            System.out.println("Winner: Player " + winnerOrNull.getPlayerId()
+                    + " with " + winnerOrNull.getVictoryPoints() + " VP");
+        }
+        System.out.println("\n");
 	}
 }
