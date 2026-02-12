@@ -4,32 +4,39 @@
 
 package catan;
 
-/************************************************************/
-/**
- * 
- */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.List;
+import java.util.Random;
+
+
 public class Rules {
-	/**
-	 * 
-	 */
-	public class Class1 {
-	};
+	private final Map<ActionType, Map<ResourceType, Integer>> actionCosts;
+	
+	public Rules() {
+		this.actionCosts = new EnumMap<>(ActionType.class);
+		
+		actionCosts.put(ActionType.BUILD_ROAD, costOf(
+                ResourceType.WOOD, 1,
+                ResourceType.BRICK, 1
+        ));
 
-	/**
-	 * 
-	 */
-	public class Class2 {
-	};
+		actionCosts.put(ActionType.BUILD_SETTLEMENT, costOf(
+                ResourceType.WOOD, 1,
+                ResourceType.BRICK, 1,
+                ResourceType.WHEAT, 1,
+                ResourceType.SHEEP, 1
+        ));
 
-	/**
-	 * 
-	 */
-	public ActionCostEntry[] actionCosts;
+		actionCosts.put(ActionType.BUILD_CITY, costOf(
+                ResourceType.WHEAT, 2,
+                ResourceType.ORE, 3
+        ));
 
-	/**
-	 * 
-	 */
-	public void Rules() {
+		actionCosts.put(ActionType.PASS, Collections.emptyMap());
+
 	}
 
 	/**
@@ -40,6 +47,10 @@ public class Rules {
 	 * @return 
 	 */
 	public boolean canBuildRoad(Player player, Board board, Edge edge) {
+		if (edge == null) return false;
+        if (edge.isOccupied()) return false;
+		
+		return isRoadConnectedToPlayerNetwork(player, board, edge);
 	}
 
 	/**
@@ -50,6 +61,10 @@ public class Rules {
 	 * @return 
 	 */
 	public boolean canBuildSettlement(Player player, Board board, int intersectionId) {
+		if (board.isIntersectionOccupied(intersectionId)) {
+            return false;
+        }
+        return isDistanceRuleSatisfied(board, intersectionId);
 	}
 
 	/**
@@ -59,7 +74,24 @@ public class Rules {
 	 * @param intersectionId 
 	 * @param  
 	 */
-	public void canBuildCity(Player player, Board board, int intersectionId, boolean ) {
+	public boolean canBuildCity(Player player, Board board, int intersectionId) {
+        Intersection intesection = board.getIntersection(intersectionId);
+        if (intersection == null){
+			return false;
+		}
+
+        Integer ownerId = intersection.getBuildingOwnerId();
+        BuildingType type = intersection.getBuildingType();
+
+        if (ownerId == null || type == null){
+			return false;
+		}
+        if (ownerId != player.getPlayerId()){
+			return false;
+		}
+
+        // Must currently be a settlement to upgrade
+        return type == BuildingType.SETTLEMENT;
 	}
 
 	/**
@@ -68,7 +100,31 @@ public class Rules {
 	 * @param board 
 	 * @return 
 	 */
-	public Action getValidActionsByLinearScan(Player player, Board board) {
+	public List<Action> getValidActionsByLinearScan(Player player, Board board) {
+		List<Action> actions = new ArrayList<>();
+
+        // Check intersections for settlement/city 
+        for (int intersectionId : board.getAllIntersectionIds()) {
+            if (canBuildSettlement(player, board, intersectionId)) {
+                actions.add(Action.buildSettlement(intersectionId));
+            }
+            if (canBuildCity(player, board, intersectionId)) {
+                actions.add(Action.buildCity(intersectionId));
+            }
+        }
+
+        // Check edges for roads
+        for (Edge e : board.getAllEdges()) {
+            if (canBuildRoad(player, board, e)) {
+                actions.add(Action.buildRoad(e.getIntersectionA(), e.getIntersectionB()));
+            }
+        }
+
+        if (actions.isEmpty()) {
+            actions.add(Action.pass());
+        }
+
+        return actions;
 	}
 
 	/**
@@ -76,7 +132,10 @@ public class Rules {
 	 * @param actionType 
 	 * @param  
 	 */
-	public void getCost(ActionType actionType, ResourceCostEntry[] ) {
+	public Map<ResourceType, Integer> getCost(ActionType actionType) {
+		Map<ResourceType, Integer> cost = actionCosts.get(actionType);
+        if (cost == null) return Collections.emptyMap();
+        return cost;
 	}
 
 	/**
@@ -84,7 +143,13 @@ public class Rules {
 	 * @return 
 	 * @param  
 	 */
-	public Action chooseRandomAction(Action[] ) {
+	public Action chooseRandomAction(List<Action> validActions, Random rng) {
+		if (validActions == null || validActions.isEmpty()) {
+            return Action.pass();
+        }
+        int idx = rng.nextInt(validActions.size());
+        return validActions.get(idx);
+
 	}
 
 	/**
@@ -94,6 +159,12 @@ public class Rules {
 	 * @return 
 	 */
 	private boolean isDistanceRuleSatisfied(Board board, int intersectionId) {
+		for (int neighbourId : board.getAdjacentIntersectionIds(intersectionId)) {
+            if (board.isIntersectionOccupied(neighbourId)) {
+                return false;
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -102,6 +173,13 @@ public class Rules {
 	 * @param board 
 	 * @param edge 
 	 */
-	private void isRoadConnectedToPLayerNetwork(Player player, Board board, Edge edge) {
-	}
+	private boolean isRoadConnectedToPlayerNetwork(Player player, Board board, Edge edge) {
+		int a = edge.getIntersectionA();
+    	int b = edge.getIntersectionB();
+
+		return player.ownsRoadConnectedTo(a, board)
+			|| player.ownsRoadConnectedTo(b, board)
+			|| playerOwnsBuildingAtIntersection(player, board, a)
+			|| playerOwnsBuildingAtIntersection(player, board, b);
+		}
 }
