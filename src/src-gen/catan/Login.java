@@ -7,7 +7,8 @@ import java.util.List;
 
 public class Login {
 	private String actionFormatTemplate;
-	public void Login() {
+	public Login() {
+		this.actionFormatTemplate = "%d / %d: %s";
 	}
 
 	/**
@@ -18,7 +19,7 @@ public class Login {
 	 * @return 
 	 */
 	public void printTurnAction(int roundNumber, int playerId, String actionText) {
-		System.out.println(String.format(actionFormatTemplate, roundNumber, playerId, actionText))
+		System.out.println(String.format(actionFormatTemplate, roundNumber, playerId, actionText));
 	}
 
 
