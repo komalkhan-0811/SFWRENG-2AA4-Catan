@@ -23,8 +23,8 @@ public class Intersection {
      */
     public Intersection(int intersectionId) {
         this.intersectionId = intersectionId;
-        this.buildingOwnerId = -1; // no owner
-        this.building = null; //empty
+        this.buildingOwnerId = -1;
+        this.building = null;
     }
 
     /**

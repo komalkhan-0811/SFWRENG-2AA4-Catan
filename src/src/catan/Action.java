@@ -73,10 +73,21 @@ public class Action {
      * @return a string describing the action
      */
     public String describeForLogin() {
-        return "Action: " + type + ", intersection=" + intersectionId + ", edge=(" + edgeIntersectionA + ", " + edgeIntersectionB + ")";
+    	switch (type) {
+        case BUILD_ROAD:
+            return "Built road between " + edgeIntersectionA + " and " + edgeIntersectionB;
+        case BUILD_SETTLEMENT:
+            return "Built settlement at intersection " + intersectionId;
+        case BUILD_CITY:
+            return "Upgraded to city at intersection " + intersectionId;
+        case PASS:
+            return "Passed";
+        default:
+            return "Unknown action";
     }
+    
 }
-
+}
    
 
 
