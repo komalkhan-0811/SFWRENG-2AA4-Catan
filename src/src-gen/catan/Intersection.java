@@ -4,87 +4,118 @@
 
 package catan;
 
-/************************************************************/
-/**Represents an intersection on the board
+/**
+ * Represents an intersection on the board
  * Intersections can have nothing, a settlement, or a city
- * 
+ *
  * @author Rameen Tariq
  */
 public class Intersection {
-	
-	private int intersectionId;
-	private int buildingOwnerId;
-	private Building building;
-	
 
-	/**
-	 * Creates a new Intersection
-	 * 
-	 * @param intersectionId intersections unique ID
-	 */
-	public Intersection(int intersectionId) {
-		this.intersectionId = intersectionId;
-		this.buildingOwnerId =-1; // no owner
-		this.building = null; //empty
-	}
+    private int intersectionId;
+    private int buildingOwnerId;
+    private Building building;
 
-	/**
-	 * Returns the ID of this intersection
-	 * 
-	 * @return ID of this intersection
-	 */
-	public int getIntersectionId() {
-		return this.intersectionId;
-	}
+    /**
+     * Creates a new Intersection
+     *
+     * @param intersectionId intersections unique ID
+     */
+    public Intersection(int intersectionId) {
+        this.intersectionId = intersectionId;
+        this.buildingOwnerId = -1; // no owner
+        this.building = null; //empty
+    }
 
-	/**
-	 * Checks if the intersection has no building
-	 * 
-	 * @return true if empty
-	 */
-	public boolean isEmpty() {
-		return this.building == null;
-	}
+    /**
+     * Returns the ID of this intersection
+     *
+     * @return ID of this intersection
+     */
+    public int getIntersectionId() {
+        return this.intersectionId;
+    }
 
-	/**
-	 * Returns the building that is placed at this intersection
-	 * 
-	 * @return The Building type
-	 */
-	public Building getBuilding() {
-		return this.building;
-	}
+    /**
+     * Checks if the intersection has no building
+     *
+     * @return true if empty
+     */
+    public boolean isEmpty() {
+        return this.building == null;
+    }
 
-	/**
-	 * Places a settlement for the given player
-	 * 
-	 * @param playerId The ID of the player placing the settlement
-	 *  
-	 */
-	public void placeSettlement(int playerId) {
-		if(this.building == null) {
-			this.building = Building.SETTLEMENT;
-			this.buildingOwnerId= playerId;
-		}
-	}
+    /**
+     * Checks if the intersection has a building
+     *
+     * @return true if has a building
+     */
+    public boolean hasBuilding() {
+        return this.building != null;
+    }
 
-	/**
-	 * Upgrades a settlement to a city if owned by the player
-	 * 
-	 * @param playerId The Id of the player upgrading the settlement
-	 * 
-	 */
-	public void upgradeToCity(int playerId) {
-		if(this.building == Building.SETTLEMENT && this.buildingOwnerId == playerId) {
-			this.building = Building.CITY;
-		}
-	}
-	
-	/**
-	 * Returns the player ID of the player who owns the building
-	 * @return player ID, or -1 if none
-	 */
-	public int getOwnerPlayerId() {
-		return this.buildingOwnerId;
-	}
+    /**
+     * Returns the building that is placed at this intersection
+     *
+     * @return The Building type
+     */
+    public Building getBuilding() {
+        return this.building;
+    }
+
+    /**
+     * Returns the building type at this intersection
+     * (Alias for getBuilding() for consistency with Game/Rules)
+     *
+     * @return The BuildingType
+     */
+    public Building getBuildingType() {
+        return this.building;
+    }
+
+    /**
+     * Returns the player ID who owns the building at this intersection
+     * Returns null if no building
+     *
+     * @return Player ID or null
+     */
+    public Integer getBuildingOwnerId() {
+        if (buildingOwnerId == -1) {
+            return null;
+        }
+        return this.buildingOwnerId;
+    }
+
+    /**
+     * Places a settlement for the given player
+     *
+     * @param playerId The ID of the player placing the settlement
+     *
+     */
+    public void placeSettlement(int playerId) {
+        if (this.building == null) {
+            this.building = Building.SETTLEMENT;
+            this.buildingOwnerId = playerId;
+        }
+    }
+
+    /**
+     * Upgrades a settlement to a city if owned by the player
+     *
+     * @param playerId The Id of the player upgrading the settlement
+     *
+     */
+    public void upgradeToCity(int playerId) {
+        if (this.building == Building.SETTLEMENT && this.buildingOwnerId == playerId) {
+            this.building = Building.CITY;
+        }
+    }
+
+    /**
+     * Returns the player ID of the player who owns the building
+     * @return player ID, or -1 if none
+     */
+    public int getOwnerPlayerId() {
+        return this.buildingOwnerId;
+    }
 }

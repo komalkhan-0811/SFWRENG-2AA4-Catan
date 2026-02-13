@@ -4,71 +4,70 @@
 
 package catan;
 
-/************************************************************/
 /**
  * Represents a resource tile on the board
- * 
+ *
  * @author Rameen Tariq
- * 
+ *
  */
 public class Tile {
-	private int tileId;
-	private int diceNumberToken;
-	private Resources resource;
+    private int tileId;
+    private int diceNumberToken;
+    private Resources resource;
 
-	/**
-	 * 
-	 * Creates a new Tile
-	 * 
-	 * @param tileId The unique ID of the tile
-	 * @param resource The resource type of the tile
-	 * @param diceNumberToken The dice number that activates this tile
-	 */
-	public Tile(int tileId, Resources resource, int diceNumberToken) {
-		this.tileId = tileId;
-		this.resource = resource;
-		this.diceNumberToken = diceNumberToken;
-	}
+    /**
+     *
+     * Creates a new Tile
+     *
+     * @param tileId The unique ID of the tile
+     * @param resource The resource type of the tile
+     * @param diceNumberToken The dice number that activates this tile
+     */
+    public Tile(int tileId, Resources resource, int diceNumberToken) {
+        this.tileId = tileId;
+        this.resource = resource;
+        this.diceNumberToken = diceNumberToken;
+    }
 
-	/**
-	 * Returns the Id of the tile
-	 * 
-	 * @return The tile ID
-	 */
-	public int getTileId() {
-		return this.tileId;
-	}
+    /**
+     * Returns the Id of the tile
+     *
+     * @return The tile ID
+     */
+    public int getTileId() {
+        return this.tileId;
+    }
 
-	/**
-	 * Returns the resource type of this tile
-	 * 
-	 * @return The resource type
-	 */
-	public Resources getResource() {
-		return this.resource;
-	}
+    /**
+     * Returns the resource type of this tile
+     *
+     * @return The resource type
+     */
+    public Resources getResource() {
+        return this.resource;
+    }
 
-	/**
-	 * Returns the tiles dice number
-	 * 
-	 * @return The dice number token
-	 */
-	public int getDiceNumberToken() {
-		return this.diceNumberToken;
-	}
+    /**
+     * Returns the tiles dice number
+     *
+     * @return The dice number token
+     */
+    public int getDiceNumberToken() {
+        return this.diceNumberToken;
+    }
 
-	/**
-	 * Checks if tile produces resources for a particular role
-	 * 
-	 * @param roll  The dice roll number
-	 * @return returns true if the tile produces on that roll and isn't DESERT
-	 */
-	public boolean producesOnRoll(int roll) {
-		if(roll == this.diceNumberToken) {
-			if(this.resource != Resources.DESERT) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Checks if tile produces resources for a particular roll
+     *
+     * @param roll  The dice roll number
+     * @return returns true if the tile produces on that roll and isn't DESERT
+     */
+    public boolean producesOnRoll(int roll) {
+        if (roll == this.diceNumberToken) {
+            if (this.resource != Resources.DESERT) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

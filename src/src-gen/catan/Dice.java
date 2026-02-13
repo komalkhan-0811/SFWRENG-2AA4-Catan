@@ -18,7 +18,7 @@ public class Dice {
 	 * 
 	 * @param rng 
 	 */
-	public void Dice(Random rng) {
+	public Dice(Random rng) {
 		this.rng = rng;
 	}
 

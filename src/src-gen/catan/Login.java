@@ -3,52 +3,50 @@
 // --------------------------------------------------------
 
 package catan;
-import java.util.List;
 
 public class Login {
-	private String actionFormatTemplate;
-	public Login() {
-		this.actionFormatTemplate = "%d / %d: %s";
-	}
+    private String actionFormatTemplate;
+    
+    public Login() {
+        this.actionFormatTemplate = "%d / %d: %s";
+    }
 
-	/**
-	 * 
-	 * @param roundNumber 
-	 * @param playerId 
-	 * @param actionText 
-	 * @return 
-	 */
-	public void printTurnAction(int roundNumber, int playerId, String actionText) {
-		System.out.println(String.format(actionFormatTemplate, roundNumber, playerId, actionText));
-	}
+    /**
+     *
+     * @param roundNumber
+     * @param playerId
+     * @param actionText
+     * @return
+     */
+    public static void printTurnAction(int roundNumber, int playerId, String actionText) {
+        System.out.println(String.format("%d / %d: %s", roundNumber, playerId, actionText));
+    }
 
-
-	/**
-	 * 
-	 * @param maxRounds 
-	 * @return 
-	 */
-	public void printGameStart(int maxRounds) {
-		System.out.println("=== START GAME ===");
+    /**
+     *
+     * @param maxRounds
+     * @return
+     */
+    public static void printGameStart(int maxRounds) {
+        System.out.println("=== START GAME ===");
         System.out.println("Max Rounds: " + maxRounds);
         System.out.println("\n");
-	}
+    }
 
-	/**
-	 * 
-	 * @param winnerOrNull 
-	 * @param roundNumber 
-	 * @return 
-	 */
-	public void printGameOver(Player winnerOrNull, int roundNumber) {
-		System.out.println("=== GAME OVER (Round " + roundNumber + ") ===");
+    /**
+     *
+     * @param winnerOrNull
+     * @param roundNumber
+     * @return
+     */
+    public static void printGameOver(Player winnerOrNull, int roundNumber) {
+        System.out.println("=== GAME OVER (Round " + roundNumber + ") ===");
         if (winnerOrNull == null) {
             System.out.println("No player reached points needed to win.");
-        } 
-		else {
+        } else {
             System.out.println("Winner: Player " + winnerOrNull.getPlayerId()
                     + " with " + winnerOrNull.getVictoryPoints() + " VP");
         }
         System.out.println("\n");
-	}
+    }
 }

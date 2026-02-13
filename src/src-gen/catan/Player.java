@@ -9,206 +9,205 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import catan.Resources;
-
 /**
-* This class represents a player in the Catan simulator.
-*
-* A Player can store information, points, resource cards, and own buildings and roads.
-*
-* @author Maria Shashati
-* @version 1.0
-*/
+ * This class represents a player in the Catan simulator.
+ *
+ * A Player can store information, points, resource cards, and own buildings and roads.
+ *
+ * @author Maria Shashati
+ * @version 1.0
+ */
 public class Player {
 
- private int playerId;
- private Colour colour;
- private int victoryPoints;
+    private int playerId;
+    private Colour colour;
+    private int victoryPoints;
 
- /**
-  * Resource cards held by the player.
-  * Key = resource type, Value = quantity owned.
-  */
- private Map<Resources, Integer> resourceCards;
+    /**
+     * Resource cards held by the player.
+     * Key = resource type, Value = quantity owned.
+     */
+    private Map<Resources, Integer> resourceCards;
 
- private Map<Integer, Building> ownedBuildings;
+    private Map<Integer, Building> ownedBuildings;
 
- private Set<String> ownedRoadEdgeKeys;
+    private Set<String> ownedRoadEdgeKeys;
 
- /**
-  * Constructs a new Player with the given ID and colour
-  *
-  * @param playerId the unique identifier for the player
-  * @param colour the colour assigned to the player
-  */
- public Player(int playerId, Colour colour) {
-     this.playerId = playerId;
-     this.colour = colour;
-     this.victoryPoints = 0;
+    /**
+     * Constructs a new Player with the given ID and colour
+     *
+     * @param playerId the unique identifier for the player
+     * @param colour the colour assigned to the player
+     */
+    public Player(int playerId, Colour colour) {
+        this.playerId = playerId;
+        this.colour = colour;
+        this.victoryPoints = 0;
 
-     this.resourceCards = new HashMap<>();
-     this.ownedBuildings = new HashMap<>();
-     this.ownedRoadEdgeKeys = new HashSet<>();
- }
+        this.resourceCards = new HashMap<>();
+        this.ownedBuildings = new HashMap<>();
+        this.ownedRoadEdgeKeys = new HashSet<>();
+    }
 
- /**
-  * Returns the player's unique ID
-  *
-  * @return the player ID
-  */
- public int getPlayerId() {
-     return playerId;
- }
+    /**
+     * Returns the player's unique ID
+     *
+     * @return the player ID
+     */
+    public int getPlayerId() {
+        return playerId;
+    }
 
- /**
-  * Returns the player's colour
-  *
-  * @return the player's colour
-  */
- public Colour getColour() {
-     return colour;
- }
+    /**
+     * Returns the player's colour
+     *
+     * @return the player's colour
+     */
+    public Colour getColour() {
+        return colour;
+    }
 
- /**
-  * Returns the player's current victory points
-  *
-  * @return the current victory point total
-  */
- public int getVictoryPoints() {
-     return victoryPoints;
- }
+    /**
+     * Returns the player's current victory points
+     *
+     * @return the current victory point total
+     */
+    public int getVictoryPoints() {
+        return victoryPoints;
+    }
 
- /**
-  * Adds victory points to the player's total
-  *
-  * @param points the number of points to add
-  */
- public void addVictoryPoints(int points) {
-     victoryPoints += points;
- }
+    /**
+     * Adds victory points to the player's total
+     *
+     * @param points the number of points to add
+     */
+    public void addVictoryPoints(int points) {
+        victoryPoints += points;
+    }
 
- /**
-  * Adds total number of resource cards in the player's hand
-  *
-  * @return the total number of resource cards in hand
-  */
- public int getTotalCardsInHand() {
-     int total = 0;
-     for (int count : resourceCards.values()) {
-         total += count;
-     }
-     return total;
- }
+    /**
+     * Adds total number of resource cards in the player's hand
+     *
+     * @return the total number of resource cards in hand
+     */
+    public int getTotalCardsInHand() {
+        int total = 0;
+        for (int count : resourceCards.values()) {
+            total += count;
+        }
+        return total;
+    }
 
- /**
-  *
-  * @param type  the type of resource to add
-  * @param amount the number of cards to add
-  */
- public void addResource(Resources type, int amount) {
-     resourceCards.put(type, resourceCards.getOrDefault(type, 0) + amount);
- }
+    /**
+     *
+     * @param type  the type of resource to add
+     * @param amount the number of cards to add
+     */
+    public void addResource(Resources type, int amount) {
+        resourceCards.put(type, resourceCards.getOrDefault(type, 0) + amount);
+    }
 
- /**
-  * Checks whether the player has enough resources to pay a given cost
-  *
-  * @param cost a map describing the required resources
-  * @return true if the player can afford the cost otherwise false 
-  */
- public boolean hasEnoughResources(Map<Resources, Integer> cost) {
-     for (Resources type : cost.keySet()) {
-         int owned = resourceCards.getOrDefault(type, 0);
-         if (owned < cost.get(type)) {
-             return false;
-         }
-     }
-     return true;
- }
+    /**
+     * Checks whether the player has enough resources to pay a given cost
+     *
+     * @param cost a map describing the required resources
+     * @return true if the player can afford the cost otherwise false 
+     */
+    public boolean hasEnoughResources(Map<Resources, Integer> cost) {
+        for (Resources type : cost.keySet()) {
+            int owned = resourceCards.getOrDefault(type, 0);
+            if (owned < cost.get(type)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
- /**
-  * Deducts resources from the player's depending on cost 
-  *
-  * @param cost a map describing the required resources 
-  */
- public void payCost(Map<Resources, Integer> cost) {
-     for (Resources type : cost.keySet()) {
-         int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);
-         resourceCards.put(type, remaining);
-     }
- }
+    /**
+     * Deducts resources from the player's depending on cost 
+     *
+     * @param cost a map describing the required resources 
+     */
+    public void payCost(Map<Resources, Integer> cost) {
+        for (Resources type : cost.keySet()) {
+            int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);
+            resourceCards.put(type, remaining);
+        }
+    }
 
- /**
-  * Checks whether the player owns a settlement at that intersection 
-  *
-  * @param intersectionId the intersection ID to check
-  * @return true if the player owns a settlement at that intersection otherwise false 
-  */
- public boolean ownsSettlementAt(int intersectionId) {
-     return ownedBuildings.containsKey(intersectionId) && ownedBuildings.get(intersectionId) == Building.SETTLEMENT;
- }
+    /**
+     * Checks whether the player owns a settlement at that intersection 
+     *
+     * @param intersectionId the intersection ID to check
+     * @return true if the player owns a settlement at that intersection otherwise false 
+     */
+    public boolean ownsSettlementAt(int intersectionId) {
+        return ownedBuildings.containsKey(intersectionId) 
+            && ownedBuildings.get(intersectionId) == Building.SETTLEMENT;
+    }
 
- /**
-  * Checks whether the player owns at least one road connected to a given intersection.
-  *
-  *
-  * @param intersectionId the intersection ID to check
-  * @param board the board instance 
-  * @return true if any owned road touches this intersection otherwise false 
-  */
- public boolean ownsRoadConnectedTo(int intersectionId, Board board) {
-     if (board == null) {
-         return false;
-     }
+    /**
+     * Checks whether the player owns at least one road connected to a given intersection.
+     *
+     *
+     * @param intersectionId the intersection ID to check
+     * @param board the board instance 
+     * @return true if any owned road touches this intersection otherwise false 
+     */
+    public boolean ownsRoadConnectedTo(int intersectionId, Board board) {
+        if (board == null) {
+            return false;
+        }
 
-     for (String key : ownedRoadEdgeKeys) {
-         if (key.startsWith(intersectionId + "-") || key.endsWith("-" + intersectionId)) {
-             return true;
-         }
-     }
-     return false;
- }
+        for (String key : ownedRoadEdgeKeys) {
+            if (key.startsWith(intersectionId + "-") || key.endsWith("-" + intersectionId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
- /**
-  * Records that the player placed a settlement at the given intersection, then updates points 
-  *
-  * @param intersectionId the intersection where the settlement was placed
-  */
- public void recordPlacedSettlement(int intersectionId) {
-     ownedBuildings.put(intersectionId, Building.SETTLEMENT);
-     addVictoryPoints(1);
- }
+    /**
+     * Records that the player placed a settlement at the given intersection
+     * Note: Victory points are added in Game.executeAction, not here
+     *
+     * @param intersectionId the intersection where the settlement was placed
+     */
+    public void recordPlacedSettlement(int intersectionId) {
+        ownedBuildings.put(intersectionId, Building.SETTLEMENT);
+    }
 
- /**
-  * records that player upgraded from settlement to city at intersection, and updates points 
-  *
-  * @param intersectionId the intersection where the city upgrade occurred
-  */
- public void recordUpgradedCity(int intersectionId) {
-     ownedBuildings.put(intersectionId, Building.CITY);
-     addVictoryPoints(1); 
- }
+    /**
+     * records that player upgraded from settlement to city at intersection
+     * Note: Victory points are added in Game.executeAction, not here
+     *
+     * @param intersectionId the intersection where the city upgrade occurred
+     */
+    public void recordUpgradedCity(int intersectionId) {
+        ownedBuildings.put(intersectionId, Building.CITY);
+    }
 
- /**
-  * Records that the player placed a road between two intersections.
-  *
-  * @param intersectionA the first endpoint intersection ID
-  * @param intersectionB the second endpoint intersection ID
-  * @return void
-  */
- public void recordPlacedRoad(int intersectionA, int intersectionB) {
-     ownedRoadEdgeKeys.add(edgeKey(intersectionA, intersectionB));
- }
+    /**
+     * Records that the player placed a road between two intersections.
+     *
+     * @param intersectionA the first endpoint intersection ID
+     * @param intersectionB the second endpoint intersection ID
+     * @return void
+     */
+    public void recordPlacedRoad(int intersectionA, int intersectionB) {
+        ownedRoadEdgeKeys.add(edgeKey(intersectionA, intersectionB));
+    }
 
- /**
-  * Generates a normalized edge key for a road between two intersections
-  *
-  * @param intersectionA the first endpoint intersection ID
-  * @param intersectionB the second endpoint intersection ID
-  * @return a String key representing the edge 
-  */
- public String edgeKey(int intersectionA, int intersectionB) {
-     int min = Math.min(intersectionA, intersectionB);
-     int max = Math.max(intersectionA, intersectionB);
-     return min + "-" + max;
- }
+    /**
+     * Generates a normalized edge key for a road between two intersections
+     *
+     * @param intersectionA the first endpoint intersection ID
+     * @param intersectionB the second endpoint intersection ID
+     * @return a String key representing the edge 
+     */
+    public String edgeKey(int intersectionA, int intersectionB) {
+        int min = Math.min(intersectionA, intersectionB);
+        int max = Math.max(intersectionA, intersectionB);
+        return min + "-" + max;
+    }
 }

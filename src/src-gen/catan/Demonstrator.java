@@ -6,18 +6,18 @@ package catan;
 
 /************************************************************/
 /**
- * 
+ * Demonstrator class to run the Catan game simulation
  */
 public class Demonstrator {
-	/**
-	 * 
-	 */
-	public class Class1 {
-	};
 
 	/**
-	 * 
+	 * Main method to start the game
 	 */
-	public void static void main (String[] args)() {
+	public static void main(String[] args) {
+		Game game = new Game(200);
+
+		game.initializeNewGame();
+		game.runSimulationUntilTermination();
 	}
 }
+

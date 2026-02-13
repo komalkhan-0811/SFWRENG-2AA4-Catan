@@ -4,76 +4,75 @@
 
 package catan;
 
-/************************************************************/
-/** 
+/**
  * Represents an edge connecting 2 intersections/road
  * @author Rameen Tariq
  */
 public class Edge {
-	private int intersectionA;
-	private int intersectionB;
-	private int roadOwnerId;
+    private int intersectionA;
+    private int intersectionB;
+    private int roadOwnerId;
 
-	/**
-	 * Creates a new edge connecting 2 intersections
-	 * @param intersectionA First intersection ID
-	 * @param intersectionB Second intersection ID
-	 */
-	public Edge(int intersectionA, int intersectionB) {
-		this.intersectionA = intersectionA;
-		this.intersectionB = intersectionB;
-		this.roadOwnerId = -1; //None
-	}
+    /**
+     * Creates a new edge connecting 2 intersections
+     * @param intersectionA First intersection ID
+     * @param intersectionB Second intersection ID
+     */
+    public Edge(int intersectionA, int intersectionB) {
+        this.intersectionA = intersectionA;
+        this.intersectionB = intersectionB;
+        this.roadOwnerId = -1; //None
+    }
 
-	/**
-	 * Returns first intersection ID
-	 * @return Intersection A ID
-	 */
-	public int getIntersectionA() {
-		return intersectionA;
-	}
+    /**
+     * Returns first intersection ID
+     * @return Intersection A ID
+     */
+    public int getIntersectionA() {
+        return intersectionA;
+    }
 
-	/**
-	 * Returns second intersection ID
-	 * 
-	 * @return Intersection B ID
-	 */
-	public int getIntersectionB() {
-		return intersectionB;
-	}
+    /**
+     * Returns second intersection ID
+     *
+     * @return Intersection B ID
+     */
+    public int getIntersectionB() {
+        return intersectionB;
+    }
 
-	/**
-	 * Checks if edge is occupied by a road already
-	 * @return true if occupies
-	 */
-	public boolean isOccupied() {
-		return roadOwnerId != -1;
-	}
+    /**
+     * Checks if edge is occupied by a road already
+     * @return true if occupies
+     */
+    public boolean isOccupied() {
+        return roadOwnerId != -1;
+    }
 
-	/**
-	 * Returns the owner of the road
-	 * @return Player ID or -1 if there is none
-	 */
-	public int getRoadOwnerId() {
-		return roadOwnerId;
-	}
+    /**
+     * Returns the owner of the road
+     * @return Player ID or -1 if there is none
+     */
+    public int getRoadOwnerId() {
+        return roadOwnerId;
+    }
 
-	/**
-	 * Places a road for a player
-	 * @param playerId ID of the player
-	 */
-	public void placeRoad(int playerId) {
-		if (!isOccupied()) {
-			roadOwnerId = playerId;
-		}
-	}
+    /**
+     * Places a road for a player
+     * @param playerId ID of the player
+     */
+    public void placeRoad(int playerId) {
+        if (!isOccupied()) {
+            roadOwnerId = playerId;
+        }
+    }
 
-	/**
-	 * Checks if the edge touches an intersection
-	 * @param intersectionId Intersection ID
-	 * @return true if the edged touch the intersection
-	 */
-	public boolean touchesIntersection(int intersectionId) {
-		return intersectionA == intersectionId || intersectionB == intersectionId;
-	}
+    /**
+     * Checks if the edge touches an intersection
+     * @param intersectionId Intersection ID
+     * @return true if the edged touch the intersection
+     */
+    public boolean touchesIntersection(int intersectionId) {
+        return intersectionA == intersectionId || intersectionB == intersectionId;
+    }
 }

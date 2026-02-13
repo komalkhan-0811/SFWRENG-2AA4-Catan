@@ -11,97 +11,108 @@ import java.util.Map;
 import java.util.List;
 import java.util.Random;
 
-
 public class Rules {
-	private final Map<ActionType, Map<ResourceType, Integer>> actionCosts;
-	
-	public Rules() {
-		this.actionCosts = new EnumMap<>(ActionType.class);
-		
-		actionCosts.put(ActionType.BUILD_ROAD, costOf(
-                ResourceType.WOOD, 1,
-                ResourceType.BRICK, 1
+    private final Map<ActionType, Map<Resources, Integer>> actionCosts;
+    
+    public Rules() {
+        this.actionCosts = new EnumMap<>(ActionType.class);
+        
+        actionCosts.put(ActionType.BUILD_ROAD, costOf(
+                Resources.WOOD, 1,
+                Resources.BRICK, 1
         ));
 
-		actionCosts.put(ActionType.BUILD_SETTLEMENT, costOf(
-                ResourceType.WOOD, 1,
-                ResourceType.BRICK, 1,
-                ResourceType.WHEAT, 1,
-                ResourceType.SHEEP, 1
+        actionCosts.put(ActionType.BUILD_SETTLEMENT, costOf(
+                Resources.WOOD, 1,
+                Resources.BRICK, 1,
+                Resources.WHEAT, 1,
+                Resources.SHEEP, 1
         ));
 
-		actionCosts.put(ActionType.BUILD_CITY, costOf(
-                ResourceType.WHEAT, 2,
-                ResourceType.ORE, 3
+        actionCosts.put(ActionType.BUILD_CITY, costOf(
+                Resources.WHEAT, 2,
+                Resources.ORE, 3
         ));
 
-		actionCosts.put(ActionType.PASS, Collections.emptyMap());
+        actionCosts.put(ActionType.PASS, Collections.emptyMap());
+    }
 
-	}
+    /**
+     * Helper method to create a cost map
+     */
+    private Map<Resources, Integer> costOf(Object... pairs) {
+        Map<Resources, Integer> map = new EnumMap<>(Resources.class);
+        for (int i = 0; i < pairs.length; i += 2) {
+            Resources resource = (Resources) pairs[i];
+            Integer amount = (Integer) pairs[i + 1];
+            map.put(resource, amount);
+        }
+        return map;
+    }
 
-	/**
-	 * 
-	 * @param player 
-	 * @param board 
-	 * @param edge 
-	 * @return 
-	 */
-	public boolean canBuildRoad(Player player, Board board, Edge edge) {
-		if (edge == null) return false;
+    /**
+     * 
+     * @param player 
+     * @param board 
+     * @param edge 
+     * @return 
+     */
+    public boolean canBuildRoad(Player player, Board board, Edge edge) {
+        if (edge == null) return false;
         if (edge.isOccupied()) return false;
-		
-		return isRoadConnectedToPlayerNetwork(player, board, edge);
-	}
+        
+        return isRoadConnectedToPlayerNetwork(player, board, edge);
+    }
 
-	/**
-	 * 
-	 * @param player 
-	 * @param board 
-	 * @param intersectionId 
-	 * @return 
-	 */
-	public boolean canBuildSettlement(Player player, Board board, int intersectionId) {
-		if (board.isIntersectionOccupied(intersectionId)) {
+    /**
+     * 
+     * @param player 
+     * @param board 
+     * @param intersectionId 
+     * @return 
+     */
+    public boolean canBuildSettlement(Player player, Board board, int intersectionId) {
+        if (board.isIntersectionOccupied(intersectionId)) {
             return false;
         }
         return isDistanceRuleSatisfied(board, intersectionId);
-	}
+    }
 
-	/**
-	 * 
-	 * @param player 
-	 * @param board 
-	 * @param intersectionId 
-	 * @param  
-	 */
-	public boolean canBuildCity(Player player, Board board, int intersectionId) {
-        Intersection intesection = board.getIntersection(intersectionId);
-        if (intersection == null){
-			return false;
-		}
+    /**
+     * 
+     * @param player 
+     * @param board 
+     * @param intersectionId 
+     * @param  
+     */
+    public boolean canBuildCity(Player player, Board board, int intersectionId) {
+        Intersection intersection = board.getIntersection(intersectionId);
+        if (intersection == null) {
+            return false;
+        }
 
         Integer ownerId = intersection.getBuildingOwnerId();
-        BuildingType type = intersection.getBuildingType();
+        Building type = intersection.getBuildingType();
 
-        if (ownerId == null || type == null){
-			return false;
-		}
-        if (ownerId != player.getPlayerId()){
-			return false;
-		}
+        if (ownerId == null || type == null) {
+            return false;
+        }
+        if (ownerId != player.getPlayerId()) {
+            return false;
+        }
 
         // Must currently be a settlement to upgrade
-        return type == BuildingType.SETTLEMENT;
-	}
+        return type == Building.SETTLEMENT;
+    }
 
-	/**
-	 * 
-	 * @param player 
-	 * @param board 
-	 * @return 
-	 */
-	public List<Action> getValidActionsByLinearScan(Player player, Board board) {
-		List<Action> actions = new ArrayList<>();
+    /**
+     * 
+     * @param player 
+     * @param board 
+     * @return 
+     */
+    public List<Action> getValidActionsByLinearScan(Player player, Board board) {
+        List<Action> actions = new ArrayList<>();
 
         // Check intersections for settlement/city 
         for (int intersectionId : board.getAllIntersectionIds()) {
@@ -125,61 +136,72 @@ public class Rules {
         }
 
         return actions;
-	}
+    }
 
-	/**
-	 * 
-	 * @param actionType 
-	 * @param  
-	 */
-	public Map<ResourceType, Integer> getCost(ActionType actionType) {
-		Map<ResourceType, Integer> cost = actionCosts.get(actionType);
+    /**
+     * 
+     * @param actionType 
+     * @param  
+     */
+    public Map<Resources, Integer> getCost(ActionType actionType) {
+        Map<Resources, Integer> cost = actionCosts.get(actionType);
         if (cost == null) return Collections.emptyMap();
         return cost;
-	}
+    }
 
-	/**
-	 * 
-	 * @return 
-	 * @param  
-	 */
-	public Action chooseRandomAction(List<Action> validActions, Random rng) {
-		if (validActions == null || validActions.isEmpty()) {
+    /**
+     * 
+     * @return 
+     * @param  
+     */
+    public Action chooseRandomAction(List<Action> validActions, Random rng) {
+        if (validActions == null || validActions.isEmpty()) {
             return Action.pass();
         }
         int idx = rng.nextInt(validActions.size());
         return validActions.get(idx);
+    }
 
-	}
-
-	/**
-	 * 
-	 * @param board 
-	 * @param intersectionId 
-	 * @return 
-	 */
-	private boolean isDistanceRuleSatisfied(Board board, int intersectionId) {
-		for (int neighbourId : board.getAdjacentIntersectionIds(intersectionId)) {
+    /**
+     * 
+     * @param board 
+     * @param intersectionId 
+     * @return 
+     */
+    private boolean isDistanceRuleSatisfied(Board board, int intersectionId) {
+        for (int neighbourId : board.getAdjacentIntersectionIds(intersectionId)) {
             if (board.isIntersectionOccupied(neighbourId)) {
                 return false;
             }
         }
         return true;
-	}
+    }
 
-	/**
-	 * 
-	 * @param player 
-	 * @param board 
-	 * @param edge 
-	 */
-	private boolean isRoadConnectedToPlayerNetwork(Player player, Board board, Edge edge) {
-		int a = edge.getIntersectionA();
-    	int b = edge.getIntersectionB();
+    /**
+     * 
+     * @param player 
+     * @param board 
+     * @param edge 
+     */
+    private boolean isRoadConnectedToPlayerNetwork(Player player, Board board, Edge edge) {
+        int a = edge.getIntersectionA();
+        int b = edge.getIntersectionB();
 
-		return player.ownsRoadConnectedTo(a, board)
-			|| player.ownsRoadConnectedTo(b, board)
-			|| playerOwnsBuildingAtIntersection(player, board, a)
-			|| playerOwnsBuildingAtIntersection(player, board, b);
-		}
+        return player.ownsRoadConnectedTo(a, board)
+            || player.ownsRoadConnectedTo(b, board)
+            || playerOwnsBuildingAtIntersection(player, board, a)
+            || playerOwnsBuildingAtIntersection(player, board, b);
+    }
+
+    /**
+     * Helper method to check if player owns a building at an intersection
+     */
+    private boolean playerOwnsBuildingAtIntersection(Player player, Board board, int intersectionId) {
+        Intersection intersection = board.getIntersection(intersectionId);
+        if (intersection == null) {
+            return false;
+        }
+        Integer ownerId = intersection.getBuildingOwnerId();
+        return ownerId != null && ownerId == player.getPlayerId();
+    }
 }

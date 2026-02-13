@@ -4,8 +4,6 @@
 
 package catan;
 
-import catan.ActionType;
-
 /**
  * This code represents a single action taken by a player during the game.
  * A Player can perform an action that involves an intersection, an edge, or both depending on the action type.
@@ -28,11 +26,28 @@ public class Action {
      * @param edgeIntersectionA the first edge intersection
      * @param edgeIntersectionB the second edge intersection
      */
-    public Action(ActionType type, int intersectionId, int edgeIntersectionA, int edgeIntersectionB) {
+    private Action(ActionType type, int intersectionId, int edgeIntersectionA, int edgeIntersectionB) {
         this.type = type;
         this.intersectionId = intersectionId;
         this.edgeIntersectionA = edgeIntersectionA;
         this.edgeIntersectionB = edgeIntersectionB;
+    }
+
+    // Static factory methods
+    public static Action buildRoad(int intersectionA, int intersectionB) {
+        return new Action(ActionType.BUILD_ROAD, -1, intersectionA, intersectionB);
+    }
+
+    public static Action buildSettlement(int intersectionId) {
+        return new Action(ActionType.BUILD_SETTLEMENT, intersectionId, -1, -1);
+    }
+
+    public static Action buildCity(int intersectionId) {
+        return new Action(ActionType.BUILD_CITY, intersectionId, -1, -1);
+    }
+
+    public static Action pass() {
+        return new Action(ActionType.PASS, -1, -1, -1);
     }
 
     public ActionType getType() {
@@ -51,6 +66,7 @@ public class Action {
         return edgeIntersectionB;
     }
 
+  
     /**
      * Returns a human-readable description of the action for logging purposes.
      *
@@ -60,4 +76,8 @@ public class Action {
         return "Action: " + type + ", intersection=" + intersectionId + ", edge=(" + edgeIntersectionA + ", " + edgeIntersectionB + ")";
     }
 }
+
+   
+
+
 
