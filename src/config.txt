@@ -1,0 +1,3 @@
+# Catan Game Configuration
+# Number of turns/rounds to simulate (1-8192)
+turns: 200
