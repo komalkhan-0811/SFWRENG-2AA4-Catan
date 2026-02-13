@@ -5,64 +5,86 @@
 package catan;
 
 /************************************************************/
-/**
+/**Represents an intersection on the board
+ * Intersections can have nothing, a settlement, or a city
  * 
+ * @author Rameen Tariq
  */
 public class Intersection {
-	/**
-	 * 
-	 */
+	
 	private int intersectionId;
-	/**
-	 * 
-	 */
 	private int buildingOwnerId;
-	/**
-	 * 
-	 */
 	private Building building;
+	
 
 	/**
+	 * Creates a new Intersection
 	 * 
-	 * @param intersectionId 
+	 * @param intersectionId intersections unique ID
 	 */
-	public void Intersection(int intersectionId) {
+	public Intersection(int intersectionId) {
+		this.intersectionId = intersectionId;
+		this.buildingOwnerId =-1; // no owner
+		this.building = null; //empty
 	}
 
 	/**
+	 * Returns the ID of this intersection
 	 * 
-	 * @return 
+	 * @return ID of this intersection
 	 */
 	public int getIntersectionId() {
+		return this.intersectionId;
 	}
 
 	/**
+	 * Checks if the intersection has no building
 	 * 
-	 * @return 
+	 * @return true if empty
 	 */
 	public boolean isEmpty() {
+		return this.building == null;
 	}
 
 	/**
+	 * Returns the building that is placed at this intersection
 	 * 
-	 * @return 
+	 * @return The Building type
 	 */
 	public Building getBuilding() {
+		return this.building;
 	}
 
 	/**
+	 * Places a settlement for the given player
 	 * 
-	 * @param playerId 
-	 * @return 
+	 * @param playerId The ID of the player placing the settlement
+	 *  
 	 */
 	public void placeSettlement(int playerId) {
+		if(this.building == null) {
+			this.building = Building.SETTLEMENT;
+			this.buildingOwnerId= playerId;
+		}
 	}
 
 	/**
+	 * Upgrades a settlement to a city if owned by the player
 	 * 
-	 * @param playerId 
-	 * @return 
+	 * @param playerId The Id of the player upgrading the settlement
+	 * 
 	 */
 	public void upgradeToCity(int playerId) {
+		if(this.building == Building.SETTLEMENT && this.buildingOwnerId == playerId) {
+			this.building = Building.CITY;
+		}
+	}
+	
+	/**
+	 * Returns the player ID of the player who owns the building
+	 * @return player ID, or -1 if none
+	 */
+	public int getOwnerPlayerId() {
+		return this.buildingOwnerId;
 	}
 }
