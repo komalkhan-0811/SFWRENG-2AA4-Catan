@@ -3,21 +3,121 @@
 // --------------------------------------------------------
 
 package catan;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /************************************************************/
 /**
- * Demonstrator class to run the Catan game simulation
+ * This class demonstrates the complete functionality of the Catan game simulator.
+ * It initializes and runs a simulation that satisfies all assignment requirements
+ * @author komal khan
  */
 public class Demonstrator {
 
 	/**
-	 * Main method to start the game
+	 * Main Method - Entry Point for Simulation
+	 * 
+	 * 1. Configuration (R1.4)
+	 * - Reads turns from config.txt file
+	 * - validates the range given (1 - 8192)
+	 * 
+	 * 2. Game Initialization 
+	 * - Creates game with configured max rounds
+	 * - sets up board with fixed tile/intersection layout
+	 * - intializes 4 random agents with colours associated (RED, BLUE, GREEN, YELLOW)
+	 * - performs initial placement as written in the rulebook
+	 * 
+	 * 3. Simulation Execution (R1.3-R1.8):
+	 * - Runs turn by turn gameplay
+	 * - applies all game rules and invariants
+	 * - terminates the game when the winning conditions are met (R1.5)
 	 */
 	public static void main(String[] args) {
-		Game game = new Game(200);
+		
+		int maxRounds = 200;
+		
+		try {
+			maxRounds = readConfigFile("config.txt");
+			
+		}
+		catch(IOException e){
+			System.out.println("Could not read config file, using default: " + maxRounds + " rounds");
+		}
+		
+		//Validating that turns value is within acceptable range 
+		//R1.4 specifies: turns: int [1-8192]
+		
+		if (maxRounds < 1 || maxRounds > 8192) {
+			System.out.println("Invalid turns value: " + maxRounds + ". Must be between 1-8192. Using default: 200");
+			maxRounds = 200;;
+		}
+		
+		
+		/**
+		 * Creating and intializing gaming
+		 * Creating a new game instance with configured max rounds
+		 * This satisfies R1.4 (user-defined number of rounds)
+		 * 
+		 */
+		
+		Game game = new Game(maxRounds);
 
+		
+		/**
+		 * 
+		 * This initializes the game where:
+		 * - R1.1: Sets up board with tile IDs and intersection IDs
+		 * - R1.2: Creates 4 randomly-acting agents
+		 * - Performs initial placement where each player places
+		 * - # 2 Settlements and 2 Rounds connecting to settlements and 
+		 * - players get initial resources once second settlement is placed
+		 */
 		game.initializeNewGame();
+		
+		/**
+		 * 
+		 * Run simulation until termination
+		 * - R1.5 - Runs round until termination. The game runs turn by turn with
+		 * each player rolling dice, recieving resources and trying to build
+		 * - R1.8 The action selection uses a linear scan of all possible actions and picks one randomly
+		 * - All actions are logged with proper formatting and the game terminates when either maxRounds is exceeded 
+		 * or any player reaches 10 VP
+		 */
 		game.runSimulationUntilTermination();
 	}
+	
+	/**
+	 *  Reads and parses the configuration file to extract the number of turns
+	 * @param filename
+	 * @return the number of turns specified in the configuration file
+	 * @throws IOException
+	 */
+	private static int readConfigFile(String filename) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(filename));
+		String line;
+		
+		while ((line = reader.readLine()) != null){
+			line = line.trim();
+			
+			if (line.startsWith("#") || line.isEmpty()) {
+				continue;
+			}
+			
+			if (line.startsWith("turns:")) {
+				String[] parts = line.split(":");
+				if (parts.length == 2) {
+					reader.close();
+					return Integer.parseInt(parts[1].trim());
+					
+				}
+			}
+		}
+		reader.close();
+		throw new IOException("No valid 'turns' configuration found ");
+		
+	}
+	
+	
 }
 

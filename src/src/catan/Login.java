@@ -4,6 +4,9 @@
 
 package catan;
 
+/**
+ * @author Alisha Faridi 
+ */
 public class Login {
     private String actionFormatTemplate;
     

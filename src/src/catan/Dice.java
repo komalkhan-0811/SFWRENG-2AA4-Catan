@@ -5,9 +5,10 @@
 package catan;
 import java.util.Random;
 /************************************************************/
-/**
+/** Generates random dice
+ * @author komalkhan
  * 
- */
+ */ 
 public class Dice {
 	/**
 	 * 

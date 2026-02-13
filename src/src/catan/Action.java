@@ -33,7 +33,7 @@ public class Action {
         this.edgeIntersectionB = edgeIntersectionB;
     }
 
-    // Static factory methods
+    //Methods for buildjng Road, Settlement and City 
     public static Action buildRoad(int intersectionA, int intersectionB) {
         return new Action(ActionType.BUILD_ROAD, -1, intersectionA, intersectionB);
     }
