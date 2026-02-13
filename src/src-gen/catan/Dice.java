@@ -3,7 +3,7 @@
 // --------------------------------------------------------
 
 package catan;
-
+import java.util.Random;
 /************************************************************/
 /**
  * 
@@ -19,6 +19,7 @@ public class Dice {
 	 * @param rng 
 	 */
 	public void Dice(Random rng) {
+		this.rng = rng;
 	}
 
 	/**
@@ -26,5 +27,9 @@ public class Dice {
 	 * @return 
 	 */
 	public int rollTwoSixSidedDice() {
+		int dice1 = rng.nextInt(6)+1;
+		int dice2 = rng.nextInt(6)+1;
+		
+		return dice1 + dice2;
 	}
 }
