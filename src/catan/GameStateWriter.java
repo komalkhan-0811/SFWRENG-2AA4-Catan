@@ -1,4 +1,4 @@
-// package catan; // how do i fix this??
+package catan;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
