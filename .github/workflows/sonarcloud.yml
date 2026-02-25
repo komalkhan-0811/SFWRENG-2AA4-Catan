@@ -22,12 +22,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Compile Java
+      - name: Compile Java (exclude tests)
         run: |
           mkdir -p build/classes
-          # Compile ALL .java files into build/classes
-          find . -name "*.java" > sources.txt
-          javac -encoding UTF-8 -d build/classes @sources.txt
+          find ./src -path "./src/tests" -prune -o -name "*.java" -print > main_sources.txt
+          javac -encoding UTF-8 -d build/classes @main_sources.txt
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -38,5 +37,6 @@ jobs:
           args: >
             -Dsonar.projectKey=komalkhan-0811_SFWRENG-2AA4-Catan
             -Dsonar.organization=komalkhan-0811
-            -Dsonar.sources=.
+            -Dsonar.sources=src
+            -Dsonar.exclusions=src/tests/**
             -Dsonar.java.binaries=build/classes
