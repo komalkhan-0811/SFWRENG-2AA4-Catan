@@ -7,6 +7,8 @@ package catan;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Main game controller for the Catan simulation
@@ -23,6 +25,12 @@ public class Game {
     private int roundNumber;
     private int maxRounds;
     private int victoryPointsToWin;
+
+    
+    private Path stateOutputDir = Paths.get("."); // default: current folder
+    public void setStateOutputDir(Path dir) {
+        this.stateOutputDir = dir;
+    }
 
     /**
      * Constructor for Game
@@ -159,6 +167,14 @@ public class Game {
         while (!isTerminationReached()) {
             playOneRound();
             printRoundScoreboard();
+
+            // Write JSON state at end of each round
+            try{
+                GameStateWriter.writeBasicRoundState(this, stateOutputDir);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to write game state: " + e.getMessage());
+            }
             roundNumber++;
         }
 
