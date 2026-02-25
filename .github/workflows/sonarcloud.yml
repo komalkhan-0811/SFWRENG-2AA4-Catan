@@ -1,19 +1,31 @@
-name: Build
+name: SonarCloud analysis
+
 on:
   push:
     branches:
       - main
+      - master
   pull_request:
-    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
 jobs:
-  sonarqube:
-    name: SonarQube
+  sonarcloud:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # lets SonarCloud decorate PRs
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
+        with:
+          args: >
+            -Dsonar.projectKey=komalkhan-0811_SFWRENG-2AA4-Catan
+            -Dsonar.organization=komalkhan-0811
+            -Dsonar.sources=.
