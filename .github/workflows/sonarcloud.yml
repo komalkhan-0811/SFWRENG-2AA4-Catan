@@ -2,9 +2,7 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ "main", "master" ]
   pull_request:
 
 permissions:
@@ -14,18 +12,31 @@ jobs:
   sonarcloud:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Compile Java
+        run: |
+          mkdir -p build/classes
+          # Compile ALL .java files into build/classes
+          find . -name "*.java" > sources.txt
+          javac -encoding UTF-8 -d build/classes @sources.txt
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # lets SonarCloud decorate PRs
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=komalkhan-0811_SFWRENG-2AA4-Catan
             -Dsonar.organization=komalkhan-0811
             -Dsonar.sources=.
+            -Dsonar.java.binaries=build/classes
