@@ -1,4 +1,4 @@
-package tests;
+package catan;
 
 import catan.Player;
 

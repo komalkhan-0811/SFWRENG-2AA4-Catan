@@ -1,5 +1,4 @@
-package tests;
-import  catan.*;
+package catan;
 
 
 

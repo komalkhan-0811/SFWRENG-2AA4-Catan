@@ -1,4 +1,4 @@
-// package catan; // what is this problem
+package catan;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
