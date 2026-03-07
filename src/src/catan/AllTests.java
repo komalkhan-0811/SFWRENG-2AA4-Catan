@@ -12,8 +12,9 @@ import org.junit.platform.suite.api.Suite;
 
 /**
  * Test suite that groups all JUnit test classes together.
- * To run all tests at once in Eclipse:
+ * Method to run all tests at once:
  * Right-click AllTests.java → Run As → JUnit Test
+ * 
  */
 @Suite
 @SelectClasses({
@@ -24,5 +25,5 @@ import org.junit.platform.suite.api.Suite;
     TurnLimitTest.class
 })
 public class AllTests {
-    // No code needed — the annotations above handle everything
+    
 }

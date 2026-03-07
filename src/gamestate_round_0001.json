@@ -1,0 +1,9 @@
+{
+  "round": 1,
+  "players": [
+    { "id": 1, "victoryPoints": 2 },
+    { "id": 2, "victoryPoints": 2 },
+    { "id": 3, "victoryPoints": 2 },
+    { "id": 4, "victoryPoints": 2 }
+  ]
+}
