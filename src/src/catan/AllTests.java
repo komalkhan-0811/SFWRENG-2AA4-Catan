@@ -22,7 +22,8 @@ import org.junit.platform.suite.api.Suite;
     BoardBuildingTest.class,
     GameFlowTest.class,
     PlayerInitializationTest.class,
-    TurnLimitTest.class
+    TurnLimitTest.class,
+    ConfigParsingTest.class
 })
 public class AllTests {
     

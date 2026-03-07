@@ -28,7 +28,7 @@ class GameFlowTest {
 		game = new Game(5);
 		game.initializeNewGame();
 		
-		
+	}
 
 	
 	@Test
@@ -136,6 +136,6 @@ class GameFlowTest {
 	            return 0;
 	        }
 	    }
-
+	
 
 }
