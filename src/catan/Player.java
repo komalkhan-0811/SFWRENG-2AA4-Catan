@@ -5,6 +5,7 @@
 package catan;
 
 import java.util.HashMap;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -129,6 +130,12 @@ public class Player {
      * @param cost a map describing the required resources 
      */
     public void payCost(Map<Resources, Integer> cost) {
+    	 
+    	if (!hasEnoughResources(cost)) {
+              throw new IllegalArgumentException(
+                  "Player " + playerId + " does not have enough resources to pay the cost.");
+          }
+
         for (Resources type : cost.keySet()) {
             int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);
             resourceCards.put(type, remaining);
