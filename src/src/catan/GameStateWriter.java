@@ -1,69 +1,39 @@
 package catan;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
+/**
+ * Coordinates the export of game state to a JSON file.
+ *
+ * It connects GameStateExporter and JSONWriter together. It exists 
+ * so that Game.java does not need to change its existing call to writeBasicRoundState().
+ * While GameStateExporter is reposnsible for extracting Game data and JSONWriter
+ * is responsible for formatting and writing the file, this class connects them. 
+ * 
+ * @author Alisha Faridi 
+ * 
+ */
 public class GameStateWriter {
 
     /**
-     * Writes a basic JSON state file for the current round.
-     * Filename: gamestate_round_0001.json, gamestate_round_0002.json, ...
+     * Exports the current game state to a JSON file.
+     *
+     * @param game the current Game object
+     * @param outputDir the directory to write the JSON file into
+     * @throws Exception if export or file writing fails
      */
     public static void writeBasicRoundState(Game game, Path outputDir) throws Exception {
         if (outputDir == null) {
             outputDir = Paths.get(".");
         }
-        Files.createDirectories(outputDir);
 
-        int round = getPrivateInt(game, "roundNumber");
-        List<Player> players = getPlayers(game);
+        // Extract game state into a plain snapshot object
+        GameStateExporter exporter = new GameStateExporter();
+        GameSnapshot snapshot = exporter.exportSnapshot(game);
 
-        String filename = String.format("gamestate_round_%04d.json", round);
-        Path out = outputDir.resolve(filename);
-
-        String json = buildBasicJson(round, players);
-        writeUtf8(out, json);
-    }
-
-    private static void writeUtf8(Path out, String content) throws IOException {
-        Files.write(out, content.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static String buildBasicJson(int round, List<Player> players) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n");
-        sb.append("  \"round\": ").append(round).append(",\n");
-        sb.append("  \"players\": [\n");
-
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
-            sb.append("    { \"id\": ").append(p.getPlayerId())
-              .append(", \"victoryPoints\": ").append(p.getVictoryPoints())
-              .append(" }");
-            if (i < players.size() - 1) sb.append(",");
-            sb.append("\n");
-        }
-
-        sb.append("  ]\n");
-        sb.append("}\n");
-        return sb.toString();
-    }
-
-    private static int getPrivateInt(Game g, String fieldName) throws Exception {
-        Field f = Game.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        return (int) f.get(g);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Player> getPlayers(Game g) throws Exception {
-        Field f = Game.class.getDeclaredField("players");
-        f.setAccessible(true);
-        return (List<Player>) f.get(g);
+        // Write the snapshot to a JSON file
+        JSONWriter writer = new JSONWriter();
+        writer.write(snapshot, outputDir);
     }
 }

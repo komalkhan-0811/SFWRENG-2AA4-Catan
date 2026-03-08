@@ -7,10 +7,6 @@ import java.util.List;
 /**
  * Extracts the current state from a Game object and produces a GameSnapshot.
  *
- * Follows SRP because it has one reason to change (if the Game's data structure changes). 
- * Responsibility: Know how to read from Game and produce a snapshot.
- * This is the ONLY class that is allowed to access Game's internal state.
- *
  * @author Alisha Faridi
  * 
  */
