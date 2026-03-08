@@ -55,7 +55,10 @@ public class Game {
 
      
         players = new ArrayList<>();
-        players.add(new Player(1, Colour.RED));
+        
+
+        // Player 1 is human-controlled; players 2-4 are AI agents
+        players.add(new HumanPlayer(1, Colour.RED, new ConsoleInputHandler()));
         players.add(new Player(2, Colour.BLUE));
         players.add(new Player(3, Colour.GREEN));
         players.add(new Player(4, Colour.YELLOW));
@@ -195,12 +198,28 @@ public class Game {
     }
 
     /**
-     * Execute one player's turn
-     * Output format [RoundNumber] / [PlayerID]: [Action]
-     * Agents with >7 cards must try to spend
+       * Execute one player's turn.
+     *
+     * If the player is a HumanPlayer, delegates to HumanPlayer.takeTurn()
+     * which handles Roll / List / Build / Go interactively.
+     *
+     * If the player is an AI agent, runs the existing random-action logic
+     * and then calls waitForGo() on any HumanPlayer in the game so the
+     * human can follow along (R2.4 step-forward).
+     *
+     * Output format: [RoundNumber] / [PlayerID]: [Action]
      * @param player the player taking their turn
      */
     public void playOneTurn(Player player) {
+    	
+    	//Human Player turn
+    	 if (player instanceof HumanPlayer) {
+             ((HumanPlayer) player).takeTurn(roundNumber, this, board, rules);
+             return;
+         }
+    	 
+    	 
+    	// AI Player turn
         int roll = rollDice();
         
    
@@ -243,6 +262,16 @@ public class Game {
             // PASS action
             Login.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
         }
+        
+     // R2.4: Step-forward — pause after each AI turn so the human can follow along
+        for (Player p : players) {
+            if (p instanceof HumanPlayer) {
+                ((HumanPlayer) p).waitForGo(
+                    "Player " + player.getPlayerId() + " finished their turn.");
+            }
+        }
+        
+        
     }
 
     /**
