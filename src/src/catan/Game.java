@@ -50,6 +50,8 @@ public class Game {
     public void initializeNewGame() {
         board = new Board();
         board.initializeFixedMapLayout();
+        
+        board.initializeRobber();
 
         rules = new Rules();
 
@@ -201,9 +203,21 @@ public class Game {
      * @param player the player taking their turn
      */
     public void playOneTurn(Player player) {
-        int roll = rollDice();
+        
+    	int roll = rollDice();
         
    
+        //ADDING NEW CODE FOR ROBBER INTERACTION
+        //HANDLING ROLLING A 7
+        if (roll == 7) {
+        	handleSevenRoll(player);
+        	
+        }
+        else {
+        	distributeResourcesForRoll(roll);
+        }
+        
+        
         if (roll != 7) {
             distributeResourcesForRoll(roll);
         }
@@ -367,5 +381,110 @@ public class Game {
         for (Player p : players) {
             System.out.println("Player " + p.getPlayerId() + " VP: " + p.getVictoryPoints());
         }
+    }
+    
+    
+    
+    /**
+     * Handles when the dice rolls a 7
+     * - All players with more than 7 cards discard half of them
+     * - Current player gets to move the robber
+     * - Current player steals from a random adjacent player
+     * 
+     * @param currentPlayer the player who rolled the 7
+     */
+    
+    
+    private void handleSevenRoll(Player currentPlayer) {
+    	System.out.println("****** A 7 was rolled... Robber activates....");
+    	
+    	for (Player p : players) {
+    		if(p.getTotalCardsInHand() >7) {
+    			int discarded = p.discardHalfCards();
+    			System.out.println("Player " + p.getPlayerId() + " discarded " + discarded + " cards. Had more than 7 cards");
+    			
+    		}
+    	}
+    	
+    	
+    	int newRobberTile = moveRobberRandomly();
+    	System.out.println("Player " + currentPlayer.getPlayerId() + " moved robber to tile " + newRobberTile);
+    	
+    	
+    	stealFromAdjacentPlayer(currentPlayer, newRobberTile);
+    		
+    }
+    
+    
+    /**
+     * Moves the robber to a random valid tile
+     * @return the tile Id where the robber was moved to
+     */
+    private int moveRobberRandomly() {
+    	List<Integer> validTiles = board.getValidRobberTiles();
+    	
+    	
+    	//just a precaution, this shouldnt be the case, but handled just in case
+    	if (validTiles.isEmpty()) {
+    		return board.getRobberTileId();
+    	}
+    	
+    	int randomIndex = rng.nextInt(validTiles.size());
+    	int newTileId = validTiles.get(randomIndex);
+    	
+    	//moving the robber
+    	board.moveRobber(newTileId);
+    	
+    	return newTileId;
+    	
+    }
+    
+    /**
+     * 
+     * Current player steals a random card from a random player adjacent to the robbers new position
+     * Random selection where it picks a random victim then random card from that victim
+     * 
+     * @param thief - the player who just rolled a 7 and is stealing
+     * @param robberTileId - the tile where the robber was just placed
+     */
+    
+    private void stealFromAdjacentPlayer(Player thief, int robberTileId) {
+    	//find all players with buildings adjacent to the robber
+    	List<Integer> adjacentPlayerIds = board.getPlayersAdjacentToTile(robberTileId);
+    	
+    	//remove the theif from potential victims, and can't steal from yourself
+    	adjacentPlayerIds.removeIf(id -> id == thief.getPlayerId());
+    	
+    	if (adjacentPlayerIds.isEmpty()) {
+    		System.out.println("No players to steal from");
+    	}
+    	
+    	//Randomly selecting a player to steal from
+    	int randomChosenPerson = rng.nextInt(adjacentPlayerIds.size());
+    	int victimId = adjacentPlayerIds.get(randomChosenPerson);
+    	Player victim = getPlayerById(victimId);
+    	
+    	
+    	//this should not be the case ever, but just in case
+    	if (victim == null) {
+    		return;
+    	}
+    		
+    	Resources stolenCard = victim.getRandomResource();
+    	
+    	if (stolenCard == null) {
+    		System.out.println("Player " + victimId + " has no cards to steal");
+    		return;
+    	}
+    	
+    	
+    	//Transferring the card to the thief
+    	victim.removeResources(stolenCard, 1);
+    	thief.addResource(stolenCard, 1);
+    	
+    	
+    	System.out.println("Player " + thief.getPlayerId() + " stole 1 " + stolenCard + " from Player " + victimId);
+    	
+    	
     }
 }
