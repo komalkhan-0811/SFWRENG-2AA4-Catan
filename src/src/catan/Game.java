@@ -386,6 +386,9 @@ public class Game {
     
     
     /**
+     * 
+     * ADDITIONAL CODE ADDED
+     * 
      * Handles when the dice rolls a 7
      * - All players with more than 7 cards discard half of them
      * - Current player gets to move the robber
