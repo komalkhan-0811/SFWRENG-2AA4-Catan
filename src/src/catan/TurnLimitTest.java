@@ -1,7 +1,7 @@
 package catan;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 
 public class TurnLimitTest {
@@ -11,7 +11,7 @@ public class TurnLimitTest {
      * The victoryPointsToWin value is high to ensure game ends
      * strictly because of the round limit.
      */
-    @Test(timeout = 5000)
+    @Test
     public void test_gameStopsBecauseOfMaxRounds() throws Exception {
         Game g = new Game(1);
         g.initializeNewGame();

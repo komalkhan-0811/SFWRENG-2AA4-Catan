@@ -5,9 +5,13 @@
 package catan;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * This class represents a player in the Catan simulator.
@@ -16,6 +20,8 @@ import java.util.Set;
  *
  * @author Maria Shashati
  * @version 1.0
+ * 
+ * Assignment 2 addtional code - @author Komal Khan
  */
 public class Player {
 
@@ -129,6 +135,12 @@ public class Player {
      * @param cost a map describing the required resources 
      */
     public void payCost(Map<Resources, Integer> cost) {
+    	 
+    	if (!hasEnoughResources(cost)) {
+              throw new IllegalArgumentException(
+                  "Player " + playerId + " does not have enough resources to pay the cost.");
+          }
+
         for (Resources type : cost.keySet()) {
             int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);
             resourceCards.put(type, remaining);
@@ -209,5 +221,106 @@ public class Player {
         int min = Math.min(intersectionA, intersectionB);
         int max = Math.max(intersectionA, intersectionB);
         return min + "-" + max;
+    }
+    
+    
+    /**
+     * ADDITIONAL CODE
+     * 
+     * Removes a specific amount of a resource from the player's hand
+     * Method for card stealing and discarding
+     * SOLID principle - SRP: Player manages their own resource removal
+     * 
+     * @param type - the resource type to remove
+     * @param amount - the number of cards to remove
+     */
+    
+    public void removeResources(Resources type, int amount) {
+    	int current = resourceCards.getOrDefault(type, 0);
+    	int newAmount = Math.max(0,  current - amount);
+    	resourceCards.put(type,  newAmount);
+    	
+    	
+    }
+    
+    /**
+     * 
+     * Discards half of the player's card when they have more than 7 cards and 7 is rolled
+     * Cards are discarded randomly to simulate the player choosing
+     * @return the number of cards discarded
+     */
+    
+    public int discardHalfCards() {
+    	int totalCards = getTotalCardsInHand();
+    	
+    	if(totalCards <= 7) {
+    		return 0;
+    	}
+    	
+    	int haveToDiscard = totalCards / 2; 
+    	int discarded = 0;
+    	
+    	//List of all resource cards the current player has
+    	List<Resources> allCards = new ArrayList<>();
+    	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
+    		Resources type = entry.getKey();
+    		int count = entry.getValue();
+    		for(int x = 0; x <count; x++) {
+    			allCards.add(type);
+    		}
+    	}
+    	
+    	//Randomly chosen discarded cards
+    	Random r = new Random();
+    	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
+    		int randomNum = r.nextInt(allCards.size());
+    		Resources typeToRemove = allCards.remove(randomNum);
+    		removeResources(typeToRemove, 1);
+    		discarded++;
+    	}
+    	
+    	return discarded;
+    	
+    	
+    }
+    
+    
+    /**
+     * Returns a random resource card from the player's hand
+     * Used when another player steals from this player using the robber
+     * 
+     * Encapsulation - the player's internal card structure is hidden
+     * 
+     * @return A random Resources type the player owns or null if they have no cards
+     */
+    public Resources getRandomResource() {
+    	//Build the list of all cards
+    	List<Resources> allCards = new ArrayList<>();
+    	
+    	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
+    		Resources type = entry.getKey();
+    		int count = entry.getValue();
+    		for (int x = 0; x < count; x++) {
+    			allCards.add(type);
+    		}
+    	}
+    	
+    	if(allCards.isEmpty()) {
+    		return null;
+    	}
+    	
+    	Random r = new Random();
+    	return allCards.get(r.nextInt(allCards.size()));
+    	
+    	
+    }
+    
+    /**
+     * Gets a map of all resources the player currently has, and returns a copy to prevent external modificaiton
+     * 
+     * @return Map of resource types to quantities
+     */
+    public Map<Resources, Integer>  getResourceCards(){
+    	return new HashMap<>(resourceCards);
     }
 }

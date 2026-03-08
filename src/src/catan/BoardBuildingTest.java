@@ -1,5 +1,7 @@
 package catan;
 
+
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +45,7 @@ public class BoardBuildingTest{
 		
 		assertTrue(inter.hasBuilding(), "intersection should have building");
 		assertEquals(Building.SETTLEMENT, inter.getBuilding(), "building should be a settlement");
-		assetEquals(playerId, inter.getOwnerPlayerId(), "owner should be a player " + playerId);
+		assertEquals(playerId, inter.getOwnerPlayerId(), "owner should be a player " + playerId);
 	}
 	
 	/**

@@ -8,6 +8,8 @@ package catan;
  * Represents a resource tile on the board
  *
  * @author Rameen Tariq
+ * 
+ * Assignment 2 @author Komal Khan
  *
  */
 public class Tile {
@@ -15,6 +17,17 @@ public class Tile {
     private int diceNumberToken;
     private Resources resource;
 
+    
+    /**
+     * ADDITIONAL CODE ADDED DURING ASSIGNMENT 2
+     * Tracks whether the robber is currently on this tile
+     * If it is true, this tile does not produce even if its number is rolled
+     * 
+     */
+    private boolean hasRobber;
+    
+    
+    
     /**
      *
      * Creates a new Tile
@@ -55,14 +68,33 @@ public class Tile {
     public int getDiceNumberToken() {
         return this.diceNumberToken;
     }
+    
+    
+    /**
+     * ADDED CODE FOR ASSIGNMENT 2
+     * Sets whether the robber is on this tile
+     * SOLID PRINCIPLE -> SRP: Tile is responsible for its own robber state
+     * @param hasRobber - set to true if robber should be place here, if false - to remove
+     * 
+     */
+    
+    public void setHasRobber(boolean hasRobber) {
+    	this.hasRobber = hasRobber;
+    }
+    
+    
 
     /**
      * Checks if tile produces resources for a particular roll
+     * MODIFICATION for robber: tiles with robber do not produce resources
      *
      * @param roll  The dice roll number
-     * @return returns true if the tile produces on that roll and isn't DESERT
+     * @return returns true if the tile produces on that roll and isn't DESERT and has no robber
      */
     public boolean producesOnRoll(int roll) {
+    	if (this.hasRobber) {
+    		return false;
+    	}
         if (roll == this.diceNumberToken) {
             if (this.resource != Resources.DESERT) {
                 return true;

@@ -1,16 +1,18 @@
-// package catan; // what is this problem
+package catan;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 import java.util.List;
+
+
 
 public class PlayerInitializationTest {
 
     /**
      * Tests that initializeNewGame() creates exactly 4 players.
      */
-    @Test(timeout = 2000)
+    @Test
     public void test_initializeNewGame_creates4Players() throws Exception {
         Game g = new Game(10);
         g.initializeNewGame();
@@ -21,7 +23,7 @@ public class PlayerInitializationTest {
      * Tesyd that players are initialized with the correct IDs
      * and colours.
      */
-    @Test(timeout = 2000)
+    @Test
     public void test_initializeNewGame_correctPlayerIdsAndColours() throws Exception {
         Game g = new Game(10);
         g.initializeNewGame();
@@ -46,7 +48,7 @@ public class PlayerInitializationTest {
      * each player has exactly 2 victory points
      * (one per settlement placed).
      */
-    @Test(timeout = 2000)
+    @Test
     public void test_initializeNewGame_initialPlacementGives2VP() throws Exception {
         Game g = new Game(10);
         g.initializeNewGame();

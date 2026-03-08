@@ -1,6 +1,7 @@
-package tests;
+package catan;
 
 import catan.Player;
+
 import catan.Resources;
 import catan.Colour;
 

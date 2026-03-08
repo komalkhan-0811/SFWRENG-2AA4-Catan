@@ -37,7 +37,7 @@ public class HumanPlayer extends Player {
      * @param inputHandler abstraction over the input/output source
      */
 
-public class HumanPlayer(int playerId, Colour colour, InputHandler inputHandler){
+public HumanPlayer(int playerId, Colour colour, InputHandler inputHandler){
 	super(playerId, colour);
     if (inputHandler == null) {
         throw new IllegalArgumentException("InputHandler must not be null.");

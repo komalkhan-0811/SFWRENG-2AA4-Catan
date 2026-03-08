@@ -18,12 +18,15 @@ import java.util.Map;
  * Node ID: 0-53
  * 
  * @author Rameen Tariq
+ * 
+ * Assignment 2 additions - @author Komal Khan
  */
 public class Board {
     
     private Tile[] tiles;
     public Intersection[] intersections;
     public Edge[] edges;
+
     
     public Map<Integer, List<Integer>> adjacentIntersectionIdsByIntersectionId;
     public Map<Integer, List<Integer>> adjacentTileIdsByIntersectionId;
@@ -378,5 +381,102 @@ public class Board {
         int min = Math.min(intersectionA, intersectionB);
         int max = Math.max(intersectionA, intersectionB);
         return min + "-" + max;
+    }
+    
+    /**
+     * ADDED CODE FOR ASSIGNMENT 2
+     * 
+     * Tracks the current position of the robber on the board
+     * Robber is placed on the desert tile at the start of the game
+     * 
+     */
+    private int robberTileId = 16;
+    
+    /**
+     * Gets the current tile ID where the robber is currently located
+     * uses encapsulation - external classes can ask for the robber position rather than accessing it directly
+     * 
+     * @return tile ID where the robber is currently
+     */
+    
+    public int getRobberTileId() {
+    	return robberTileId;
+    }
+    
+    /**
+     * Moves the robber to a new tile, and updates the bold and new tiles that have the hasRobber flags (boolean)
+     * @param newTileId - the tile ID to move the robber to
+     */
+    public void moveRobber(int newTileId) {
+    	//Removing the robber from the old tile
+    	Tile oldTile = getTile(robberTileId);
+    	if(oldTile != null) {
+    		oldTile.setHasRobber(false);
+    	}
+    	
+    	
+    	Tile newTile = getTile(newTileId);
+    	if(newTile != null) {
+    		newTile.setHasRobber(true);
+    		robberTileId = newTileId;
+    	}
+    	
+    }
+    
+    /**
+     * Initializing the robber at the start of the game on the dessert
+     * 
+     */
+    public void initializeRobber() {
+    	//Searching where the desert tile is
+    	for (int x = 0; x < tiles.length; x++) {
+    		if(tiles[x].getResource() == Resources.DESERT) {
+    			moveRobber(tiles[x].getTileId());
+    			return;
+    		}
+    	}
+    	//In case no desert is found 
+    	moveRobber(16);
+    }
+    
+    /**
+     * Grabs all of the player IDS who have buildings adjacent to a given tile
+     * This is for the robber to determine who they can steal from
+     * @param tileId
+     * @return list of unique player IDS with their buildings touching the specific tile
+     * 
+     */
+    public List<Integer> getPlayersAdjacentToTile(int tileId){
+    	List<Integer> playerIds = new ArrayList<>();
+    	List <Integer> intersections = getIntersectionsAdjacentToTile(tileId);
+    	
+    	for(int intersectionId : intersections) {
+    		Intersection i = getIntersection(intersectionId);
+    		if (i != null && i.hasBuilding()) {
+    			Integer ownerId = i.getBuildingOwnerId();
+    			if (ownerId != null && !playerIds.contains(ownerId)) {
+    				playerIds.add(ownerId);
+    			}
+    		}
+    	}
+    	return playerIds;
+    }
+    
+    
+    /**
+     * Gets all valid tile IDs where the robber can be moved
+     * @return List of valid tile IDS for robber placement
+     */
+    
+    public List<Integer> getValidRobberTiles(){
+    	List<Integer> validTiles = new ArrayList<>();
+    	
+    	for(int x = 0; x <tiles.length; x++) {
+    		int tileId = tiles[x].getTileId();
+    		if (tileId != robberTileId){
+    			validTiles.add(tileId);
+    		}
+    	}
+    	return validTiles;
     }
 }
