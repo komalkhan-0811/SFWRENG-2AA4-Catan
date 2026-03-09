@@ -16,7 +16,8 @@ import java.util.Map;
  * Tile ID:  center=0, inner ring=1-6, outer ring=7-18
  * Node ID:  0-53
  *
- * @author Rameen Tariq, Komal Khan
+ * @author Rameen Tariq
+ * @author Komal Khan (Assignment 2 additions)
  */
 public class Board {
 
@@ -24,7 +25,18 @@ public class Board {
 
     private Intersection[] intersections;
     private Edge[] edges;
+    
+    /**
+     * Maps each intersection ID to the list of adjacent intersection IDs.
+     * Built once during initialization and used for distance rule checks.
+     */
     private Map<Integer, List<Integer>> adjacentIntersectionIdsByIntersectionId;
+    
+
+    /**
+     * Maps each intersection ID to the list of adjacent tile IDs.
+     * Built once during initialization and used for resource distribution.
+     */
     private Map<Integer, List<Integer>> adjacentTileIdsByIntersectionId;
 
     private int robberTileId;
@@ -96,6 +108,7 @@ public class Board {
         tileCorners.put(17, new int[]{32, 31, 48, 49, 50, 33});
         tileCorners.put(18, new int[]{34, 33, 50, 51, 52, 36});
 
+     // For each intersection, record which tiles it belongs to
         adjacentTileIdsByIntersectionId = new HashMap<>();
         for (int tileId = 0; tileId < 19; tileId++) {
             int[] corners = tileCorners.get(tileId);
@@ -106,6 +119,10 @@ public class Board {
             }
         }
 
+        
+     // ── Edges and intersection adjacency ──────────────────────────────
+        // Walk every tile's corners and add edges between adjacent corners
+        // Skip duplicate edges (shared between two tiles)
         adjacentIntersectionIdsByIntersectionId = new HashMap<>();
         List<int[]> edgePairs = new ArrayList<>();
 
@@ -113,8 +130,10 @@ public class Board {
             int[] c = tileCorners.get(tileId);
             for (int i = 0; i < c.length; i++) {
                 int a = c[i];
-                int b = c[(i + 1) % c.length];
+                int b = c[(i + 1) % c.length];// wrap around to close the hexagon
+                
                 String key = Math.min(a, b) + "-" + Math.max(a, b);
+             // Check if this edge already exists from a previous tile
                 boolean found = false;
                 for (int[] ep : edgePairs) {
                     if ((ep[0] == a && ep[1] == b) || (ep[0] == b && ep[1] == a)) {
@@ -122,8 +141,10 @@ public class Board {
                         break;
                     }
                 }
+             // Only add new edges — shared edges between tiles appear twice in corners
                 if (!found) {
                     edgePairs.add(new int[]{a, b});
+                 // Register both directions in the adjacency map
                     adjacentIntersectionIdsByIntersectionId
                         .computeIfAbsent(a, k -> new ArrayList<>()).add(b);
                     adjacentIntersectionIdsByIntersectionId
@@ -132,6 +153,7 @@ public class Board {
             }
         }
 
+     // Convert edge pair list to Edge object array
         edges = new Edge[edgePairs.size()];
         for (int i = 0; i < edgePairs.size(); i++) {
             edges[i] = new Edge(edgePairs.get(i)[0], edgePairs.get(i)[1]);
@@ -140,6 +162,7 @@ public class Board {
 
     /**
      * Initializes the robber on the desert tile (tile 16).
+     * Must be called after initializeFixedMapLayout().
      */
     public void initializeRobber() {
         // Desert tile is tile index 16
@@ -327,9 +350,11 @@ public class Board {
      * @param newTileId the tile ID to move the robber to
      */
     public void moveRobber(int newTileId) {
+    	// Remove robber from current tile
         if (robberTileId >= 0 && robberTileId < tiles.length) {
             tiles[robberTileId].setHasRobber(false);
         }
+     // Place robber on new tile
         robberTileId = newTileId;
         if (newTileId >= 0 && newTileId < tiles.length) {
             tiles[newTileId].setHasRobber(true);
@@ -362,6 +387,7 @@ public class Board {
             Intersection inter = getIntersection(intersectionId);
             if (inter != null && inter.hasBuilding()) {
                 Integer ownerId = inter.getBuildingOwnerId();
+             // Only add each player once even if they have multiple buildings adjacent
                 if (ownerId != null && !playerIds.contains(ownerId)) {
                     playerIds.add(ownerId);
                 }
@@ -371,11 +397,11 @@ public class Board {
     }
 
     /**
-     * Returns the edge key string for the given edge (for display/debug).
+     * Returns the normalized edge key string for display or debug purposes.
      *
      * @param intersectionA first endpoint
      * @param intersectionB second endpoint
-     * @return normalized key string
+     * @return normalized key string e.g. "3-7"
      */
     public String edgeKey(int intersectionA, int intersectionB) {
         return Edge.edgeKey(intersectionA, intersectionB);
