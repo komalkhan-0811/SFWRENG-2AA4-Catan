@@ -4,9 +4,9 @@
 
 package catan;
 import java.util.Random;
-/************************************************************/
+
 /** Generates random dice
- * @author komalkhan
+ * @author Komal Khan
  * 
  */ 
 public class Dice {

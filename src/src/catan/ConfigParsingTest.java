@@ -8,6 +8,14 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+
+/**
+ * Tests game setup to ensure it is configured properly.
+ *
+ * @author Alisha Faridi
+ *
+ */
+
 public class ConfigParsingTest {
 
     private static int callReadConfigFile(String filename) throws Exception {

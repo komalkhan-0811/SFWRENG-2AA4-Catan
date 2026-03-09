@@ -5,8 +5,10 @@
 package catan;
 
 /**
- * This code represents a single action taken by a player during the game.
- * A Player can perform an action that involves an intersection, an edge, or both depending on the action type.
+ * Represents a single action taken by a player during their turn.
+ *
+ * An action involves an intersection, an edge, or both,
+ * depending on the action type.
  *
  * @author Maria Shashati
  * @version 1.0
@@ -19,76 +21,64 @@ public class Action {
     private int edgeIntersectionB;
 
     /**
-     * Constructs an Action with the given parameters.
+     * Private constructor
      *
      * @param type the type of action
-     * @param intersectionId the intersection involved in the action
-     * @param edgeIntersectionA the first edge intersection
-     * @param edgeIntersectionB the second edge intersection
+     * @param intersectionId the intersection involved (-1 if unused)
+     * @param edgeIntersectionA  the first edge endpoint (-1 if unused)
+     * @param edgeIntersectionB  the second edge endpoint (-1 if unused)
      */
-    private Action(ActionType type, int intersectionId, int edgeIntersectionA, int edgeIntersectionB) {
+    private Action(ActionType type, int intersectionId,
+                   int edgeIntersectionA, int edgeIntersectionB) {
         this.type = type;
         this.intersectionId = intersectionId;
         this.edgeIntersectionA = edgeIntersectionA;
         this.edgeIntersectionB = edgeIntersectionB;
     }
 
-    //Methods for buildjng Road, Settlement and City 
+    /** Creates a BUILD_ROAD action between two intersections. */
     public static Action buildRoad(int intersectionA, int intersectionB) {
         return new Action(ActionType.BUILD_ROAD, -1, intersectionA, intersectionB);
     }
 
+    /** Creates a BUILD_SETTLEMENT action at the given intersection. */
     public static Action buildSettlement(int intersectionId) {
         return new Action(ActionType.BUILD_SETTLEMENT, intersectionId, -1, -1);
     }
 
+    /** Creates a BUILD_CITY action at the given intersection. */
     public static Action buildCity(int intersectionId) {
         return new Action(ActionType.BUILD_CITY, intersectionId, -1, -1);
     }
 
+    /** Creates a PASS action. */
     public static Action pass() {
         return new Action(ActionType.PASS, -1, -1, -1);
     }
 
-    public ActionType getType() {
-        return type;
-    }
 
-    public int getIntersectionId() {
-        return intersectionId;
-    }
+    public ActionType getType(){ return type; }
+    public int getIntersectionId(){ return intersectionId; }
+    public int getEdgeIntersectionA(){ return edgeIntersectionA; }
+    public int getEdgeIntersectionB(){ return edgeIntersectionB; }
 
-    public int getEdgeIntersectionA() {
-        return edgeIntersectionA;
-    }
-
-    public int getEdgeIntersectionB() {
-        return edgeIntersectionB;
-    }
-
-  
     /**
-     * Returns a human-readable description of the action for logging purposes.
+     * Returns a human-readable description of this action for game logging.
      *
      * @return a string describing the action
      */
-    public String describeForLogin() {
-    	switch (type) {
-        case BUILD_ROAD:
-            return "Built road between " + edgeIntersectionA + " and " + edgeIntersectionB;
-        case BUILD_SETTLEMENT:
-            return "Built settlement at intersection " + intersectionId;
-        case BUILD_CITY:
-            return "Upgraded to city at intersection " + intersectionId;
-        case PASS:
-            return "Passed";
-        default:
-            return "Unknown action";
+    public String describeForLogger() {
+        switch (type) {
+            case BUILD_ROAD:
+                return "Built road between " + edgeIntersectionA + " and " + edgeIntersectionB;
+            case BUILD_SETTLEMENT:
+                return "Built settlement at intersection " + intersectionId;
+            case BUILD_CITY:
+                return "Upgraded to city at intersection " + intersectionId;
+            case PASS:
+                return "Passed";
+            default:
+                return "Unknown action";
+        }
     }
-    
 }
-}
-   
-
-
-

@@ -15,7 +15,7 @@ public class GameLogger {
      * Format: [TurnID] / [PlayerID]: [Action]
      *
      * @param roundNumber the current round number
-     * @param playerId    the ID of the player acting
+     * @param playerId the ID of the player acting
      * @param actionText  human-readable description of the action
      */
     public static void printTurnAction(int roundNumber, int playerId, String actionText) {

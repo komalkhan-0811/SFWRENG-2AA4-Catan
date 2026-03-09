@@ -10,8 +10,7 @@ package catan;
  * Each tile has a resource type, a dice number token that activates it,
  * and a robber flag that blocks production when the robber is present.
  *
- * @author Rameen Tariq
- * @author Komal Khan (Assignment 2 additions)
+ * @author Rameen Tariq, Komal Khan
  * 
  *
  */
@@ -33,7 +32,7 @@ public class Tile {
     /**
      *
      * Creates a new Tile
-     * Robber defaults to false — no tile starts with the robber.
+     * Robber defaults to false so no tile starts with the robber.
      * 
      * @param tileId The unique ID of the tile
      * @param resource The resource type of the tile
@@ -75,9 +74,8 @@ public class Tile {
     
     /**
      * 
-     * Sets whether the robber is on this tile (Assignment 2 addition)
-     * SOLID PRINCIPLE -> SRP: Tile is responsible for its own robber state
-     * @param hasRobber - set to true if robber should be place here, if false - to remove
+     * Sets whether the robber
+     * @param hasRobber set to true if robber should be place here, if false then need to remove
      * 
      */
     

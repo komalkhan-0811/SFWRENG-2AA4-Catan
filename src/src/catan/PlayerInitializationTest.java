@@ -5,6 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
+/**
+ * Collection of tests that relate to the intialization of the players.
+ *
+ * @author Alisha Faridi
+ *
+ */
 
 
 public class PlayerInitializationTest {
@@ -20,7 +26,7 @@ public class PlayerInitializationTest {
     }
 
     /**
-     * Tesyd that players are initialized with the correct IDs
+     * Test that players are initialized with the correct IDs
      * and colours.
      */
     @Test

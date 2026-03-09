@@ -62,9 +62,9 @@ public class JsonStatePerRoundTest {
      * Uses reflection to set a private int field on a Game instance.
      * Used to override victoryPointsToWin without modifying Game's public API.
      *
-     * @param g         the Game instance to modify
+     * @param g the Game instance to modify
      * @param fieldName the name of the private field
-     * @param value     the value to set
+     * @param value the value to set
      * @throws Exception if the field cannot be accessed
      */
     private static void setPrivateInt(Game g, String fieldName, int value) throws Exception {
@@ -77,7 +77,7 @@ public class JsonStatePerRoundTest {
      * Counts the number of non-overlapping occurrences of a literal string
      * within a larger text. Used to verify repeated JSON fields.
      *
-     * @param text    the string to search within
+     * @param text the string to search within
      * @param literal the substring to count
      * @return the number of occurrences
      */

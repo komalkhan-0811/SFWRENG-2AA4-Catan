@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * Converts a GameSnapshot into a JSON string and writes it to disk.
  * 
- * Responsible only for formatting and file I/O — it never reads from
- * the live Game object directly (Single Responsibility Principle).
+ * Responsible only for formatting and file I/O. It never reads from
+ * the live Game object directly.
  * 
  * @author Alisha Faridi
  * 

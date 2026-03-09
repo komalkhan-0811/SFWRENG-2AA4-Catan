@@ -4,6 +4,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 
+/**
+ * Tests the logic turn limits.
+ * 
+ * @author Alisha Faridi
+ *
+ */
+
 public class TurnLimitTest {
 
     /**
@@ -15,11 +22,8 @@ public class TurnLimitTest {
     public void test_gameStopsBecauseOfMaxRounds() throws Exception {
         Game g = new Game(1);
         g.initializeNewGame();
-
         setPrivateInt(g, "victoryPointsToWin", 999);
-
         g.runSimulationUntilTermination();
-
         int roundNumber = getPrivateInt(g, "roundNumber");
         assertEquals(2, roundNumber);
     }
@@ -27,7 +31,7 @@ public class TurnLimitTest {
     /**
      * Uses reflection to read a private int field from a Game instance.
      *
-     * @param g     the Game instance
+     * @param g the Game instance
      * @param field the field name
      * @return the field's int value
      * @throws Exception if the field cannot be accessed
@@ -41,7 +45,7 @@ public class TurnLimitTest {
     /**
      * Uses reflection to set a private int field on a Game instance.
      *
-     * @param g     the Game instance
+     * @param g the Game instance
      * @param field the field name
      * @param value the value to set
      * @throws Exception if the field cannot be accessed

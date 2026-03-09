@@ -25,7 +25,7 @@ public class GameSnapshot {
      */
     public GameSnapshot(int roundNumber, List<PlayerSnapshot> players) {
         this.roundNumber = roundNumber;
-        // Defensive copy — snapshot is immutable once created
+        // snapshot is immutable once created
         this.players = new ArrayList<>(players);
     }
 
@@ -78,27 +78,27 @@ public class GameSnapshot {
          *
          * @return the player ID
          */
-        public int getPlayerId()      { return playerId; }
+        public int getPlayerId() {return playerId;}
         
         /**
          * Returns the player's current victory points.
          *
          * @return the victory point total
          */
-        public int getVictoryPoints() { return victoryPoints; }
+        public int getVictoryPoints() {return victoryPoints;}
         
         /**
          * Returns the total number of resource cards in the player's hand.
          *
          * @return the total card count
          */
-        public int getTotalCards()    { return totalCards; }
+        public int getTotalCards(){return totalCards;}
         
         /**
          * Returns the player's colour as a string.
          *
          * @return the colour string
          */
-        public String getColour()     { return colour; }
+        public String getColour(){return colour;}
     }
 }

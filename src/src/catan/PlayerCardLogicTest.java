@@ -1,10 +1,5 @@
 package catan;
 
-import catan.Player;
-
-import catan.Resources;
-import catan.Colour;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,13 +8,19 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Collection of tests that relate to the logic of the Player Cards.
+ *
+ * @author Maria Shashati
+ *
+ */
+
 public class PlayerCardLogicTest {
 
     private Player player;
     
     
     // Initializing a new Player before each test
-
     @BeforeEach
     void setup() {
         player = new Player(1, Colour.BLUE);

@@ -16,8 +16,7 @@ import java.util.Map;
  * Tile ID:  center=0, inner ring=1-6, outer ring=7-18
  * Node ID:  0-53
  *
- * @author Rameen Tariq
- * @author Komal Khan (Assignment 2 additions)
+ * @author Rameen Tariq, Komal Khan
  */
 public class Board {
 
@@ -120,7 +119,6 @@ public class Board {
         }
 
         
-     // ── Edges and intersection adjacency ──────────────────────────────
         // Walk every tile's corners and add edges between adjacent corners
         // Skip duplicate edges (shared between two tiles)
         adjacentIntersectionIdsByIntersectionId = new HashMap<>();
@@ -141,7 +139,7 @@ public class Board {
                         break;
                     }
                 }
-             // Only add new edges — shared edges between tiles appear twice in corners
+             // Only add new edges
                 if (!found) {
                     edgePairs.add(new int[]{a, b});
                  // Register both directions in the adjacency map
@@ -267,8 +265,8 @@ public class Board {
      * Does nothing if no such edge exists.
      *
      * @param playerId the player placing the road
-     * @param intersectionA  first endpoint
-     * @param intersectionB  second endpoint
+     * @param intersectionA first endpoint
+     * @param intersectionB second endpoint
      */
     public void placeRoad(int playerId, int intersectionA, int intersectionB) {
         for (Edge e : edges) {

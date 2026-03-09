@@ -21,7 +21,6 @@ public class GameStateWriter {
      * 
      * Delegates extraction to GameStateExporter and file writing
      * to JSONWriter, keeping each class focused on a single responsibility
-     * (Single Responsibility Principle).
      *
      * @param game the current Game object
      * @param outputDir the directory to write the JSON file into

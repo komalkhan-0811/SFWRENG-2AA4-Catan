@@ -3,17 +3,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
 
-
-
-
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
  * Test suite that groups all JUnit test classes together.
  * Method to run all tests at once:
- * Right-click AllTests.java → Run As → JUnit Test
+ * 
+ * @author Komal Khan
  * 
  */
 @Suite

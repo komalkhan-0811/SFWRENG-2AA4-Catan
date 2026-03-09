@@ -8,7 +8,6 @@ package catan;
  * The Resources enum represents the different resources a player can obtain.
  *
  * @author Alisha Faridi
- * @version 1.0
  *
  */
 

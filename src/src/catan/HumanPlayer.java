@@ -19,8 +19,8 @@ public class HumanPlayer extends Player {
     /**
      * Constructs a HumanPlayer with console I/O.
      *
-     * @param playerId     unique player identifier
-     * @param colour       colour assigned to this player
+     * @param playerId unique player identifier
+     * @param colour colour assigned to this player
      * @param inputHandler abstraction over the input/output source
      * @throws IllegalArgumentException if inputHandler is null
      */
@@ -36,10 +36,10 @@ public class HumanPlayer extends Player {
     /**
      * Constructs a HumanPlayer with an injected parser (useful for testing).
      *
-     * @param playerId     unique player identifier
-     * @param colour       colour assigned to this player
+     * @param playerId unique player identifier
+     * @param colour colour assigned to this player
      * @param inputHandler abstraction over the input/output source
-     * @param parser       command parser implementation to use
+     * @param parser command parser implementation to use
      * @throws IllegalArgumentException if inputHandler or parser is null
      */
     public HumanPlayer(int playerId, Colour colour, InputHandler inputHandler, CommandParser parser) {
@@ -144,7 +144,7 @@ public class HumanPlayer extends Player {
 
     /**
      * Waits for the human to type "go" before the game proceeds.
-     * Implements R2.4 step-forward — called after each computer player turn
+     * Implements R2.4 called after each computer player turn
      * so the human can follow what is happening before continuing.
      *
      * @param message summary of the computer player action just performed
@@ -167,9 +167,9 @@ public class HumanPlayer extends Player {
      * Validates placement rules and resources, then places the settlement.
      *
      * @param roundNumber current round number for logging
-     * @param board       the board
-     * @param rules       the rules engine
-     * @param nodeId      the target intersection ID
+     * @param board the board
+     * @param rules the rules engine
+     * @param nodeId the target intersection ID
      */
     private void handleBuildSettlement(int roundNumber, Board board,
                                         Rules rules, int nodeId) {
@@ -201,9 +201,9 @@ public class HumanPlayer extends Player {
      * Validates that the player owns a settlement there, then upgrades it.
      *
      * @param roundNumber current round number for logging
-     * @param board       the board
-     * @param rules       the rules engine
-     * @param nodeId      the target intersection ID
+     * @param board the board
+     * @param rules the rules engine
+     * @param nodeId the target intersection ID
      */
     private void handleBuildCity(int roundNumber, Board board,
                                   Rules rules, int nodeId) {
@@ -231,10 +231,10 @@ public class HumanPlayer extends Player {
      * Validates connectivity and resources, then places the road.
      *
      * @param roundNumber current round number for logging
-     * @param board       the board
-     * @param rules       the rules engine
-     * @param fromNode    first endpoint intersection ID
-     * @param toNode      second endpoint intersection ID
+     * @param board the board
+     * @param rules the rules engine
+     * @param fromNode first endpoint intersection ID
+     * @param toNode second endpoint intersection ID
      */
     private void handleBuildRoad(int roundNumber, Board board,
                                   Rules rules, int fromNode, int toNode) {
@@ -265,9 +265,9 @@ public class HumanPlayer extends Player {
     /**
      * Finds the Edge object between two nodes, or null if none exists.
      *
-     * @param board    the board
+     * @param board the board
      * @param fromNode first endpoint
-     * @param toNode   second endpoint
+     * @param toNode second endpoint
      * @return the matching Edge, or null
      */
     private Edge findEdge(Board board, int fromNode, int toNode) {
