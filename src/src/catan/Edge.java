@@ -5,74 +5,112 @@
 package catan;
 
 /**
- * Represents an edge connecting 2 intersections/road
+ * Represents an edge (road slot) between two intersections on the board.
+ *
  * @author Rameen Tariq
  */
-public class Edge {
-    private int intersectionA;
-    private int intersectionB;
+public class Edge implements OwnedBoardElement {
+
+    private final int intersectionA;
+    private final int intersectionB;
     private int roadOwnerId;
 
     /**
-     * Creates a new edge connecting 2 intersections
-     * @param intersectionA First intersection ID
-     * @param intersectionB Second intersection ID
+     * Constructs an unoccupied Edge between two intersections.
+     *
+     * @param intersectionA first endpoint intersection ID
+     * @param intersectionB second endpoint intersection ID
      */
     public Edge(int intersectionA, int intersectionB) {
         this.intersectionA = intersectionA;
         this.intersectionB = intersectionB;
-        this.roadOwnerId = -1; //None
+        this.roadOwnerId = -1;
     }
 
     /**
-     * Returns first intersection ID
-     * @return Intersection A ID
+     * Returns the first endpoint intersection ID.
+     *
+     * @return intersection A's ID
      */
     public int getIntersectionA() {
         return intersectionA;
     }
 
     /**
-     * Returns second intersection ID
+     * Returns the second endpoint intersection ID.
      *
-     * @return Intersection B ID
+     * @return intersection B's ID
      */
     public int getIntersectionB() {
         return intersectionB;
     }
 
     /**
-     * Checks if edge is occupied by a road already
-     * @return true if occupies
-     */
-    public boolean isOccupied() {
-        return roadOwnerId != -1;
-    }
-
-    /**
-     * Returns the owner of the road
-     * @return Player ID or -1 if there is none
+     * Returns the ID of the player who owns the road on this edge.
+     * Returns -1 if no road has been placed.
+     *
+     * @return road owner's player ID, or -1
      */
     public int getRoadOwnerId() {
         return roadOwnerId;
     }
 
     /**
-     * Places a road for a player
-     * @param playerId ID of the player
+     * Places a road on this edge for the given player.
+     * Does nothing if already occupied
+     *
+     * @param playerId the player placing the road
      */
     public void placeRoad(int playerId) {
         if (!isOccupied()) {
-            roadOwnerId = playerId;
+            this.roadOwnerId = playerId;
         }
     }
 
     /**
-     * Checks if the edge touches an intersection
-     * @param intersectionId Intersection ID
-     * @return true if the edged touch the intersection
+     * Returns whether this edge is currently occupied by a road.
+     * Implements OwnedBoardElement.isOccupied().
+     *
+     * @return true if a road has been placed here
+     */
+    @Override
+    public boolean isOccupied() {
+        return roadOwnerId != -1;
+    }
+
+    /**
+     * Returns the owner ID of the road on this edge.
+     * Implements OwnedBoardElement.getOwnerId().
+     *
+     * @return road owner's player ID, or -1 if unowned
+     */
+    @Override
+    public int getOwnerId() {
+        return roadOwnerId;
+    }
+
+    /**
+     * Returns whether this edge connects to the given intersection.
+     *
+     * @param intersectionId the intersection ID to check
+     * @return true if this edge touches that intersection
      */
     public boolean touchesIntersection(int intersectionId) {
         return intersectionA == intersectionId || intersectionB == intersectionId;
+    }
+
+    /**
+     * Generates a normalized string key for this edge.
+     * Always puts the smaller ID first so (2,5) and (5,2) produce
+     * the same key "2-5".
+     *
+     * @param a first endpoint
+     * @param b second endpoint
+     * @return normalized key string e.g. "2-5"
+     */
+    public static String edgeKey(int a, int b) {
+        int min = Math.min(a, b);
+        int max = Math.max(a, b);
+        return min + "-" + max;
     }
 }

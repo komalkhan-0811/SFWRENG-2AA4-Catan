@@ -10,473 +10,374 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents the game board for Catan
- * Stores tiles, intersections, edges
- * 
- * Tile ID: center 0, inner ring 1-6, outer ring 7-18
- * 
- * Node ID: 0-53
- * 
- * @author Rameen Tariq
- * 
- * Assignment 2 additions - @author Komal Khan
+ * Represents the game board for Catan.
+ * Stores tiles, intersections, and edges.
+ *
+ * Tile ID:  center=0, inner ring=1-6, outer ring=7-18
+ * Node ID:  0-53
+ *
+ * @author Rameen Tariq, Komal Khan
  */
 public class Board {
-    
-    private Tile[] tiles;
-    public Intersection[] intersections;
-    public Edge[] edges;
 
-    
-    public Map<Integer, List<Integer>> adjacentIntersectionIdsByIntersectionId;
-    public Map<Integer, List<Integer>> adjacentTileIdsByIntersectionId;
-    
+    private Tile[] tiles;
+
+    private Intersection[] intersections;
+    private Edge[] edges;
+    private Map<Integer, List<Integer>> adjacentIntersectionIdsByIntersectionId;
+    private Map<Integer, List<Integer>> adjacentTileIdsByIntersectionId;
+
+    private int robberTileId;
+
     /**
-     * Creates a new Board and initializes layout
+     * Creates a new Board and initializes the fixed layout.
      */
     public Board() {
         initializeFixedMapLayout();
     }
 
     /**
-     * 
-     * Initializes a board layout with intersections, tiles, edges
+     * Initializes the board with all tiles, intersections, and edges.
      */
     public void initializeFixedMapLayout() {
-        //Initialize all tiles
         tiles = new Tile[19];
-        
+
         Resources[] resources = {
-            Resources.WOOD,   
-            Resources.WHEAT,  
-            Resources.BRICK,  
-            Resources.ORE,    
-            Resources.SHEEP,  
-            Resources.SHEEP,  
-            Resources.SHEEP, 
-            Resources.WHEAT, 
-            Resources.ORE,    
-            Resources.WOOD,  
-            Resources.ORE,    
-            Resources.WHEAT,  
-            Resources.WOOD,   
-            Resources.BRICK,  
-            Resources.BRICK,  
-            Resources.WHEAT,  
-            Resources.DESERT, 
-            Resources.WOOD,   
-            Resources.SHEEP   
+            Resources.WOOD,
+            Resources.WHEAT,
+            Resources.BRICK,
+            Resources.ORE,
+            Resources.SHEEP,
+            Resources.SHEEP,
+            Resources.SHEEP,
+            Resources.WHEAT,
+            Resources.ORE,
+            Resources.WOOD,
+            Resources.ORE,
+            Resources.WHEAT,
+            Resources.WOOD,
+            Resources.BRICK,
+            Resources.BRICK,
+            Resources.WHEAT,
+            Resources.DESERT,
+            Resources.WOOD,
+            Resources.SHEEP
         };
-        
-        int[] diceNumbers = {10,11,8,3,11,5,12,3,6,4,6,9,5,9,8,4,0,2,10};
-        
-        for(int i=0; i <19; i= i+1) {
+
+        int[] diceNumbers = {10, 11, 8, 3, 11, 5, 12, 3, 6, 4, 6, 9, 5, 9, 8, 4, 0, 2, 10};
+
+        for (int i = 0; i < 19; i++) {
             tiles[i] = new Tile(i, resources[i], diceNumbers[i]);
         }
-        
-        //Initalize 54 intersections
+
         intersections = new Intersection[54];
-        
-        for(int i=0; i < 54; i = i+1) {
+        for (int i = 0; i < 54; i++) {
             intersections[i] = new Intersection(i);
         }
-        
-        //Define tile corners
-        Map<Integer, int[]> tileCorners = new HashMap<Integer, int[]>();
-        
-        //Center of board
-        tileCorners.put(0, new int[]{4, 5, 0, 1, 2, 3});
 
-        // Inner Ring
-        tileCorners.put(1, new int[]{3, 2, 6, 7, 8, 9});
-        tileCorners.put(2, new int[]{9, 8, 10, 11, 12, 13});
-        tileCorners.put(3, new int[]{14, 4, 3, 13, 12, 15});
-        tileCorners.put(4, new int[]{16, 17, 5, 4, 14, 18});
-        tileCorners.put(5, new int[]{19, 20, 21, 17, 16, 22});
-        tileCorners.put(6, new int[]{1, 0, 23, 20, 19, 2});
-        
-        // Outer Ring
-        tileCorners.put(7, new int[]{7, 6, 24, 25, 26, 8});
-        tileCorners.put(8, new int[]{11, 10, 27, 28, 29, 12});
-        tileCorners.put(9, new int[]{15, 12, 29, 30, 31, 32});
+        Map<Integer, int[]> tileCorners = new HashMap<>();
+        tileCorners.put(0,  new int[]{4, 5, 0, 1, 2, 3});
+        tileCorners.put(1,  new int[]{3, 2, 6, 7, 8, 9});
+        tileCorners.put(2,  new int[]{9, 8, 10, 11, 12, 13});
+        tileCorners.put(3,  new int[]{14, 4, 3, 13, 12, 15});
+        tileCorners.put(4,  new int[]{16, 17, 5, 4, 14, 18});
+        tileCorners.put(5,  new int[]{19, 20, 21, 17, 16, 22});
+        tileCorners.put(6,  new int[]{1, 0, 23, 20, 19, 2});
+        tileCorners.put(7,  new int[]{7, 6, 24, 25, 26, 8});
+        tileCorners.put(8,  new int[]{11, 10, 27, 28, 29, 12});
+        tileCorners.put(9,  new int[]{15, 12, 29, 30, 31, 32});
         tileCorners.put(10, new int[]{18, 14, 15, 32, 33, 34});
         tileCorners.put(11, new int[]{35, 16, 18, 34, 36, 37});
-        tileCorners.put(12, new int[]{22, 16, 35, 38, 39, 40});
-        tileCorners.put(13, new int[]{2, 19, 22, 40, 41, 42});
-        tileCorners.put(14, new int[]{9, 2, 42, 43, 44, 13});
-        tileCorners.put(15, new int[]{13, 44, 45, 46, 47, 15});
-        tileCorners.put(16, new int[]{32, 31, 48, 49, 50, 33});
-        tileCorners.put(17, new int[]{25, 24, 51, 52, 53, 26});
-        tileCorners.put(18, new int[]{28, 27, 52, 51, 30, 29});
-        
-        //Generate edges
-        List<Edge> edgeList = new ArrayList<Edge>();
-        
-        for(int tileId =0; tileId < 19; tileId = tileId + 1) {
+        tileCorners.put(12, new int[]{22, 16, 35, 37, 38, 39});
+        tileCorners.put(13, new int[]{19, 22, 39, 40, 41, 20});
+        tileCorners.put(14, new int[]{23, 0, 1, 41, 42, 43});
+        tileCorners.put(15, new int[]{26, 25, 44, 45, 46, 27});
+        tileCorners.put(16, new int[]{29, 28, 46, 47, 48, 30});
+        tileCorners.put(17, new int[]{32, 31, 48, 49, 50, 33});
+        tileCorners.put(18, new int[]{34, 33, 50, 51, 52, 36});
+
+        adjacentTileIdsByIntersectionId = new HashMap<>();
+        for (int tileId = 0; tileId < 19; tileId++) {
             int[] corners = tileCorners.get(tileId);
-            
-            for (int i=0; i < corners.length; i= i+1) {
-                int a = corners[i];
-                int b = corners[(i + 1) % corners.length];
-                
-                boolean exists = false;
-                
-                for (int j=0; j < edgeList.size(); j= j +1) {
-                    Edge existing = edgeList.get(j);
-                    
-                    if((existing.getIntersectionA() == a && existing.getIntersectionB() ==b) || 
-                       (existing.getIntersectionA() == b && existing.getIntersectionB() ==a)) {
-                        exists = true;
+            for (int nodeId : corners) {
+                adjacentTileIdsByIntersectionId
+                    .computeIfAbsent(nodeId, k -> new ArrayList<>())
+                    .add(tileId);
+            }
+        }
+
+        adjacentIntersectionIdsByIntersectionId = new HashMap<>();
+        List<int[]> edgePairs = new ArrayList<>();
+
+        for (int tileId = 0; tileId < 19; tileId++) {
+            int[] c = tileCorners.get(tileId);
+            for (int i = 0; i < c.length; i++) {
+                int a = c[i];
+                int b = c[(i + 1) % c.length];
+                String key = Math.min(a, b) + "-" + Math.max(a, b);
+                boolean found = false;
+                for (int[] ep : edgePairs) {
+                    if ((ep[0] == a && ep[1] == b) || (ep[0] == b && ep[1] == a)) {
+                        found = true;
+                        break;
                     }
                 }
-                
-                if(!exists) {
-                    edgeList.add(new Edge(a,b));
+                if (!found) {
+                    edgePairs.add(new int[]{a, b});
+                    adjacentIntersectionIdsByIntersectionId
+                        .computeIfAbsent(a, k -> new ArrayList<>()).add(b);
+                    adjacentIntersectionIdsByIntersectionId
+                        .computeIfAbsent(b, k -> new ArrayList<>()).add(a);
                 }
             }
         }
-        
-        edges = new Edge[edgeList.size()];
-        for(int i=0; i < edgeList.size(); i = i+1) {
-            edges[i] = edgeList.get(i);
-        }
-        
-        //Initalize adjacency maps
-        adjacentIntersectionIdsByIntersectionId = new HashMap<Integer, List<Integer>>();
-        adjacentTileIdsByIntersectionId = new HashMap<Integer, List<Integer>>();
-        
-        for(int i =0; i < intersections.length; i = i +1) {
-            adjacentIntersectionIdsByIntersectionId.put(i, new ArrayList<Integer>());
-            adjacentTileIdsByIntersectionId.put(i, new ArrayList<Integer>());
-        }
-        
-        //Fill in intersection adjacency
-        for (int i =0; i < edges.length; i = i +1) {
-            Edge e = edges[i];
-            int a = e.getIntersectionA();
-            int b = e.getIntersectionB();
-            
-            adjacentIntersectionIdsByIntersectionId.get(a).add(b);
-            adjacentIntersectionIdsByIntersectionId.get(b).add(a);
-        }
-        
-        //Fill tile adjacency
-        for(int tileId =0; tileId < 19; tileId = tileId +1) {
-            int[] corners = tileCorners.get(tileId);
-            
-            for(int i=0; i < corners.length; i = i+1) {
-                int intersectionId = corners[i];
-                adjacentTileIdsByIntersectionId.get(intersectionId).add(tileId);
-            }
+
+        edges = new Edge[edgePairs.size()];
+        for (int i = 0; i < edgePairs.size(); i++) {
+            edges[i] = new Edge(edgePairs.get(i)[0], edgePairs.get(i)[1]);
         }
     }
 
     /**
-     * Returns the tile with the given ID
-     * 
-     * @param tileId ID of the tile
-     * @return  Tile object
+     * Initializes the robber on the desert tile (tile 16).
+     */
+    public void initializeRobber() {
+        // Desert tile is tile index 16
+        robberTileId = 16;
+        tiles[16].setHasRobber(true);
+    }
+
+    /**
+     * Returns the tile at the given tile ID, or null if out of range.
+     *
+     * @param tileId the tile ID to look up
+     * @return the Tile, or null
      */
     public Tile getTile(int tileId) {
-        for(int i=0; i<tiles.length; i=i+1) {
-            if(tiles[i].getTileId() == tileId) {
-                return tiles[i];
-            }
-        }
-        return null;
+        if (tileId < 0 || tileId >= tiles.length) return null;
+        return tiles[tileId];
     }
 
     /**
-     * Returns the intersection with the given ID
-     * 
-     * @param intersectionId Intersection ID
-     * @return Intersection object
+     * Returns the intersection at the given ID, or null if out of range.
+     *
+     * @param intersectionId the intersection ID
+     * @return the Intersection, or null
      */
     public Intersection getIntersection(int intersectionId) {
-        for (int i=0; i < intersections.length; i = i+1) {
-            if(intersections[i].getIntersectionId() == intersectionId) {
-                return intersections[i];
-            }
-        }
-        return null;
+        if (intersectionId < 0 || intersectionId >= intersections.length) return null;
+        return intersections[intersectionId];
     }
 
     /**
-     * Returns an array of the intersection IDs
-     * 
-     * @return intersection ID array
+     * Returns an array of all valid intersection IDs (0–53).
+     *
+     * @return array of all intersection IDs
      */
     public int[] getAllIntersectionIds() {
         int[] ids = new int[intersections.length];
-        for(int i =0; i < intersections.length; i=i+1) {
-            ids[i] = intersections[i].getIntersectionId();
-        }
+        for (int i = 0; i < intersections.length; i++) ids[i] = i;
         return ids;
     }
 
     /**
-     * Checks if intersection has building
-     * 
-     * @param intersectionId Intersection ID
-     * @return true if occupies
-     */
-    public boolean isIntersectionOccupied(int intersectionId) {
-        Intersection inter = getIntersection(intersectionId);
-        if(inter != null) {
-            return !inter.isEmpty();
-        }
-        return false;
-    }
-
-    /**
-     * Checks if an edge is not empty
-     * 
-     * @param intersectionA Intersection A
-     * @param intersectionB Intersection B
-     * @return true if occupied
-     */
-    public boolean isEdgeOccupied(int intersectionA, int intersectionB) {
-        String key = edgeKey(intersectionA, intersectionB);
-        for(int i=0; i <edges.length; i=i+1) {
-            Edge e = edges[i];
-            if(edgeKey(e.getIntersectionA(), e.getIntersectionB()).equals(key) && e.isOccupied()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Upgrades settlement to a city at the intersection
-     * 
-     * @param playerId Player Id
-     * @param intersectionId Intersection ID
-     */
-    public void upgradeSettlementToCity(int playerId, int intersectionId) {
-        Intersection inter = getIntersection(intersectionId);
-        if (inter != null) {
-            inter.upgradeToCity(playerId);
-        }
-    }
-
-    /**
-     * Returns all edges on the board
-     * 
-     * @return Array of edges
+     * Returns all edges on the board.
+     *
+     * @return array of all Edge objects
      */
     public Edge[] getAllEdges() {
         return edges;
     }
 
     /**
-     * Returns adjacent intersection IDs for a given intersection
-     * 
-     * @param intersectionId Intersection ID
-     * @return Array of adjacent intersection IDs
+     * Returns whether the given intersection is occupied by any building.
+     *
+     * @param intersectionId the intersection ID to check
+     * @return true if occupied
      */
-    public int[] getAdjacentIntersectionIds(int intersectionId) {
-        List<Integer> list = adjacentIntersectionIdsByIntersectionId.get(intersectionId);
-        int[] ids = new int[list.size()];
-        for(int i =0; i < list.size(); i = i+1) {
-            ids[i] = list.get(i);
-        }
-        return ids;
+    public boolean isIntersectionOccupied(int intersectionId) {
+        Intersection inter = getIntersection(intersectionId);
+        return inter != null && inter.hasBuilding();
     }
 
     /**
-     * Places a settlement at an intersection
-     * @param playerId Player ID
-     * @param intersectionId Intersection ID
+     * Returns whether the edge between two intersections is occupied.
+     *
+     * @param intersectionA first endpoint
+     * @param intersectionB second endpoint
+     * @return true if a road is on this edge
+     */
+    public boolean isEdgeOccupied(int intersectionA, int intersectionB) {
+        for (Edge e : edges) {
+            if (e.touchesIntersection(intersectionA) && e.touchesIntersection(intersectionB)) {
+                return e.isOccupied();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Places a settlement at the given intersection for the given player.
+     * Does nothing if the intersection ID is out of range.
+     *
+     * @param playerId the player placing the settlement
+     * @param intersectionId the intersection to place at
      */
     public void placeSettlement(int playerId, int intersectionId) {
         Intersection inter = getIntersection(intersectionId);
-        if(inter != null) {
-            inter.placeSettlement(playerId);
-        }
+        if (inter != null) inter.placeSettlement(playerId);
     }
 
     /**
-     * Return IDs of tiles adjacent to a given intersection
+     * Upgrades a settlement to a city at the given intersection.
      *
-     * @param intersectionId Intersection ID
-     * @return Array of tile Ids
+     * @param playerId the player upgrading
+     * @param intersectionId the intersection to upgrade
      */
-    public int[] getAdjacentTileIds(int intersectionId) {
-        List<Integer> list = adjacentTileIdsByIntersectionId.get(intersectionId);
-        int[] ids = new int[list.size()];
-        for(int i=0; i<list.size(); i = i+1) {
-            ids[i] = list.get(i);
-        }
-        return ids;
+    public void upgradeSettlementToCity(int playerId, int intersectionId) {
+        Intersection inter = getIntersection(intersectionId);
+        if (inter != null) inter.upgradeToCity(playerId);
     }
 
     /**
-     * Places a road between 2 intersections
-     * 
-     * @param playerId Player ID
-     * @param intersectionA Intersection A
-     * @param intersectionB Intersection B
+     * Places a road on the edge between two intersections.
+     * Does nothing if no such edge exists.
+     *
+     * @param playerId the player placing the road
+     * @param intersectionA  first endpoint
+     * @param intersectionB  second endpoint
      */
     public void placeRoad(int playerId, int intersectionA, int intersectionB) {
-        String key = edgeKey(intersectionA, intersectionB);
-        for(int i =0; i <edges.length; i = i+1) {
-            Edge e = edges[i];
-            if(edgeKey(e.getIntersectionA(), e.getIntersectionB()).equals(key)){
+        for (Edge e : edges) {
+            if (e.touchesIntersection(intersectionA) && e.touchesIntersection(intersectionB)) {
                 e.placeRoad(playerId);
+                return;
             }
         }
     }
 
     /**
-     * Returns all tiles that produce resources on the given dice roll
-     * Used by Game.distributeResourcesForRoll()
-     * 
-     * @param roll The dice roll value
-     * @return List of tiles that produce on this roll
+     * Returns all intersection IDs adjacent to the given intersection.
+     *
+     * @param intersectionId the intersection to look up
+     * @return array of adjacent intersection IDs
+     */
+    public int[] getAdjacentIntersectionIds(int intersectionId) {
+        List<Integer> adj = adjacentIntersectionIdsByIntersectionId.get(intersectionId);
+        if (adj == null) return new int[0];
+        return adj.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+     * Returns all tile IDs adjacent to the given intersection.
+     *
+     * @param intersectionId the intersection to look up
+     * @return array of adjacent tile IDs
+     */
+    public int[] getAdjacentTileIds(int intersectionId) {
+        List<Integer> adj = adjacentTileIdsByIntersectionId.get(intersectionId);
+        if (adj == null) return new int[0];
+        return adj.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+     * Returns all tiles that produce resources on the given roll.
+     * Tiles with the robber on them do not produce even if their number matches.
+     *
+     * @param roll the dice roll value
+     * @return list of producing tiles
      */
     public List<Tile> getTilesProducingOnRoll(int roll) {
-        List<Tile> producingTiles = new ArrayList<Tile>();
-        for (int i = 0; i < tiles.length; i = i + 1) {
-            if (tiles[i].producesOnRoll(roll)) {
-                producingTiles.add(tiles[i]);
-            }
+        List<Tile> result = new ArrayList<>();
+        for (Tile t : tiles) {
+            if (t.producesOnRoll(roll)) result.add(t);
         }
-        return producingTiles;
-    }
-
-    /**
-     * Returns the intersection IDs adjacent to a given tile
-     * Used by Game.distributeResourcesForRoll()
-     * 
-     * @param tileId The tile ID
-     * @return List of intersection IDs that touch this tile
-     */
-    public List<Integer> getIntersectionsAdjacentToTile(int tileId) {
-        List<Integer> result = new ArrayList<Integer>();
-        
-        // Go through all intersections and check if they're adjacent to this tile
-        for (int intersectionId = 0; intersectionId < intersections.length; intersectionId = intersectionId + 1) {
-            List<Integer> adjacentTiles = adjacentTileIdsByIntersectionId.get(intersectionId);
-            if (adjacentTiles != null) {
-                for (int i = 0; i < adjacentTiles.size(); i = i + 1) {
-                    if (adjacentTiles.get(i) == tileId) {
-                        result.add(intersectionId);
-                        break;
-                    }
-                }
-            }
-        }
-        
         return result;
     }
 
     /**
-     * Returns a unique key string for an edge
-     * 
-     * @param intersectionA Intersection A
-     * @param intersectionB Intersection B
-     * @return  Key string
+     * Returns all intersection IDs adjacent to the given tile.
+     *
+     * @param tileId the tile ID
+     * @return list of adjacent intersection IDs
      */
-    private String edgeKey(int intersectionA, int intersectionB) {
-        int min = Math.min(intersectionA, intersectionB);
-        int max = Math.max(intersectionA, intersectionB);
-        return min + "-" + max;
+    public List<Integer> getIntersectionsAdjacentToTile(int tileId) {
+        List<Integer> result = new ArrayList<>();
+        for (Map.Entry<Integer, List<Integer>> entry : adjacentTileIdsByIntersectionId.entrySet()) {
+            if (entry.getValue().contains(tileId)) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
     }
-    
+
     /**
-     * ADDED CODE FOR ASSIGNMENT 2
-     * 
-     * Tracks the current position of the robber on the board
-     * Robber is placed on the desert tile at the start of the game
-     * 
+     * Returns the tile ID the robber is currently on.
+     *
+     * @return robber tile ID
      */
-    private int robberTileId = 16;
-    
-    /**
-     * Gets the current tile ID where the robber is currently located
-     * uses encapsulation - external classes can ask for the robber position rather than accessing it directly
-     * 
-     * @return tile ID where the robber is currently
-     */
-    
     public int getRobberTileId() {
-    	return robberTileId;
+        return robberTileId;
     }
-    
+
     /**
-     * Moves the robber to a new tile, and updates the bold and new tiles that have the hasRobber flags (boolean)
-     * @param newTileId - the tile ID to move the robber to
+     * Moves the robber to the given tile.
+     * Removes the robber from its current tile and places it on the new one.
+     *
+     * @param newTileId the tile ID to move the robber to
      */
     public void moveRobber(int newTileId) {
-    	//Removing the robber from the old tile
-    	Tile oldTile = getTile(robberTileId);
-    	if(oldTile != null) {
-    		oldTile.setHasRobber(false);
-    	}
-    	
-    	
-    	Tile newTile = getTile(newTileId);
-    	if(newTile != null) {
-    		newTile.setHasRobber(true);
-    		robberTileId = newTileId;
-    	}
-    	
+        if (robberTileId >= 0 && robberTileId < tiles.length) {
+            tiles[robberTileId].setHasRobber(false);
+        }
+        robberTileId = newTileId;
+        if (newTileId >= 0 && newTileId < tiles.length) {
+            tiles[newTileId].setHasRobber(true);
+        }
     }
-    
+
     /**
-     * Initializing the robber at the start of the game on the dessert
-     * 
+     * Returns all valid tile IDs the robber can move to.
+     * Valid = any tile that is not the current robber tile.
+     *
+     * @return list of valid robber destination tile IDs
      */
-    public void initializeRobber() {
-    	//Searching where the desert tile is
-    	for (int x = 0; x < tiles.length; x++) {
-    		if(tiles[x].getResource() == Resources.DESERT) {
-    			moveRobber(tiles[x].getTileId());
-    			return;
-    		}
-    	}
-    	//In case no desert is found 
-    	moveRobber(16);
+    public List<Integer> getValidRobberTiles() {
+        List<Integer> valid = new ArrayList<>();
+        for (int i = 0; i < tiles.length; i++) {
+            if (i != robberTileId) valid.add(i);
+        }
+        return valid;
     }
-    
+
     /**
-     * Grabs all of the player IDS who have buildings adjacent to a given tile
-     * This is for the robber to determine who they can steal from
-     * @param tileId
-     * @return list of unique player IDS with their buildings touching the specific tile
-     * 
+     * Returns player IDs of all players with a building adjacent to the given tile.
+     *
+     * @param tileId the tile ID
+     * @return list of player IDs adjacent to that tile
      */
-    public List<Integer> getPlayersAdjacentToTile(int tileId){
-    	List<Integer> playerIds = new ArrayList<>();
-    	List <Integer> intersections = getIntersectionsAdjacentToTile(tileId);
-    	
-    	for(int intersectionId : intersections) {
-    		Intersection i = getIntersection(intersectionId);
-    		if (i != null && i.hasBuilding()) {
-    			Integer ownerId = i.getBuildingOwnerId();
-    			if (ownerId != null && !playerIds.contains(ownerId)) {
-    				playerIds.add(ownerId);
-    			}
-    		}
-    	}
-    	return playerIds;
+    public List<Integer> getPlayersAdjacentToTile(int tileId) {
+        List<Integer> playerIds = new ArrayList<>();
+        for (int intersectionId : getIntersectionsAdjacentToTile(tileId)) {
+            Intersection inter = getIntersection(intersectionId);
+            if (inter != null && inter.hasBuilding()) {
+                Integer ownerId = inter.getBuildingOwnerId();
+                if (ownerId != null && !playerIds.contains(ownerId)) {
+                    playerIds.add(ownerId);
+                }
+            }
+        }
+        return playerIds;
     }
-    
-    
+
     /**
-     * Gets all valid tile IDs where the robber can be moved
-     * @return List of valid tile IDS for robber placement
+     * Returns the edge key string for the given edge (for display/debug).
+     *
+     * @param intersectionA first endpoint
+     * @param intersectionB second endpoint
+     * @return normalized key string
      */
-    
-    public List<Integer> getValidRobberTiles(){
-    	List<Integer> validTiles = new ArrayList<>();
-    	
-    	for(int x = 0; x <tiles.length; x++) {
-    		int tileId = tiles[x].getTileId();
-    		if (tileId != robberTileId){
-    			validTiles.add(tileId);
-    		}
-    	}
-    	return validTiles;
+    public String edgeKey(int intersectionA, int intersectionB) {
+        return Edge.edgeKey(intersectionA, intersectionB);
     }
 }

@@ -11,12 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Main game controller for the Catan simulation
- * 
- * @author komal khan
+ * Main game controller for the Catan simulation.
+ *
+ * @author Komal Khan, Alisha Faridi, Rameen Rariq
  */
 public class Game {
-    
+
     private Board board;
     private List<Player> players;
     private Rules rules;
@@ -26,14 +26,15 @@ public class Game {
     private int maxRounds;
     private int victoryPointsToWin;
 
-    
-    private Path stateOutputDir = Paths.get("."); // default: current folder
+    private Path stateOutputDir = Paths.get(".");
+
     public void setStateOutputDir(Path dir) {
         this.stateOutputDir = dir;
     }
 
     /**
-     * Constructor for Game
+     * Constructor for Game.
+     *
      * @param maxRounds maximum number of rounds to play
      */
     public Game(int maxRounds) {
@@ -44,119 +45,96 @@ public class Game {
     }
 
     /**
-     * R1.1: Set up a valid map with specified identification
-     * R1.2: Initialize 4 randomly acting agents
+     * R1.1: Set up a valid map.
+     * R1.2: Initialize 4 randomly acting agents.
      */
     public void initializeNewGame() {
         board = new Board();
         board.initializeFixedMapLayout();
-        
         board.initializeRobber();
 
         rules = new Rules();
 
-     
         players = new ArrayList<>();
-        
-
-        // Player 1 is human-controlled; players 2-4 are computer players
-        players.add(new HumanPlayer(1, Colour.RED, new ConsoleInputHandler()));
+        players.add(new Player(1, Colour.RED));
         players.add(new Player(2, Colour.BLUE));
         players.add(new Player(3, Colour.GREEN));
         players.add(new Player(4, Colour.YELLOW));
 
         roundNumber = 1;
-        Login.printGameStart(maxRounds);
-        
-        // Initial placement phase (Catan rules)
+
+        GameLogger.printGameStart(maxRounds);
         initialPlacementPhase();
     }
 
     /**
-     * Initial placement phase following Catan rules:
-     * Each player places 1 settlement + 1 road (order: 1,2,3,4)
-     * Each player places 1 settlement + 1 road (reverse: 4,3,2,1)
-     * Second settlement placement gives resources from adjacent tiles
+     * Order: 1,2,3,4 then 4,3,2,1.
+     * Second placement gives initial resources.
      */
     private void initialPlacementPhase() {
         System.out.println("=== Initial Placement Phase ===");
-        
-        // First round of placements (players 1,2,3,4)
         for (int i = 0; i < players.size(); i++) {
             placeInitialSettlementAndRoad(players.get(i), false);
         }
-        
-        // Second round of placements (players 4,3,2,1) - reverse order
         for (int i = players.size() - 1; i >= 0; i--) {
             placeInitialSettlementAndRoad(players.get(i), true);
         }
-        
         System.out.println();
     }
 
     /**
-     * Place one settlement and one road for a player during initial setup
-     * @param player The player placing
-     * @param giveResources If true, player receives resources from adjacent tiles
+     * Places one settlement and one road for a player during initial setup.
+     *
+     * @param player the player placing
+     * @param giveResources if true, player receives resources from adjacent tiles
      */
     private void placeInitialSettlementAndRoad(Player player, boolean giveResources) {
-        // Find valid settlement locations
         List<Integer> validSettlements = new ArrayList<>();
         for (int id : board.getAllIntersectionIds()) {
             if (rules.canBuildSettlement(player, board, id)) {
                 validSettlements.add(id);
             }
         }
-        
         if (validSettlements.isEmpty()) {
             System.out.println("Player " + player.getPlayerId() + ": No valid settlement locations!");
             return;
         }
-        
-        // Randomly choose a settlement location
+
         int settlementId = validSettlements.get(rng.nextInt(validSettlements.size()));
-        
-        // Place settlement
         board.placeSettlement(player.getPlayerId(), settlementId);
         player.recordPlacedSettlement(settlementId);
         player.addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());
-        
-        System.out.println("Player " + player.getPlayerId() + ": Placed initial settlement at intersection " + settlementId);
-        
-        // Give resources if this is the second settlement
+        System.out.println("Player " + player.getPlayerId()
+            + ": Placed initial settlement at intersection " + settlementId);
+
         if (giveResources) {
             giveInitialResources(player, settlementId);
         }
-        
-        // Find valid road locations connected to this settlement
+
         List<Edge> validRoads = new ArrayList<>();
         for (Edge edge : board.getAllEdges()) {
             if (edge.touchesIntersection(settlementId) && !edge.isOccupied()) {
                 validRoads.add(edge);
             }
         }
-        
         if (!validRoads.isEmpty()) {
-            // Randomly choose a road location
             Edge roadEdge = validRoads.get(rng.nextInt(validRoads.size()));
-            
-            // Place road
-            board.placeRoad(player.getPlayerId(), roadEdge.getIntersectionA(), roadEdge.getIntersectionB());
-            player.recordPlacedRoad(roadEdge.getIntersectionA(), roadEdge.getIntersectionB());
-            
-            System.out.println("Player " + player.getPlayerId() + ": Placed initial road between " + 
-                roadEdge.getIntersectionA() + " and " + roadEdge.getIntersectionB());
+            board.placeRoad(player.getPlayerId(),
+                roadEdge.getIntersectionA(), roadEdge.getIntersectionB());
+            player.recordPlacedRoad(
+                roadEdge.getIntersectionA(), roadEdge.getIntersectionB());
+            System.out.println("Player " + player.getPlayerId()
+                + ": Placed initial road between "
+                + roadEdge.getIntersectionA() + " and " + roadEdge.getIntersectionB());
         }
     }
 
     /**
-     * Give player resources from tiles adjacent to their settlement (initial placement)
-     * @param player The player receiving resources
-     * @param intersectionId The settlement location
+     * Gives a player resources from tiles adjacent to their settlement.
+     * Used during the initial placement phase.
      */
     private void giveInitialResources(Player player, int intersectionId) {
         int[] adjacentTileIds = board.getAdjacentTileIds(intersectionId);
-        
         for (int tileId : adjacentTileIds) {
             Tile tile = board.getTile(tileId);
             if (tile != null && tile.getResource() != Resources.DESERT) {
@@ -166,162 +144,111 @@ public class Game {
     }
 
     /**
-     *  Run simulation until termination condition
+     * Runs the simulation until a termination condition is met.
      */
     public void runSimulationUntilTermination() {
         while (!isTerminationReached()) {
             playOneRound();
             printRoundScoreboard();
-
-            // Write JSON state at end of each round
-            try{
+            try {
                 GameStateWriter.writeBasicRoundState(this, stateOutputDir);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Failed to write game state: " + e.getMessage());
             }
             roundNumber++;
         }
-
         Player winner = getWinnerOrNull();
-        Login.printGameOver(winner, roundNumber);
+        GameLogger.printGameOver(winner, roundNumber);
     }
 
     /**
-     * Play one complete round (all 4 players take turns)
+     * Plays one complete round (all players take turns).
      */
     public void playOneRound() {
         for (Player p : players) {
             playOneTurn(p);
-            if (isTerminationReached()) {
-                break;
-            }
+            if (isTerminationReached()) break;
         }
     }
 
     /**
-       * Execute one player's turn.
-     *
-     * If the player is a HumanPlayer, delegates to HumanPlayer.takeTurn()
-     * which handles Roll / List / Build / Go interactively.
-     *
-     * If the player is an AI agent, runs the existing random-action logic
-     * and then calls waitForGo() on any HumanPlayer in the game so the
-     * human can follow along (R2.4 step-forward).
-     *
+     * Executes one player's turn.
      * Output format: [RoundNumber] / [PlayerID]: [Action]
+     *
      * @param player the player taking their turn
      */
     public void playOneTurn(Player player) {
-
-        
-        //Human Player turn
-         if (player instanceof HumanPlayer) {
-             ((HumanPlayer) player).takeTurn(roundNumber, this, board, rules);
-             return;
-         }
-         
-         
-        // AI Player turn
+        // Roll
         int roll = rollDice();
 
-        
-        int roll = rollDice();
-
-        
-   
-        //ADDING NEW CODE FOR ROBBER INTERACTION
-        //HANDLING ROLLING A 7
+        // Handle roll result
         if (roll == 7) {
             handleSevenRoll(player);
-            
-        }
-        else {
-            distributeResourcesForRoll(roll);
-        }
-        
-        
-        if (roll != 7) {
+        } else {
             distributeResourcesForRoll(roll);
         }
 
+        // Action selection
         // R1.8: If player has more than 7 cards, they MUST try to build
         boolean mustBuild = player.getTotalCardsInHand() > 7;
-        
         List<Action> validActions = rules.getValidActionsByLinearScan(player, board);
-        
-        // R1.8: Filter out PASS if player has > 7 cards
+
         if (mustBuild) {
             List<Action> buildActions = new ArrayList<>();
             for (Action action : validActions) {
-                if (action.getType() != ActionType.PASS) {
-                    buildActions.add(action);
-                }
+                if (action.getType() != ActionType.PASS) buildActions.add(action);
             }
- 
-            if (!buildActions.isEmpty()) {
-                validActions = buildActions;
-            }
+            if (!buildActions.isEmpty()) validActions = buildActions;
         }
-        
+
         Action chosen = rules.chooseRandomAction(validActions, rng);
 
+        // Execute and log
         if (chosen != null && chosen.getType() != ActionType.PASS) {
             Map<Resources, Integer> cost = rules.getCost(chosen.getType());
             if (player.hasEnoughResources(cost)) {
                 player.payCost(cost);
                 executeAction(player, chosen);
-                Login.printTurnAction(roundNumber, player.getPlayerId(), chosen.describeForLogin());
+                GameLogger.printTurnAction(roundNumber, player.getPlayerId(),
+                    chosen.describeForLogin());
             } else {
-                // Can't afford chosen action
-                Login.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
+                GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
             }
         } else {
-            // PASS action
-            Login.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
+            GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
         }
-        
-     // R2.4: Step-forward — pause after each AI turn so the human can follow along
-        for (Player p : players) {
-            if (p instanceof HumanPlayer) {
-                ((HumanPlayer) p).waitForGo(
-                    "Player " + player.getPlayerId() + " finished their turn.");
-            }
-        }
-        
-        
     }
 
     /**
-     * Roll two six-sided dice
+     * Rolls two six-sided dice.
+     *
+     * @return the sum of two dice rolls (2–12)
      */
     public int rollDice() {
         return dice.rollTwoSixSidedDice();
     }
 
     /**
-     * Distribute resources based on dice roll
-     * Handles robber: rolling 7 produces no resources
+     * Distributes resources to all players with buildings on tiles
+     * that match the given roll number.
+     * Settlements yield 1 resource, cities yield 2.
+     *
      * @param roll the dice roll value
      */
     public void distributeResourcesForRoll(int roll) {
         List<Tile> producingTiles = board.getTilesProducingOnRoll(roll);
-        
         for (Tile tile : producingTiles) {
             Resources resource = tile.getResource();
-            List<Integer> adjacentIntersections = board.getIntersectionsAdjacentToTile(tile.getTileId());
-            
+            List<Integer> adjacentIntersections =
+                board.getIntersectionsAdjacentToTile(tile.getTileId());
             for (int intersectionId : adjacentIntersections) {
                 Intersection intersection = board.getIntersection(intersectionId);
-                
                 if (intersection != null && intersection.hasBuilding()) {
                     Integer ownerId = intersection.getBuildingOwnerId();
                     Building buildingType = intersection.getBuildingType();
-                    
                     if (ownerId != null) {
                         Player owner = getPlayerById(ownerId);
                         if (owner != null) {
-                            // Settlements = 1 resource, Cities = 2 resources
                             int amount = (buildingType == Building.CITY) ? 2 : 1;
                             owner.addResource(resource, amount);
                         }
@@ -331,83 +258,139 @@ public class Game {
         }
     }
 
-    private Player getPlayerById(int playerId) {
-        for (Player p : players) {
-            if (p.getPlayerId() == playerId) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     /**
-     * Check termination conditions
-     * More than maxRounds rounds played
-     * Any player has 10+ victory points
-     */
-    public boolean isTerminationReached() {
-        if (roundNumber > maxRounds) {
-            return true;
-        }
-
-        for (Player p : players) {
-            if (p.getVictoryPoints() >= victoryPointsToWin) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
+     * Handles the sequence of events when a 7 is rolled (R2.5):
+     * 1. All players with more than 7 cards discard half.
+     * 2. Robber moves to a random tile.
+     * 3. A random adjacent player loses one card to the roller.
      *
-     * Roads must be connected to player network
-     * Cities must replace settlements
-     * Distance rule enforced
+     * Extracted from playOneTurn() so each method has one clear job.
+     *
+     * @param currentPlayer the player who rolled the 7
+     */
+    private void handleSevenRoll(Player currentPlayer) {
+        System.out.println("****** A 7 was rolled... Robber activates....");
+
+        // Discard
+        for (Player p : players) {
+            if (p.getTotalCardsInHand() > 7) {
+                int discarded = p.discardHalfCards();
+                System.out.println("Player " + p.getPlayerId()
+                    + " discarded " + discarded + " cards.");
+            }
+        }
+
+        // Move robber
+        int newRobberTile = moveRobberRandomly();
+        System.out.println("Player " + currentPlayer.getPlayerId()
+            + " moved robber to tile " + newRobberTile);
+
+        // Steal
+        stealFromAdjacentPlayer(currentPlayer, newRobberTile);
+    }
+
+    /**
+     * Moves the robber to a random valid tile (any tile except current position).
+     *
+     * @return the tile ID the robber moved to
+     */
+    private int moveRobberRandomly() {
+        List<Integer> validTiles = board.getValidRobberTiles();
+        if (validTiles.isEmpty()) return board.getRobberTileId();
+        int newTileId = validTiles.get(rng.nextInt(validTiles.size()));
+        board.moveRobber(newTileId);
+        return newTileId;
+    }
+
+    /**
+     * Steals a random card from a random player adjacent to the robber's new tile.
+     *
+     * @param thief the player who rolled a 7 and is stealing
+     * @param robberTileId the tile the robber just moved to
+     */
+    private void stealFromAdjacentPlayer(Player thief, int robberTileId) {
+        List<Integer> adjacentPlayerIds = board.getPlayersAdjacentToTile(robberTileId);
+        adjacentPlayerIds.removeIf(id -> id == thief.getPlayerId());
+
+        if (adjacentPlayerIds.isEmpty()) {
+            System.out.println("No players to steal from.");
+            return;
+        }
+
+        int victimId = adjacentPlayerIds.get(rng.nextInt(adjacentPlayerIds.size()));
+        Player victim = getPlayerById(victimId);
+        if (victim == null) return;
+
+        Resources stolenCard = victim.getRandomResource();
+        if (stolenCard == null) {
+            System.out.println("Player " + victimId + " has no cards to steal.");
+            return;
+        }
+
+        victim.removeResources(stolenCard, 1);
+        thief.addResource(stolenCard, 1);
+        System.out.println("Player " + thief.getPlayerId()
+            + " stole 1 " + stolenCard + " from Player " + victimId);
+    }
+
+    /**
+     * Executes the given action on the board and updates the player's state.
+     *
+     * @param player the player executing the action
+     * @param action the action to execute
      */
     private void executeAction(Player player, Action action) {
         switch (action.getType()) {
             case BUILD_ROAD:
-                board.placeRoad(
-                    player.getPlayerId(),
-                    action.getEdgeIntersectionA(),
-                    action.getEdgeIntersectionB());
+                board.placeRoad(player.getPlayerId(),
+                    action.getEdgeIntersectionA(), action.getEdgeIntersectionB());
                 player.recordPlacedRoad(
-                    action.getEdgeIntersectionA(),
-                    action.getEdgeIntersectionB());
+                    action.getEdgeIntersectionA(), action.getEdgeIntersectionB());
                 break;
-
             case BUILD_SETTLEMENT:
-                board.placeSettlement(
-                    player.getPlayerId(),
-                    action.getIntersectionId());
+                board.placeSettlement(player.getPlayerId(), action.getIntersectionId());
                 player.recordPlacedSettlement(action.getIntersectionId());
                 player.addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());
                 break;
-
             case BUILD_CITY:
-                board.upgradeSettlementToCity(
-                    player.getPlayerId(),
-                    action.getIntersectionId());
+                board.upgradeSettlementToCity(player.getPlayerId(), action.getIntersectionId());
                 player.recordUpgradedCity(action.getIntersectionId());
-                player.addVictoryPoints(1); // +1 additional VP
+                player.addVictoryPoints(1);
                 break;
-
             case PASS:
                 break;
         }
     }
 
+    /**
+     * Returns true if any termination condition is met:
+     * - roundNumber exceeds maxRounds
+     * - any player has reached victoryPointsToWin
+     *
+     * @return true if the game should end
+     */
+    public boolean isTerminationReached() {
+        if (roundNumber > maxRounds) return true;
+        for (Player p : players) {
+            if (p.getVictoryPoints() >= victoryPointsToWin) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the winning player, or null if no one has won yet.
+     *
+     * @return the winning Player, or null
+     */
     public Player getWinnerOrNull() {
         for (Player p : players) {
-            if (p.getVictoryPoints() >= victoryPointsToWin) {
-                return p;
-            }
+            if (p.getVictoryPoints() >= victoryPointsToWin) return p;
         }
         return null;
     }
 
     /**
-     * Print victory points at end of each round
+     * Prints a simple scoreboard showing each player's VP total.
      */
     public void printRoundScoreboard() {
         System.out.println("-----Round " + roundNumber + " ----");
@@ -415,112 +398,11 @@ public class Game {
             System.out.println("Player " + p.getPlayerId() + " VP: " + p.getVictoryPoints());
         }
     }
-    
-    
-    
-    /**
-     * 
-     * ADDITIONAL CODE ADDED
-     * 
-     * Handles when the dice rolls a 7
-     * - All players with more than 7 cards discard half of them
-     * - Current player gets to move the robber
-     * - Current player steals from a random adjacent player
-     * 
-     * @param currentPlayer the player who rolled the 7
-     */
-    
-    
-    private void handleSevenRoll(Player currentPlayer) {
-        System.out.println("****** A 7 was rolled... Robber activates....");
-        
+
+    private Player getPlayerById(int playerId) {
         for (Player p : players) {
-            if(p.getTotalCardsInHand() >7) {
-                int discarded = p.discardHalfCards();
-                System.out.println("Player " + p.getPlayerId() + " discarded " + discarded + " cards. Had more than 7 cards");
-                
-            }
+            if (p.getPlayerId() == playerId) return p;
         }
-        
-        
-        int newRobberTile = moveRobberRandomly();
-        System.out.println("Player " + currentPlayer.getPlayerId() + " moved robber to tile " + newRobberTile);
-        
-        
-        stealFromAdjacentPlayer(currentPlayer, newRobberTile);
-            
-    }
-    
-    
-    /**
-     * Moves the robber to a random valid tile
-     * @return the tile Id where the robber was moved to
-     */
-    private int moveRobberRandomly() {
-        List<Integer> validTiles = board.getValidRobberTiles();
-        
-        
-        //just a precaution, this shouldnt be the case, but handled just in case
-        if (validTiles.isEmpty()) {
-            return board.getRobberTileId();
-        }
-        
-        int randomIndex = rng.nextInt(validTiles.size());
-        int newTileId = validTiles.get(randomIndex);
-        
-        //moving the robber
-        board.moveRobber(newTileId);
-        
-        return newTileId;
-        
-    }
-    
-    /**
-     * 
-     * Current player steals a random card from a random player adjacent to the robbers new position
-     * Random selection where it picks a random victim then random card from that victim
-     * 
-     * @param thief - the player who just rolled a 7 and is stealing
-     * @param robberTileId - the tile where the robber was just placed
-     */
-    
-    private void stealFromAdjacentPlayer(Player thief, int robberTileId) {
-        //find all players with buildings adjacent to the robber
-        List<Integer> adjacentPlayerIds = board.getPlayersAdjacentToTile(robberTileId);
-        
-        //remove the theif from potential victims, and can't steal from yourself
-        adjacentPlayerIds.removeIf(id -> id == thief.getPlayerId());
-        
-        if (adjacentPlayerIds.isEmpty()) {
-            System.out.println("No players to steal from");
-        }
-        
-        //Randomly selecting a player to steal from
-        int randomChosenPerson = rng.nextInt(adjacentPlayerIds.size());
-        int victimId = adjacentPlayerIds.get(randomChosenPerson);
-        Player victim = getPlayerById(victimId);
-        
-        
-        //this should not be the case ever, but just in case
-        if (victim == null) {
-            return;
-        }
-            
-        Resources stolenCard = victim.getRandomResource();
-        
-        if (stolenCard == null) {
-            System.out.println("Player " + victimId + " has no cards to steal");
-            return;
-        }
-        
-        
-        //Transferring the card to the thief
-        victim.removeResources(stolenCard, 1);
-        thief.addResource(stolenCard, 1);
-        
-        
-        System.out.println("Player " + thief.getPlayerId() + " stole 1 " + stolenCard + " from Player " + victimId);
-        
-        
+        return null;
     }
 }
