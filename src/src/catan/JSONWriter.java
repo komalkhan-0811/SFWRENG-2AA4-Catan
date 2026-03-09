@@ -10,6 +10,9 @@ import java.util.List;
 /**
  * Converts a GameSnapshot into a JSON string and writes it to disk.
  * 
+ * Responsible only for formatting and file I/O — it never reads from
+ * the live Game object directly (Single Responsibility Principle).
+ * 
  * @author Alisha Faridi
  * 
  */
@@ -31,6 +34,8 @@ public class JSONWriter {
      * @throws IOException if the file cannot be written
      */
     public void write(GameSnapshot snapshot, Path outputDir) throws IOException {
+    	
+    	// Default to current directory if no output path provided
         if (outputDir == null) {
             outputDir = Paths.get(".");
         }
@@ -57,24 +62,33 @@ public class JSONWriter {
         List<GameSnapshot.PlayerSnapshot> players = snapshot.getPlayers();
 
         StringBuilder sb = new StringBuilder();
+        
+     // Opening brace and round number
         sb.append("{\n");
         sb.append("  \"round\": ").append(snapshot.getRoundNumber()).append(",\n");
         sb.append("  \"players\": [\n");
 
         for (int i = 0; i < players.size(); i++) {
             GameSnapshot.PlayerSnapshot p = players.get(i);
+            
+         // One player object per line with all relevant fields
             sb.append("    {")
               .append(" \"id\": ").append(p.getPlayerId())
               .append(", \"colour\": \"").append(p.getColour()).append("\"")
               .append(", \"victoryPoints\": ").append(p.getVictoryPoints())
               .append(", \"totalCards\": ").append(p.getTotalCards())
               .append(" }");
+            
+            // Add comma after every player except the last
             if (i < players.size() - 1) sb.append(",");
             sb.append("\n");
         }
 
+
+        // Close players array and root object
         sb.append("  ]\n");
         sb.append("}\n");
+        
         return sb.toString();
     }
 }
