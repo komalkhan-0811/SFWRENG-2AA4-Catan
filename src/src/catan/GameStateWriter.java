@@ -18,21 +18,28 @@ public class GameStateWriter {
 
     /**
      * Exports the current game state to a JSON file.
+     * 
+     * Delegates extraction to GameStateExporter and file writing
+     * to JSONWriter, keeping each class focused on a single responsibility
+     * (Single Responsibility Principle).
      *
      * @param game the current Game object
      * @param outputDir the directory to write the JSON file into
      * @throws Exception if export or file writing fails
      */
     public static void writeBasicRoundState(Game game, Path outputDir) throws Exception {
+    	// Default to current directory if no output path is provided
         if (outputDir == null) {
             outputDir = Paths.get(".");
         }
 
         // Extract game state into a plain snapshot object
+        // GameStateExporter uses reflection to read private Game fields
         GameStateExporter exporter = new GameStateExporter();
         GameSnapshot snapshot = exporter.exportSnapshot(game);
 
         // Write the snapshot to a JSON file
+        // JSONWriter handles all formatting and file I/O
         JSONWriter writer = new JSONWriter();
         writer.write(snapshot, outputDir);
     }
