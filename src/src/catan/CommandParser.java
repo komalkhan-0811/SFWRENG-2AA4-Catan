@@ -17,8 +17,13 @@ package catan;
  *
  * @author Rameen Tariq
  */
+
+
 public interface CommandParser {
 
+	/**
+     * All valid command types a human player can issue during their turn.
+     */
     enum CommandType {
         ROLL,
         GO,
@@ -26,14 +31,22 @@ public interface CommandParser {
         BUILD_SETTLEMENT,
         BUILD_CITY,
         BUILD_ROAD,
+        /** Unrecognised or malformed input. */
         UNKNOWN
     }
 
+    /**
+     * Immutable result of parsing one line of player input.
+     */
     class ParsedCommand {
         public final CommandType type;
+        /** Primary node ID — settlement/city target or road fromNode. -1 if unused. */
         public final int nodeA;
+        /** Secondary node ID — road toNode. -1 if unused. */
         public final int nodeB;
+        
 
+        /** Convenience constructor for commands with no node arguments. */
         public ParsedCommand(CommandType type, int nodeA, int nodeB) {
             this.type  = type;
             this.nodeA = nodeA;
@@ -47,10 +60,10 @@ public interface CommandParser {
 
     /**
      * Parses a raw input string into a ParsedCommand.
-     * Never returns null — returns UNKNOWN if unrecognised.
+     * Never returns null — returns UNKNOWN if unrecognised or malformed.
      *
      * @param raw the string typed by the player
-     * @return a ParsedCommand
+     * @return a ParsedCommand, never null
      */
     ParsedCommand parse(String raw);
 
@@ -85,6 +98,13 @@ public interface CommandParser {
             }
         }
 
+        /**
+         * Parses the sub-command after "build".
+         * Valid forms: build settlement/city <nodeId>, build road <fromNodeId> <toNodeId>
+         *
+         * @param parts tokenized input
+         * @return ParsedCommand for the build type, or UNKNOWN if malformed
+         */
         private ParsedCommand parseBuild(String[] parts) {
             if (parts.length < 2) {
                 return new ParsedCommand(CommandType.UNKNOWN);
@@ -117,7 +137,7 @@ public interface CommandParser {
                         break;
                 }
             } catch (NumberFormatException e) {
-                // fall through to UNKNOWN
+            	// Node ID was not a valid integer
             }
             return new ParsedCommand(CommandType.UNKNOWN);
         }
