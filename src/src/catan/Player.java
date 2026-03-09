@@ -14,29 +14,50 @@ import java.util.Set;
 
 
 /**
- * This class represents a player in the Catan simulator.
+ * Represents a player in the Catan simulator.
  *
- * A Player can store information, points, resource cards, and own buildings and roads.
+ * A Player stores identity, victory points, resource cards,
+ * owned buildings, and owned roads. All state changes go through
+ * this class — external classes never modify player state directly
+ * (Encapsulation).
  *
  * @author Maria Shashati
  * @version 1.0
- * 
- * Assignment 2 addtional code - @author Komal Khan
+ * @author Komal Khan (Assignment 2 additions)
  */
 public class Player {
 
+	 /** Unique identifier for this player. */
     private int playerId;
+    
+    /** Colour assigned to this player. */
     private Colour colour;
+    
+    /** Current victory point total. */
     private int victoryPoints;
 
     /**
      * Resource cards held by the player.
      * Key = resource type, Value = quantity owned.
      */
+    
+    /**
+     * Resource cards held by the player.
+     * Key = resource type, Value = quantity owned.
+     */
     private Map<Resources, Integer> resourceCards;
 
+
+    /**
+     * Buildings owned by the player.
+     * Key = intersection ID, Value = building type (SETTLEMENT or CITY).
+     */
     private Map<Integer, Building> ownedBuildings;
 
+    /**
+     * Normalized edge keys for roads owned by the player.
+     * Format: "min-max" where min and max are intersection IDs.
+     */
     private Set<String> ownedRoadEdgeKeys;
 
     /**
@@ -50,6 +71,7 @@ public class Player {
         this.colour = colour;
         this.victoryPoints = 0;
 
+        // Initialize all collections as empty
         this.resourceCards = new HashMap<>();
         this.ownedBuildings = new HashMap<>();
         this.ownedRoadEdgeKeys = new HashSet<>();
@@ -92,12 +114,14 @@ public class Player {
     }
 
     /**
-     * Adds total number of resource cards in the player's hand
+     * Returns the total number of resource cards in the player's hand.
+     * Sums all quantities across all resource types.
      *
      * @return the total number of resource cards in hand
      */
     public int getTotalCardsInHand() {
         int total = 0;
+     // Sum up counts for every resource type
         for (int count : resourceCards.values()) {
             total += count;
         }
@@ -105,11 +129,14 @@ public class Player {
     }
 
     /**
+     * Adds a given amount of a resource to the player's hand.
+     * If the player already has some of this resource, the amount is added on top.
      *
-     * @param type  the type of resource to add
+     * @param type   the type of resource to add
      * @param amount the number of cards to add
      */
     public void addResource(Resources type, int amount) {
+    	// getOrDefault handles the case where player has none of this resource yet
         resourceCards.put(type, resourceCards.getOrDefault(type, 0) + amount);
     }
 
@@ -122,6 +149,7 @@ public class Player {
     public boolean hasEnoughResources(Map<Resources, Integer> cost) {
         for (Resources type : cost.keySet()) {
             int owned = resourceCards.getOrDefault(type, 0);
+         // Fail fast if any single resource is insufficient
             if (owned < cost.get(type)) {
                 return false;
             }
@@ -130,17 +158,22 @@ public class Player {
     }
 
     /**
-     * Deducts resources from the player's depending on cost 
+     * Deducts resources from the player's hand based on the given cost.
+     * Throws an exception if the player cannot afford the cost — callers
+     * should always check hasEnoughResources() first.
      *
-     * @param cost a map describing the required resources 
+     * @param cost a map describing the resources to deduct
+     * @throws IllegalArgumentException if the player cannot afford the cost
      */
     public void payCost(Map<Resources, Integer> cost) {
-    	 
+    	
+    	// Guard clause — should never be reached if caller checks first
     	if (!hasEnoughResources(cost)) {
               throw new IllegalArgumentException(
                   "Player " + playerId + " does not have enough resources to pay the cost.");
           }
 
+    	// Deduct each resource in the cost map
         for (Resources type : cost.keySet()) {
             int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);
             resourceCards.put(type, remaining);
@@ -160,6 +193,7 @@ public class Player {
 
     /**
      * Checks whether the player owns at least one road connected to a given intersection.
+     * Uses the normalized edge key format to match roads at either endpoint.
      *
      *
      * @param intersectionId the intersection ID to check
@@ -171,6 +205,7 @@ public class Player {
             return false;
         }
 
+        // Check both endpoints of each owned road edge key
         for (String key : ownedRoadEdgeKeys) {
             if (key.startsWith(intersectionId + "-") || key.endsWith("-" + intersectionId)) {
                 return true;
@@ -201,21 +236,23 @@ public class Player {
 
     /**
      * Records that the player placed a road between two intersections.
+     * Stores a normalized edge key so road lookups are order-independent.
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
-     * @return void
      */
     public void recordPlacedRoad(int intersectionA, int intersectionB) {
         ownedRoadEdgeKeys.add(edgeKey(intersectionA, intersectionB));
     }
 
     /**
-     * Generates a normalized edge key for a road between two intersections
+     * Generates a normalized edge key for a road between two intersections.
+     * Always stores the smaller ID first so the key is order-independent.
+     * e.g. edge(5,3) and edge(3,5) both produce "3-5".
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
-     * @return a String key representing the edge 
+     * @return a String key representing the edge
      */
     public String edgeKey(int intersectionA, int intersectionB) {
         int min = Math.min(intersectionA, intersectionB);
@@ -225,16 +262,15 @@ public class Player {
     
     
     /**
-     * ADDITIONAL CODE
-     * 
-     * Removes a specific amount of a resource from the player's hand
-     * Method for card stealing and discarding
-     * SOLID principle - SRP: Player manages their own resource removal
-     * 
-     * @param type - the resource type to remove
-     * @param amount - the number of cards to remove
+     * Removes a specific amount of a resource from the player's hand.
+     * Used for card stealing and discarding. Will not go below zero.
+     *
+     * SRP: Player manages its own resource removal — Game tells it
+     * how many to remove but never modifies resourceCards directly.
+     *
+     * @param type   the resource type to remove
+     * @param amount the number of cards to remove
      */
-    
     public void removeResources(Resources type, int amount) {
     	int current = resourceCards.getOrDefault(type, 0);
     	int newAmount = Math.max(0,  current - amount);
@@ -244,23 +280,26 @@ public class Player {
     }
     
     /**
-     * 
-     * Discards half of the player's card when they have more than 7 cards and 7 is rolled
-     * Cards are discarded randomly to simulate the player choosing
-     * @return the number of cards discarded
+     * Discards half of the player's cards when they have more than 7
+     * and a 7 is rolled. Cards are chosen randomly to simulate the
+     * computer player selecting which to discard.
+     *
+     * @return the number of cards discarded, or 0 if hand size is 7 or fewer
      */
     
     public int discardHalfCards() {
     	int totalCards = getTotalCardsInHand();
     	
+    	// No discard needed if hand size is 7 or fewer
     	if(totalCards <= 7) {
     		return 0;
     	}
     	
+    	// Integer division — player discards floor(total/2)
     	int haveToDiscard = totalCards / 2; 
     	int discarded = 0;
     	
-    	//List of all resource cards the current player has
+    	 // Build a flat list of all individual resource cards in hand
     	List<Resources> allCards = new ArrayList<>();
     	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
     		Resources type = entry.getKey();
@@ -270,7 +309,7 @@ public class Player {
     		}
     	}
     	
-    	//Randomly chosen discarded cards
+    	// Randomly pick and remove cards one at a time until discard quota is met
     	Random r = new Random();
     	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
     		int randomNum = r.nextInt(allCards.size());
@@ -286,15 +325,17 @@ public class Player {
     
     
     /**
-     * Returns a random resource card from the player's hand
-     * Used when another player steals from this player using the robber
-     * 
-     * Encapsulation - the player's internal card structure is hidden
-     * 
-     * @return A random Resources type the player owns or null if they have no cards
+     * Returns a random resource card from the player's hand.
+     * Used when another player steals from this player via the robber.
+     *
+     * Encapsulation: the player's internal card structure is hidden —
+     * the stealer only receives the resource type, not direct map access.
+     *
+     * @return a random Resources type the player owns,
+     *         or null if the player has no cards
      */
     public Resources getRandomResource() {
-    	//Build the list of all cards
+    	// Build a flat list of all individual resource cards in hand
     	List<Resources> allCards = new ArrayList<>();
     	
     	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
@@ -305,10 +346,12 @@ public class Player {
     		}
     	}
     	
+    	// Return null if player has nothing to steal
     	if(allCards.isEmpty()) {
     		return null;
     	}
     	
+    	 // Pick a random card from the flat list
     	Random r = new Random();
     	return allCards.get(r.nextInt(allCards.size()));
     	
@@ -316,11 +359,14 @@ public class Player {
     }
     
     /**
-     * Gets a map of all resources the player currently has, and returns a copy to prevent external modificaiton
-     * 
-     * @return Map of resource types to quantities
+     * Returns a defensive copy of the player's resource cards.
+     * The copy prevents external classes from modifying the player's
+     * hand directly (Encapsulation).
+     *
+     * @return a copy of the resource cards map
      */
     public Map<Resources, Integer>  getResourceCards(){
+    	// Return a copy — never expose the internal map directly
     	return new HashMap<>(resourceCards);
     }
 }
