@@ -6,10 +6,13 @@ package catan;
 
 /**
  * Represents a resource tile on the board
+ * 
+ * Each tile has a resource type, a dice number token that activates it,
+ * and a robber flag that blocks production when the robber is present.
  *
  * @author Rameen Tariq
+ * @author Komal Khan (Assignment 2 additions)
  * 
- * Assignment 2 @author Komal Khan
  *
  */
 public class Tile {
@@ -19,10 +22,9 @@ public class Tile {
 
     
     /**
-     * ADDITIONAL CODE ADDED DURING ASSIGNMENT 2
-     * Tracks whether the robber is currently on this tile
-     * If it is true, this tile does not produce even if its number is rolled
-     * 
+     * Tracks whether the robber is currently on this tile.
+     * When true, this tile does not produce resources even if its
+     * dice number is rolled (Assignment 2 addition).
      */
     private boolean hasRobber;
     
@@ -31,7 +33,8 @@ public class Tile {
     /**
      *
      * Creates a new Tile
-     *
+     * Robber defaults to false — no tile starts with the robber.
+     * 
      * @param tileId The unique ID of the tile
      * @param resource The resource type of the tile
      * @param diceNumberToken The dice number that activates this tile
@@ -61,7 +64,7 @@ public class Tile {
     }
 
     /**
-     * Returns the tiles dice number
+      * Returns the dice number token that activates this tile.
      *
      * @return The dice number token
      */
@@ -71,8 +74,8 @@ public class Tile {
     
     
     /**
-     * ADDED CODE FOR ASSIGNMENT 2
-     * Sets whether the robber is on this tile
+     * 
+     * Sets whether the robber is on this tile (Assignment 2 addition)
      * SOLID PRINCIPLE -> SRP: Tile is responsible for its own robber state
      * @param hasRobber - set to true if robber should be place here, if false - to remove
      * 
@@ -85,17 +88,23 @@ public class Tile {
     
 
     /**
-     * Checks if tile produces resources for a particular roll
-     * MODIFICATION for robber: tiles with robber do not produce resources
+     * Checks if this tile produces resources for a given dice roll.
      *
-     * @param roll  The dice roll number
-     * @return returns true if the tile produces on that roll and isn't DESERT and has no robber
+     * A tile produces resources only if all three conditions are met:
+     * - The dice roll matches the tile's number token
+     * - The tile is not a DESERT
+     * - The robber is not currently on this tile
+     *
+     * @param roll the dice roll value to check against
+     * @return true if this tile produces resources on this roll
      */
     public boolean producesOnRoll(int roll) {
+    	// Robber blocks all production regardless of roll
     	if (this.hasRobber) {
     		return false;
     	}
         if (roll == this.diceNumberToken) {
+        	// Desert tiles never produce resources
             if (this.resource != Resources.DESERT) {
                 return true;
             }
