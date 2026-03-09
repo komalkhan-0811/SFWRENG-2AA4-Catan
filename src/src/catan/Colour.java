@@ -9,8 +9,7 @@ package catan;
  * Player colours are used to distinguish players during the game and output logging.
  *
  * @author Maria Shashati
- * @version 1.0
- *
+ * 
  */
 public enum Colour {
 	

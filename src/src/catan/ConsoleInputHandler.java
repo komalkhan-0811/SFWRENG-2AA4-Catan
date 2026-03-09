@@ -36,9 +36,10 @@ public class ConsoleInputHandler implements InputHandler {
         this.scanner = scanner;
     }
     
-
     /**
-     * {@inheritDoc}
+     * Prints message
+     * 
+     * @param message the message that is printed
      */
     @Override
     public void displayMessage(String message) {
@@ -46,7 +47,6 @@ public class ConsoleInputHandler implements InputHandler {
     }
 
     /**
-     * {@inheritDoc}
      * Prints the prompt without a newline, then blocks for input.
      * Returns empty string if the stream is exhausted.
      */

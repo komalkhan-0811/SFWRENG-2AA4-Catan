@@ -9,7 +9,6 @@ package catan;
  * Each building type contributes a different number of victory points.
  *
  * @author Maria Shashati
- * @version 1.0
  *
  */
 public enum Building {

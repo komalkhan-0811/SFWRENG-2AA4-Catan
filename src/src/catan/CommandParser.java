@@ -8,12 +8,12 @@ package catan;
  * to be swapped in without touching HumanPlayer (Open/Closed Principle).
  *
  * Supported commands (case-insensitive):
- *   Roll
- *   Go
- *   List
- *   Build settlement <nodeId>
- *   Build city <nodeId>
- *   Build road <fromNodeId> <toNodeId>
+ * - Roll
+ * - Go
+ * - List
+ * - Build settlement <nodeId>
+ * - Build city <nodeId>
+ * - Build road <fromNodeId> <toNodeId>
  *
  * @author Rameen Tariq
  */
@@ -40,9 +40,9 @@ public interface CommandParser {
      */
     class ParsedCommand {
         public final CommandType type;
-        /** Primary node ID — settlement/city target or road fromNode. -1 if unused. */
+        /** Primary node ID: settlement/city target or road fromNode. -1 if unused. */
         public final int nodeA;
-        /** Secondary node ID — road toNode. -1 if unused. */
+        /** Secondary node ID: road toNode. -1 if unused. */
         public final int nodeB;
         
 
@@ -60,7 +60,7 @@ public interface CommandParser {
 
     /**
      * Parses a raw input string into a ParsedCommand.
-     * Never returns null — returns UNKNOWN if unrecognised or malformed.
+     * Never returns null, instead returns UNKNOWN if unrecognised or malformed.
      *
      * @param raw the string typed by the player
      * @return a ParsedCommand, never null

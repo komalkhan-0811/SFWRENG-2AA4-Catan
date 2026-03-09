@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-/************************************************************/
 /**
  * This class demonstrates the complete functionality of the Catan game simulator.
  * It initializes and runs a simulation that satisfies all assignment requirements
@@ -16,7 +15,7 @@ import java.io.IOException;
 public class Demonstrator {
 
 	/**
-	 * Main Method - Entry Point for Simulation
+	 * Entry Point for Simulation
 	 * 
 	 * 1. Configuration (R1.4)
 	 * - Reads turns from config.txt file
@@ -78,7 +77,7 @@ public class Demonstrator {
 		/**
 		 * 
 		 * Run simulation until termination
-		 * - R1.5 - Runs round until termination. The game runs turn by turn with
+		 * - R1.5 Runs round until termination. The game runs turn by turn with
 		 * each player rolling dice, recieving resources and trying to build
 		 * - R1.8 The action selection uses a linear scan of all possible actions and picks one randomly
 		 * - All actions are logged with proper formatting and the game terminates when either maxRounds is exceeded 
@@ -88,7 +87,7 @@ public class Demonstrator {
 	}
 	
 	/**
-	 *  Reads and parses the configuration file to extract the number of turns
+	 * Reads and parses the configuration file to extract the number of turns
 	 * @param filename
 	 * @return the number of turns specified in the configuration file
 	 * @throws IOException

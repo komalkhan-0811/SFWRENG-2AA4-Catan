@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * - Invalid settlement placement -> occupied nodes and invalid IDs
  * - Validation fo the road placement 
  * - Upgrading to city logic
+ * 
+ * @author Komal Khan
  */
 
 public class BoardBuildingTest{
