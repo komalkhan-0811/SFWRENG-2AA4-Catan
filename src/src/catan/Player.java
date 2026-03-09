@@ -17,13 +17,9 @@ import java.util.Set;
  * Represents a player in the Catan simulator.
  *
  * A Player stores identity, victory points, resource cards,
- * owned buildings, and owned roads. All state changes go through
- * this class — external classes never modify player state directly
- * (Encapsulation).
+ * owned buildings, and owned roads.
  *
- * @author Maria Shashati
- * @version 1.0
- * @author Komal Khan (Assignment 2 additions)
+ * @author Maria Shashati, Komal Khan
  */
 public class Player {
 
@@ -167,7 +163,7 @@ public class Player {
      */
     public void payCost(Map<Resources, Integer> cost) {
     	
-    	// Guard clause — should never be reached if caller checks first
+    	// should never be reached if caller checks first
     	if (!hasEnoughResources(cost)) {
               throw new IllegalArgumentException(
                   "Player " + playerId + " does not have enough resources to pay the cost.");
@@ -265,9 +261,6 @@ public class Player {
      * Removes a specific amount of a resource from the player's hand.
      * Used for card stealing and discarding. Will not go below zero.
      *
-     * SRP: Player manages its own resource removal — Game tells it
-     * how many to remove but never modifies resourceCards directly.
-     *
      * @param type   the resource type to remove
      * @param amount the number of cards to remove
      */
@@ -295,7 +288,7 @@ public class Player {
     		return 0;
     	}
     	
-    	// Integer division — player discards floor(total/2)
+    	// player discards floor(total/2)
     	int haveToDiscard = totalCards / 2; 
     	int discarded = 0;
     	
@@ -328,9 +321,6 @@ public class Player {
      * Returns a random resource card from the player's hand.
      * Used when another player steals from this player via the robber.
      *
-     * Encapsulation: the player's internal card structure is hidden —
-     * the stealer only receives the resource type, not direct map access.
-     *
      * @return a random Resources type the player owns,
      *         or null if the player has no cards
      */
@@ -361,12 +351,12 @@ public class Player {
     /**
      * Returns a defensive copy of the player's resource cards.
      * The copy prevents external classes from modifying the player's
-     * hand directly (Encapsulation).
+     * hand directly.
      *
      * @return a copy of the resource cards map
      */
     public Map<Resources, Integer>  getResourceCards(){
-    	// Return a copy — never expose the internal map directly
+    	// Return a copy bc we never expose the internal map directly
     	return new HashMap<>(resourceCards);
     }
 }

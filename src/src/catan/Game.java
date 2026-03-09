@@ -273,7 +273,7 @@ public class Game {
                 GameLogger.printTurnAction(roundNumber, player.getPlayerId(),
                     chosen.describeForLogger());
             } else {
-                // Cannot afford chosen action, so pass
+                // cant afford chosen action, so pass
                 GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
             }
         } else {

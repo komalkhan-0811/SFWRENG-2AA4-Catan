@@ -80,7 +80,7 @@ public class Rules {
             return false;
         }
 
-        // Check 2: distance rule — no adjacent intersection may be occupied
+        // Check 2: no adjacent intersection may be occupied
         if (!isDistanceRuleSatisfied(board, intersectionId)) {
             return false;
         }
