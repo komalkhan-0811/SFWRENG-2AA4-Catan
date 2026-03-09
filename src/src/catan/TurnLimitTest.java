@@ -24,12 +24,28 @@ public class TurnLimitTest {
         assertEquals(2, roundNumber);
     }
 
+    /**
+     * Uses reflection to read a private int field from a Game instance.
+     *
+     * @param g     the Game instance
+     * @param field the field name
+     * @return the field's int value
+     * @throws Exception if the field cannot be accessed
+     */
     private static int getPrivateInt(Game g, String field) throws Exception {
         Field f = Game.class.getDeclaredField(field);
         f.setAccessible(true);
         return (int) f.get(g);
     }
 
+    /**
+     * Uses reflection to set a private int field on a Game instance.
+     *
+     * @param g     the Game instance
+     * @param field the field name
+     * @param value the value to set
+     * @throws Exception if the field cannot be accessed
+     */
     private static void setPrivateInt(Game g, String field, int value) throws Exception {
         Field f = Game.class.getDeclaredField(field);
         f.setAccessible(true);
