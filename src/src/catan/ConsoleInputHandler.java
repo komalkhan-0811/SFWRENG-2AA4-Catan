@@ -24,7 +24,10 @@ public class ConsoleInputHandler implements InputHandler {
 
     /**
      * Creates a ConsoleInputHandler backed by a custom Scanner.
+     * Useful for redirecting input in automated tests.
+     *
      * @param scanner the scanner to read from; must not be null
+     * @throws IllegalArgumentException if scanner is null
      */
     public ConsoleInputHandler(Scanner scanner) {
         if (scanner == null) {
@@ -32,12 +35,21 @@ public class ConsoleInputHandler implements InputHandler {
         }
         this.scanner = scanner;
     }
+    
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void displayMessage(String message) {
         System.out.println(message);
     }
 
+    /**
+     * {@inheritDoc}
+     * Prints the prompt without a newline, then blocks for input.
+     * Returns empty string if the stream is exhausted.
+     */
     @Override
     public String readLine(String prompt) {
         System.out.print(prompt);
