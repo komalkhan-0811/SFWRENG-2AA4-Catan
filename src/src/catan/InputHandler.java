@@ -1,10 +1,15 @@
 package catan;
 
 /**
- * Satisfies the Dependency Inversion Principle: HumanPLayer and Game rely on this interface
- * 
- * Satisfies the Open/Closed Principle
- * 
+ * Abstraction over any input/output source for the Catan simulator.
+ *
+ * Satisfies the Dependency Inversion Principle: HumanPlayer and Game
+ * depend on this interface, never on a concrete I/O class (e.g. Scanner).
+ *
+ * Satisfies the Open/Closed Principle: new input mechanisms (GUI, network,
+ * test stub) can be added by implementing this interface with zero changes
+ * to HumanPlayer or Game.
+ *
  * @author Rameen Tariq
  */
 
