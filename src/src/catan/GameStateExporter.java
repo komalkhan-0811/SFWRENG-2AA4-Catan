@@ -6,6 +6,9 @@ import java.util.List;
 
 /**
  * Extracts the current state from a Game object and produces a GameSnapshot.
+ * 
+ * Uses reflection to access private fields in Game, ensuring the exporter
+ * does not require changes to the Game class itself (Open/Closed Principle).
  *
  * @author Alisha Faridi
  * 
@@ -25,7 +28,9 @@ public class GameStateExporter {
      * @throws Exception if reflection fails to access game fields
      */
     public GameSnapshot exportSnapshot(Game game) throws Exception {
+    	 // Extract primitive state values via reflection
         int roundNumber = extractRoundNumber(game);
+     // Convert each Player to a plain data snapshot
         List<GameSnapshot.PlayerSnapshot> playerSnapshots = extractPlayers(game);
         return new GameSnapshot(roundNumber, playerSnapshots);
     }
@@ -35,6 +40,7 @@ public class GameStateExporter {
      *
      * @param game the Game object
      * @return the current round number
+     * @throws Exception if the roundNumber field cannot be accessed
      */
     private int extractRoundNumber(Game game) throws Exception {
         Field f = Game.class.getDeclaredField("roundNumber");
@@ -48,11 +54,15 @@ public class GameStateExporter {
      *
      * @param game the Game object
      * @return list of PlayerSnapshot objects
+     * @throws Exception if the players field cannot be accessed
      */
+ // Safe cast — Game.players is always List<Player>
     @SuppressWarnings("unchecked")
     private List<GameSnapshot.PlayerSnapshot> extractPlayers(Game game) throws Exception {
         Field f = Game.class.getDeclaredField("players");
+     // setAccessible bypasses private modifier — required since Game fields are not exposed
         f.setAccessible(true);
+        
         List<Player> players = (List<Player>) f.get(game);
 
         List<GameSnapshot.PlayerSnapshot> snapshots = new ArrayList<>();
