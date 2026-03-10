@@ -37,6 +37,7 @@ public class CommandParserTest {
      */
     @Test
     void testValidSimpleCommands() {
+    	
         // Test "roll"
         ParsedCommand rollCmd = parser.parse("roll");
         assertEquals(CommandType.ROLL, rollCmd.type, "Should parse 'roll' command");
