@@ -9,6 +9,11 @@ import java.util.Map;
  * Depends on InputHandler and CommandParser abstractions, never on
  * concrete I/O classes (Dependency Inversion Principle).
  *
+ *Turn flow is governed by the {@link TurnState} automaton:
+ *START → (Roll) → ROLLED → (Build*) → ROLLED → (Go) → DONE
+ *Illegal commands for the current state are rejected with a clear message
+ *and do NOT advance the state.
+ * 
  * @author Rameen Tariq
  */
 public class HumanPlayer extends Player {
@@ -55,8 +60,17 @@ public class HumanPlayer extends Player {
     /**
      * Runs a full interactive turn for this human player.
      *
-     * Flow: player must Roll, may then List or Build any number of times,
-     * and must type Go to end the turn.
+     * The turn is governed by the {@link TurnState} automaton.
+     * The state starts at START and only advances to DONE when the player
+     * types Go after having rolled. Every command is validated against the
+     * current state before being executed; illegal commands are rejected with
+     * a descriptive message and the state is not changed.
+     *
+     * Legal transitions:
+     * START  --[Roll]--> ROLLED
+     * ROLLED --[Build]--> ROLLED  (self-loop, repeatable)
+     * ROLLED --[Go]  --> DONE
+     * ANY    --[List]--> (no change, informational)
      *
      * @param roundNumber the current round number
      * @param game        the Game instance
@@ -64,23 +78,25 @@ public class HumanPlayer extends Player {
      * @param rules       the Rules instance
      */
     public void takeTurn(int roundNumber, Game game, Board board, Rules rules) {
-        boolean hasRolled = false;
-        boolean turnOver  = false;
+        //Automaton starts in START state for every fresh turn
+    	TurnState state = TurnState.START;
 
-        inputHandler.displayMessage(
-            "\n=== Player " + getPlayerId()
-            + " (" + getColour().getDisplayName() + ") — your turn ===");
-        inputHandler.displayMessage(parser.usageHint());
+    	inputHandler.displayMessage(
+                "\n=== Player " + getPlayerId()
+                + " (" + getColour().getDisplayName() + ") — your turn ===");
+            inputHandler.displayMessage("State: " + state + " | " + parser.usageHint());
 
-        while (!turnOver) {
+        while (!state.isDone()) {
             String raw = inputHandler.readLine("> ");
             CommandParser.ParsedCommand cmd = parser.parse(raw);
 
             switch (cmd.type) {
+            
+            	//ROLL: only legal in START
 
                 case ROLL:
-                    if (hasRolled) {
-                        inputHandler.displayMessage("You have already rolled this turn.");
+                    if (!state.canRoll()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You have already rolled this turn.");
                         break;
                     }
                     int roll = game.rollDice();
@@ -94,58 +110,75 @@ public class HumanPlayer extends Player {
                         inputHandler.displayMessage(
                             "Resources distributed for roll of " + roll + ".");
                     }
-                    hasRolled = true;
+                    //Transition: START -> ROLLED
+                    state = TurnState.ROLLED;
+                    inputHandler.displayMessage("State:" + state);
                     break;
+                    
+                 //LIST : always legal, no state change
+         
 
                 case LIST:
+                	// canList() is alwats true but is checked to mirror the automaton
+                	if(!state.canList()) {
+                		inputHandler.displayMessage("[ILLEGAL] Cannot list in state " + state);
+                		break;
+                	}
                     inputHandler.displayMessage(describeHand());
                     break;
+                    
+                //BUILD commands: only legal is ROLLED
 
                 case BUILD_SETTLEMENT:
-                    if (!hasRolled) {
-                        inputHandler.displayMessage("You must Roll before building.");
+                    if (!state.canBuild()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
                     handleBuildSettlement(roundNumber, board, rules, cmd.nodeA);
+                    //state stays ROLLED
                     break;
 
                 case BUILD_CITY:
-                    if (!hasRolled) {
-                        inputHandler.displayMessage("You must Roll before building.");
+                    if (!state.canBuild()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
                     handleBuildCity(roundNumber, board, rules, cmd.nodeA);
                     break;
 
                 case BUILD_ROAD:
-                    if (!hasRolled) {
-                        inputHandler.displayMessage("You must Roll before building.");
+                    if (!state.canBuild()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
                     handleBuildRoad(roundNumber, board, rules, cmd.nodeA, cmd.nodeB);
                     break;
 
+                // GO; Only legal in ROLLED
                 case GO:
-                    if (!hasRolled) {
-                        inputHandler.displayMessage("You must Roll before ending your turn.");
+                    if (!state.canGo()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before ending your turn.");
                         break;
                     }
                     GameLogger.printTurnAction(roundNumber, getPlayerId(), "Passed");
-                    turnOver = true;
+                    state = TurnState.DONE;
                     break;
 
+                //UNKNOWN: reject with usage hint no state change
                 case UNKNOWN:
                 default:
-                    inputHandler.displayMessage("Unknown command.\n" + parser.usageHint());
+                    inputHandler.displayMessage("[ILLEGAL] Unknown command.\n" + parser.usageHint());
                     break;
             }
         }
     }
 
     /**
-     * Waits for the human to type "go" before the game proceeds.
-     * Implements R2.4 called after each computer player turn
-     * so the human can follow what is happening before continuing.
+     * Blocks until the human types "go"
+     * 
+     *Implements R2.4: called after each computer player turn so the human
+     *can read what happened before the next turn begins. Only a GO command
+     *will unblock; any other input is rejected with a prompt to type "go".
      *
      * @param message summary of the computer player action just performed
      */
@@ -262,6 +295,8 @@ public class HumanPlayer extends Player {
             "Built road between " + fromNode + " and " + toNode);
     }
 
+    //Private utility helpers
+    
     /**
      * Finds the Edge object between two nodes, or null if none exists.
      *
