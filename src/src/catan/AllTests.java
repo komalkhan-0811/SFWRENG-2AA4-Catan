@@ -22,7 +22,8 @@ import org.junit.platform.suite.api.Suite;
     TurnLimitTest.class,
     ConfigParsingTest.class,
     TurnEngineTest.class,
-    RobberTest.class
+    RobberTest.class,
+    CommandParserTest.class
 })
 public class AllTests {
     

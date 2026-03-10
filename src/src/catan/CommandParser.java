@@ -1,29 +1,23 @@
 package catan;
-
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 /**
  * Command parsing interface for the Catan simulator.
  *
- * Defines the contract for parsing raw console strings into ParsedCommand
- * objects. Keeping this as an interface allows alternative parsers
- * to be swapped in without touching HumanPlayer (Open/Closed Principle).
+ * R2.1: Parsing functionality implemented using regular expressions.
  *
  * Supported commands (case-insensitive):
- * - Roll
- * - Go
- * - List
- * - Build settlement <nodeId>
- * - Build city <nodeId>
- * - Build road <fromNodeId> <toNodeId>
+ *   Roll
+ *   Go
+ *   List
+ *   Build settlement <nodeId>
+ *   Build city <nodeId>
+ *   Build road <fromNodeId> <toNodeId>
  *
- * @author Rameen Tariq
+ * @author Rameen Tariq, Komal Khan
  */
-
-
 public interface CommandParser {
 
-	/**
-     * All valid command types a human player can issue during their turn.
-     */
     enum CommandType {
         ROLL,
         GO,
@@ -31,22 +25,14 @@ public interface CommandParser {
         BUILD_SETTLEMENT,
         BUILD_CITY,
         BUILD_ROAD,
-        /** Unrecognised or malformed input. */
         UNKNOWN
     }
 
-    /**
-     * Immutable result of parsing one line of player input.
-     */
     class ParsedCommand {
         public final CommandType type;
-        /** Primary node ID: settlement/city target or road fromNode. -1 if unused. */
         public final int nodeA;
-        /** Secondary node ID: road toNode. -1 if unused. */
         public final int nodeB;
-        
 
-        /** Convenience constructor for commands with no node arguments. */
         public ParsedCommand(CommandType type, int nodeA, int nodeB) {
             this.type  = type;
             this.nodeA = nodeA;
@@ -60,10 +46,10 @@ public interface CommandParser {
 
     /**
      * Parses a raw input string into a ParsedCommand.
-     * Never returns null, instead returns UNKNOWN if unrecognised or malformed.
+     * Never returns null, and returns UNKNOWN if the command is unrecognized.
      *
      * @param raw the string typed by the player
-     * @return a ParsedCommand, never null
+     * @return a ParsedCommand
      */
     ParsedCommand parse(String raw);
 
@@ -76,69 +62,124 @@ public interface CommandParser {
 
 
     /**
-     * Default console implementation of CommandParser.
+     * R2.1: Regex-based implementation of CommandParser.
+     * All parsing uses regular expressions with Pattern and Matcher.
      */
     class ConsoleCommandParser implements CommandParser {
+    	
+        /**
+         * Pattern for "roll" command.
+         * Matches: "roll", "  roll  ", "ROLL", "RoLl", etc.
+         * Regex: ^\\s*roll\\s*$
+         *   ^ = start of string
+         *   \\s* = zero or more whitespace
+         *   roll = literal text (case-insensitive flag)
+         *   \\s* = zero or more whitespace
+         *   $ = end of string
+         */
+        private static final Pattern ROLL_PATTERN = 
+            Pattern.compile("^\\s*roll\\s*$", Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Pattern for "go" command.
+         * Matches: "go", "  go  ", "GO", "Go", etc.
+         */
+        private static final Pattern GO_PATTERN = 
+            Pattern.compile("^\\s*go\\s*$", Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Pattern for "list" command.
+         * Matches: "list", "  list  ", "LIST", "LiSt", etc.
+         */
+        private static final Pattern LIST_PATTERN = 
+            Pattern.compile("^\\s*list\\s*$", Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Pattern for "build settlement <nodeId>" command.
+         * Matches: "build settlement 5", "  BUILD   SETTLEMENT   10  ", etc.
+         * Regex: ^\\s*build\\s+settlement\\s+(\\d+)\\s*$
+         * 
+         */
+        private static final Pattern BUILD_SETTLEMENT_PATTERN = 
+            Pattern.compile("^\\s*build\\s+settlement\\s+(\\d+)\\s*$", Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Pattern for "build city <nodeId>" command.
+         * Matches: "build city 3", "  BUILD   CITY   8  ", etc.
+         */
+        private static final Pattern BUILD_CITY_PATTERN = 
+            Pattern.compile("^\\s*build\\s+city\\s+(\\d+)\\s*$", Pattern.CASE_INSENSITIVE);
+
+        /**
+         * Pattern for "build road <fromNodeId> <toNodeId>" command.
+         * Matches: "build road 5 12", "  BUILD   ROAD   10   20  ", etc.
+         * Regex: ^\\s*build\\s+road\\s+(\\d+)\\s+(\\d+)\\s*$
+
+         */
+        private static final Pattern BUILD_ROAD_PATTERN = 
+            Pattern.compile("^\\s*build\\s+road\\s+(\\d+)\\s+(\\d+)\\s*$", Pattern.CASE_INSENSITIVE);
+
 
         @Override
         public ParsedCommand parse(String raw) {
+        	
+            // Handle null/empty input
             if (raw == null || raw.trim().isEmpty()) {
                 return new ParsedCommand(CommandType.UNKNOWN);
             }
 
-            String[] parts = raw.trim().split("\\s+");
-            String first = parts[0].toLowerCase();
+            Matcher matcher;
 
-            switch (first) {
-                case "roll":  return new ParsedCommand(CommandType.ROLL);
-                case "go":    return new ParsedCommand(CommandType.GO);
-                case "list":  return new ParsedCommand(CommandType.LIST);
-                case "build": return parseBuild(parts);
-                default:      return new ParsedCommand(CommandType.UNKNOWN);
-            }
-        }
 
-        /**
-         * Parses the sub-command after "build".
-         * Valid forms: build settlement/city <nodeId>, build road <fromNodeId> <toNodeId>
-         *
-         * @param parts tokenized input
-         * @return ParsedCommand for the build type, or UNKNOWN if malformed
-         */
-        private ParsedCommand parseBuild(String[] parts) {
-            if (parts.length < 2) {
-                return new ParsedCommand(CommandType.UNKNOWN);
+            matcher = ROLL_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                return new ParsedCommand(CommandType.ROLL);
             }
-            try {
-                switch (parts[1].toLowerCase()) {
-                    case "settlement":
-                        if (parts.length == 3) {
-                            return new ParsedCommand(
-                                CommandType.BUILD_SETTLEMENT,
-                                Integer.parseInt(parts[2]), -1);
-                        }
-                        break;
-                    case "city":
-                        if (parts.length == 3) {
-                            return new ParsedCommand(
-                                CommandType.BUILD_CITY,
-                                Integer.parseInt(parts[2]), -1);
-                        }
-                        break;
-                    case "road":
-                        if (parts.length == 4) {
-                            return new ParsedCommand(
-                                CommandType.BUILD_ROAD,
-                                Integer.parseInt(parts[2]),
-                                Integer.parseInt(parts[3]));
-                        }
-                        break;
-                    default:
-                        break;
+
+            matcher = GO_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                return new ParsedCommand(CommandType.GO);
+            }
+
+            matcher = LIST_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                return new ParsedCommand(CommandType.LIST);
+            }
+
+            matcher = BUILD_SETTLEMENT_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int nodeId = Integer.parseInt(matcher.group(1));
+                    return new ParsedCommand(CommandType.BUILD_SETTLEMENT, nodeId, -1);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
                 }
-            } catch (NumberFormatException e) {
-            	// Node ID was not a valid integer
             }
+
+            // Check for "build city <nodeId>"
+            matcher = BUILD_CITY_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int nodeId = Integer.parseInt(matcher.group(1));
+                    return new ParsedCommand(CommandType.BUILD_CITY, nodeId, -1);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
+                }
+            }
+
+            // Check for "build road <fromNodeId> <toNodeId>"
+            matcher = BUILD_ROAD_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int fromNode = Integer.parseInt(matcher.group(1));
+                    int toNode = Integer.parseInt(matcher.group(2));
+                    return new ParsedCommand(CommandType.BUILD_ROAD, fromNode, toNode);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
+                }
+            }
+
+            // No pattern matched
             return new ParsedCommand(CommandType.UNKNOWN);
         }
 
