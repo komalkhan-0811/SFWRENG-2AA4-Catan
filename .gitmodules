@@ -1,0 +1,3 @@
+[submodule "src/visualize/catanatron"]
+	path = src/visualize/catanatron
+	url = https://github.com/bcollazo/catanatron.git
