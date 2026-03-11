@@ -86,10 +86,26 @@ public class Rules {
         }
 
         // settlement must connect to player's road network.
-        if (!playerHasNoRoads(player, board)) {
-            if (!player.ownsRoadConnectedTo(intersectionId, board)) {
-                return false;
-            }
+        if (!player.ownsRoadConnectedTo(intersectionId, board)) {
+            return false; 
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns whether a settlement can legally be placed at the given intersection during the initial place phase
+     * @param board the current board state
+     * @param intersectionId the intersection to check
+     * @return true if the location is legal for initial placement
+     */
+    public boolean canPlaceInitialSettlement(Board board, int intersectionId){
+        if (board.isIntersectionOccupied(intersectionId)){
+            return false;
+        }
+
+        if (!isDistanceRuleSatisfied(board, intersectionId)){
+            return false;
         }
 
         return true;
@@ -213,23 +229,5 @@ public class Rules {
         return ownerId != null && ownerId == player.getPlayerId();
     }
 
-    /**
-     * Returns true if the player has no roads placed on the board at all.
-     *
-     * Used to detect the initial placement phase
-     * have not yet placed any roads, so road connectivity cannot be required.
-     * Once any road exists, the full connectivity rule applies.
-     *
-     * @param player the player to check
-     * @param board the current board state
-     * @return true if the player has zero roads on the board
-     */
-    private boolean playerHasNoRoads(Player player, Board board) {
-        for (Edge e : board.getAllEdges()) {
-            if (e.getOwnerId() == player.getPlayerId()) {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 }

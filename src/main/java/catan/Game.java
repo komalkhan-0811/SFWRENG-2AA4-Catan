@@ -119,7 +119,7 @@ public class Game {
         // Collect all valid settlement locations
         List<Integer> validSettlements = new ArrayList<>();
         for (int id : board.getAllIntersectionIds()) {
-            if (rules.canBuildSettlement(player, board, id)) {
+            if (rules.canPlaceInitialSettlement(board, id)) {
                 validSettlements.add(id);
             }
         }
