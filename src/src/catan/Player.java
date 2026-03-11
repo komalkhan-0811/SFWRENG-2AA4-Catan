@@ -359,4 +359,15 @@ public class Player {
     	// Return a copy bc we never expose the internal map directly
     	return new HashMap<>(resourceCards);
     }
+    
+    
+    /**
+     * Returns all buildings owned by this player
+     * Used for game state export
+     * 
+     * @return map of intersection ID to building type
+     */
+    public Map<Integer, Building> getOwnedBuildings(){
+    	return new HashMap<>(ownedBuildings);
+    }
 }

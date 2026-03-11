@@ -211,13 +211,6 @@ public class Game {
         for (Player p : players) {
             playOneTurn(p);
 
-            // Write state.json after each individual turn so visualizar 
-            // shows most up-to-date board
-            try{
-                VisualizerStateWriter.write(this, stateOutputDir);
-            } catch (Exception e){
-                System.out.println("Failed to write visualizer state: " + e.getMessage());
-            }
 
             if (isTerminationReached()) break;
         }
@@ -297,6 +290,14 @@ public class Game {
                 ((HumanPlayer) p).waitForGo(
                     "Player " + player.getPlayerId() + " finished their turn.");
             }
+        }
+        
+        try {
+        	VisualizerStateWriter.write(this, stateOutputDir);
+        	
+        }
+        catch (Exception e){
+        	System.out.println("Failed to write visualizer state: " + e.getMessage());
         }
     }
 
