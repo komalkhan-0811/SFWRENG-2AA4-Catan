@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="catan.HumanPlayerBuildTest" time="0.105" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="catan.HumanPlayerBuildTest" time="0.129" tests="15" errors="0" skipped="0" failures="3">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CA"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311104952405_3.jar /Users/alisha/SFWRENG-2AA4-Catan/target/surefire 2026-03-11T10-49-52_199-jvmRun1 surefire-20260311104952405_1tmp surefire_0-20260311104952405_2tmp"/>
+    <property name="sun.java.command" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311164915166_3.jar /Users/alisha/SFWRENG-2AA4-Catan/target/surefire 2026-03-11T16-49-15_108-jvmRun1 surefire-20260311164915166_1tmp surefire_0-20260311164915166_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/test-classes:/Users/alisha/SFWRENG-2AA4-Catan/target/classes:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/alisha/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-api/1.10.1/junit-platform-suite-api-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.10.1/junit-platform-suite-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.10.1/junit-platform-suite-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-launcher/1.10.1/junit-platform-launcher-1.10.1.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311104952405_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311164915166_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="25.0.1+8-LTS-27"/>
@@ -58,7 +58,19 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="test_buildSettlement_insufficientResources_showsError" classname="catan.HumanPlayerBuildTest" time="0.052">
+  <testcase name="test_buildSettlement_insufficientResources_showsError" classname="catan.HumanPlayerBuildTest" time="0.065">
+    <failure message="expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at catan.HumanPlayerBuildTest.test_buildSettlement_insufficientResources_showsError(HumanPlayerBuildTest.java:218)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+]]></failure>
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
@@ -98,8 +110,8 @@
 	at java.base/java.util.Formatter.format(Formatter.java:2698)
 	at java.base/java.lang.String.format(String.java:4455)
 	at catan.GameLogger.printTurnAction(GameLogger.java:22)
-	at catan.HumanPlayer.takeTurn(HumanPlayer.java:103)
-	at catan.HumanPlayerBuildTest.lambda$test_buildSettlement_insufficientResources_showsError$0(HumanPlayerBuildTest.java:217)
+	at catan.HumanPlayer.takeTurn(HumanPlayer.java:100)
+	at catan.HumanPlayerBuildTest.lambda$7(HumanPlayerBuildTest.java:217)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
 	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3168)
@@ -225,8 +237,8 @@ java.lang.instrument.IllegalClassFormatException: Error while instrumenting sun/
 	at java.base/java.util.Formatter.format(Formatter.java:2698)
 	at java.base/java.lang.String.format(String.java:4455)
 	at catan.GameLogger.printTurnAction(GameLogger.java:22)
-	at catan.HumanPlayer.takeTurn(HumanPlayer.java:103)
-	at catan.HumanPlayerBuildTest.lambda$test_buildSettlement_insufficientResources_showsError$0(HumanPlayerBuildTest.java:217)
+	at catan.HumanPlayer.takeTurn(HumanPlayer.java:100)
+	at catan.HumanPlayerBuildTest.lambda$7(HumanPlayerBuildTest.java:217)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
 	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3168)
@@ -350,8 +362,8 @@ java.lang.instrument.IllegalClassFormatException: Error while instrumenting sun/
 	at java.base/java.util.Formatter.format(Formatter.java:2698)
 	at java.base/java.lang.String.format(String.java:4455)
 	at catan.GameLogger.printTurnAction(GameLogger.java:22)
-	at catan.HumanPlayer.takeTurn(HumanPlayer.java:103)
-	at catan.HumanPlayerBuildTest.lambda$test_buildSettlement_insufficientResources_showsError$0(HumanPlayerBuildTest.java:217)
+	at catan.HumanPlayer.takeTurn(HumanPlayer.java:100)
+	at catan.HumanPlayerBuildTest.lambda$7(HumanPlayerBuildTest.java:217)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
 	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3168)
@@ -450,7 +462,7 @@ Caused by: java.lang.IllegalArgumentException: Unsupported class file major vers
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildCity_success_upgradesSettlement" classname="catan.HumanPlayerBuildTest" time="0.004">
+  <testcase name="test_buildCity_success_upgradesSettlement" classname="catan.HumanPlayerBuildTest" time="0.006">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Upgraded to city at intersection 0
 1 / 1: Passed
@@ -462,6 +474,18 @@ Caused by: java.lang.IllegalArgumentException: Unsupported class file major vers
 ]]></system-out>
   </testcase>
   <testcase name="test_listCommand_displaysHandContents" classname="catan.HumanPlayerBuildTest" time="0.002">
+    <failure message="expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at catan.HumanPlayerBuildTest.test_listCommand_displaysHandContents(HumanPlayerBuildTest.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+]]></failure>
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
@@ -471,19 +495,30 @@ Caused by: java.lang.IllegalArgumentException: Unsupported class file major vers
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildSettlement_success_placesSettlementOnBoard" classname="catan.HumanPlayerBuildTest" time="0.001">
+  <testcase name="test_buildSettlement_success_placesSettlementOnBoard" classname="catan.HumanPlayerBuildTest" time="0.002">
+    <failure message="expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at catan.HumanPlayerBuildTest.test_buildSettlement_success_placesSettlementOnBoard(HumanPlayerBuildTest.java:187)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+]]></failure>
     <system-out><![CDATA[1 / 1: Rolled 6
-1 / 1: Built settlement at intersection 0
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildRoad_success_placesRoadOnBoard" classname="catan.HumanPlayerBuildTest" time="0.002">
+  <testcase name="test_buildRoad_success_placesRoadOnBoard" classname="catan.HumanPlayerBuildTest" time="0.004">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Built road between 5 and 0
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildRoad_noEdgeBetweenNodes_showsError" classname="catan.HumanPlayerBuildTest" time="0.002">
+  <testcase name="test_buildRoad_noEdgeBetweenNodes_showsError" classname="catan.HumanPlayerBuildTest" time="0.001">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
@@ -493,22 +528,22 @@ Caused by: java.lang.IllegalArgumentException: Unsupported class file major vers
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildCity_noSettlementThere_showsError" classname="catan.HumanPlayerBuildTest" time="0.003">
+  <testcase name="test_buildCity_noSettlementThere_showsError" classname="catan.HumanPlayerBuildTest" time="0.001">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildBeforeRoll_isIllegalInStartState" classname="catan.HumanPlayerBuildTest" time="0.002">
+  <testcase name="test_buildBeforeRoll_isIllegalInStartState" classname="catan.HumanPlayerBuildTest" time="0.003">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_buildRoad_insufficientResources_showsError" classname="catan.HumanPlayerBuildTest" time="0.001">
+  <testcase name="test_buildRoad_insufficientResources_showsError" classname="catan.HumanPlayerBuildTest" time="0.002">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>
   </testcase>
-  <testcase name="test_unknownCommand_showsUsageHint" classname="catan.HumanPlayerBuildTest" time="0.001">
+  <testcase name="test_unknownCommand_showsUsageHint" classname="catan.HumanPlayerBuildTest" time="0.002">
     <system-out><![CDATA[1 / 1: Rolled 6
 1 / 1: Passed
 ]]></system-out>

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: catan.GameSimulationTest
 -------------------------------------------------------------------------------
-Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in catan.GameSimulationTest
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.085 s -- in catan.GameSimulationTest

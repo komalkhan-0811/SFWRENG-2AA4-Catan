@@ -367,22 +367,54 @@ public class GameSimulationTest {
         }
         assertTrue(victimNode >= 0);
 
-        int[] adjacentTiles = board.getAdjacentTileIds(victimNode);
-        assertTrue(adjacentTiles.length > 0);
-        int robberTile = adjacentTiles[0];
+        // Find a tile adjacent to victimNode where victim is the ONLY non-thief
+        // adjacent player. This avoids flakiness when other players happen to
+        // have settlements adjacent to the same tile after random initial placement.
+        int robberTile = -1;
+        for (int tileId : board.getAdjacentTileIds(victimNode)) {
+            List<Integer> adj = new ArrayList<>(board.getPlayersAdjacentToTile(tileId));
+            adj.removeIf(id -> id == thief.getPlayerId());
+            if (adj.size() == 1 && adj.get(0) == victim.getPlayerId()) {
+                robberTile = tileId;
+                break;
+            }
+        }
+
+        // If every tile adjacent to victimNode also has other players' settlements,
+        // general-steal check: just verify thief gains a card
+        // from SOME victim rather than asserting victim's exact count.
+        boolean victimIsOnlyTarget = (robberTile >= 0);
+        if (!victimIsOnlyTarget) {
+            robberTile = board.getAdjacentTileIds(victimNode)[0];
+        }
         board.moveRobber(robberTile);
 
         victim.addResource(Resources.WOOD, 3);
         int victimCardsBefore = victim.getTotalCardsInHand();
         int thiefCardsBefore  = thief.getTotalCardsInHand();
 
+        // Compute total cards across ALL players before the steal
+        int totalCardsBefore = getPlayers(g).stream().mapToInt(Player::getTotalCardsInHand).sum();
+
         Method m = Game.class.getDeclaredMethod("stealFromAdjacentPlayer",
                 Player.class, int.class);
         m.setAccessible(true);
         m.invoke(g, thief, robberTile);
 
-        assertEquals(victimCardsBefore - 1, victim.getTotalCardsInHand());
-        assertEquals(thiefCardsBefore  + 1, thief.getTotalCardsInHand());
+        // A steal always transfers exactly 1 card
+        int totalCardsAfter = getPlayers(g).stream().mapToInt(Player::getTotalCardsInHand).sum();
+        assertEquals(totalCardsBefore, totalCardsAfter,
+            "Total cards across all players must not change during a steal");
+
+        // Thief always gains exactly 1 card
+        assertEquals(thiefCardsBefore + 1, thief.getTotalCardsInHand(),
+            "Thief must gain exactly 1 card");
+
+        // If victim was the only possible target, also verify victim specifically lost 1 card
+        if (victimIsOnlyTarget) {
+            assertEquals(victimCardsBefore - 1, victim.getTotalCardsInHand(),
+                "Victim must lose exactly 1 card when they are the only adjacent player");
+        }
     }
 
     /**
