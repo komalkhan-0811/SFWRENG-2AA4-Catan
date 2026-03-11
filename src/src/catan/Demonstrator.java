@@ -17,6 +17,7 @@ public class Demonstrator {
 	/**
 	 * Entry Point for Simulation
 	 * 
+	 * ASSIGNMENT 1 features demonstrated:
 	 * 1. Configuration (R1.4)
 	 * - Reads turns from config.txt file
 	 * - validates the range given (1 - 8192)
@@ -31,6 +32,32 @@ public class Demonstrator {
 	 * - Runs turn by turn gameplay
 	 * - applies all game rules and invariants
 	 * - terminates the game when the winning conditions are met (R1.5)
+	 * 
+	 * 
+	 * 
+	 * ASSIGNMENT 2 features demonstrated:
+	 * R2.1  Human commands are parsed by a regex based CommandParser
+	 * R2.2  TurnState automaton enforces Roll -> Build -> Go order for Player 1
+	 * R2.3  JSON game stae written to gamestate_round_XXXX.json after each round
+	 * R2.4  After each AI turn, Player 1 must type "go" to step forward
+	 * R2.5  Rollig a 7 activates the robber, players with >7 cards discard half, robber moves to random tile 
+	 *       and the current player gets to steal from an adjacent player
+	 * R2.6  Visualizer state written to visualize/state.json after each turn
+	 * 		 Run "python light_visualizer.py base_map.json - - watch" alongside the game
+	 * 		 to see the board working live in the visualize/scraped_boards/
+	 * 
+	 * 
+	 * HOW TO PLAY AS PLAYER 1:
+	 * Your turn -> roll -> [build settlement X | build city X | build road X Y | list] -> go
+	 * 
+	 * After each AI turn -> go (step to the next turn)
+	 * 
+	 * Cost:
+	 * 
+	 * Road: WOOD x1, BRICK x1
+	 * Settlement: WOOD x1, BRICK x1, WHEAT x1, SHEEP x1
+	 * City: WHEAT x2, ORE x3
+	 * 
 	 */
 	public static void main(String[] args) {
 		
@@ -64,6 +91,7 @@ public class Demonstrator {
 
 
 		/**
+		 * R2.6
 		 * Point state.json output at the visualize folder
 		 * The python visualizer watches for state.json in its own folder.
 		 * This path works as long as program is run from the 
@@ -79,7 +107,15 @@ public class Demonstrator {
 		 * - Performs initial placement where each player places
 		 * - # 2 Settlements and 2 Rounds connecting to settlements and 
 		 * - players get initial resources once second settlement is placed
+		 * 
+		 * Assignment 2 add-ons:
+		 * - Each round, each player rolls, recieves resources or activates the robber
+		 * - AI players choose randomly from all legal actions
+		 * - Player 1 is prompted for commands via the regex parser
+		 * - the loop exits when maxRounds is exceeded or any player reaches 10 VP
 		 */
+		
+		
 		game.initializeNewGame();
 		
 		/**
