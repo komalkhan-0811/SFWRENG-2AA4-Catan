@@ -306,7 +306,6 @@ public class Player {
     	}
     	
     	// Randomly pick and remove cards one at a time until discard quota is met
-    	SecureRandom r = new SecureRandom();
     	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
     		int randomNum = rng.nextInt(allCards.size());
     		Resources typeToRemove = allCards.remove(randomNum);
@@ -345,7 +344,6 @@ public class Player {
     	}
     	
     	 // Pick a random card from the flat list
-    	SecureRandom r = new SecureRandom();
     	return allCards.get(rng.nextInt(allCards.size()));
     	
     	
