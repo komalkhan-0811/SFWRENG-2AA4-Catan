@@ -3,6 +3,8 @@ package catan;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests the logic turn limits.
@@ -22,6 +24,7 @@ public class TurnLimitTest {
     public void test_gameStopsBecauseOfMaxRounds() throws Exception {
         Game g = new Game(1);
         g.initializeNewGame();
+        replaceWithAllAiPlayers(g);
         setPrivateInt(g, "victoryPointsToWin", 999);
         g.runSimulationUntilTermination();
         int roundNumber = getPrivateInt(g, "roundNumber");
@@ -54,5 +57,29 @@ public class TurnLimitTest {
         Field f = Game.class.getDeclaredField(field);
         f.setAccessible(true);
         f.setInt(g, value);
+    }
+
+    /**
+     * Uses reflection to replace all HumanPlayer instances in the Game's
+     * player list with AI player instances. 
+     * 
+     * @param g the Game instance whose players should be converted to AI players
+     * @throws Exception if the private field cannot be accessed via reflection
+    
+    */
+
+    private static void replaceWithAllAiPlayers(Game g) throws Exception {
+        Field f = Game.class.getDeclaredField("players");
+        f.setAccessible(true);
+        List<Player> original = (List<Player>) f.get(g);
+        List<Player> aiOnly = new ArrayList<>();
+        for (Player p : original) {
+            if (p instanceof HumanPlayer) {
+                aiOnly.add(new Player(p.getPlayerId(), p.getColour()));
+            } else {
+                aiOnly.add(p);
+            }
+        }
+        f.set(g, aiOnly);
     }
 }
