@@ -7,7 +7,7 @@ package catan;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -303,7 +303,7 @@ public class Player {
     	}
     	
     	// Randomly pick and remove cards one at a time until discard quota is met
-    	Random r = new Random();
+    	SecureRandom r = new SecureRandom();
     	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
     		int randomNum = r.nextInt(allCards.size());
     		Resources typeToRemove = allCards.remove(randomNum);
@@ -342,7 +342,7 @@ public class Player {
     	}
     	
     	 // Pick a random card from the flat list
-    	Random r = new Random();
+    	SecureRandom r = new SecureRandom();
     	return allCards.get(r.nextInt(allCards.size()));
     	
     	

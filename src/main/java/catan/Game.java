@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * Main game controller for the Catan simulation.
@@ -49,7 +49,7 @@ public class Game {
      */
     public Game(int maxRounds) {
         this.maxRounds = maxRounds;
-        this.rng = new Random();
+        this.rng = new SecureRandom();
         this.dice = new Dice(rng);
         this.victoryPointsToWin = 10;
     }
