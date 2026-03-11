@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">catan</a> &gt; <a href="index.source.html" class="el_package">catan</a> &gt; <span class="el_source">CommandParser.java</span></div><h1>CommandParser.java</h1><pre class="source lang-java linenums">package catan;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+/**
+ * Command parsing interface for the Catan simulator.
+ *
+ * R2.1: Parsing functionality implemented using regular expressions.
+ *
+ * Supported commands (case-insensitive):
+ *   Roll
+ *   Go
+ *   List
+ *   Build settlement &lt;nodeId&gt;
+ *   Build city &lt;nodeId&gt;
+ *   Build road &lt;fromNodeId&gt; &lt;toNodeId&gt;
+ *
+ * @author Rameen Tariq, Komal Khan
+ */
+public interface CommandParser {
+
+<span class="fc" id="L21">    enum CommandType {</span>
+<span class="fc" id="L22">        ROLL,</span>
+<span class="fc" id="L23">        GO,</span>
+<span class="fc" id="L24">        LIST,</span>
+<span class="fc" id="L25">        BUILD_SETTLEMENT,</span>
+<span class="fc" id="L26">        BUILD_CITY,</span>
+<span class="fc" id="L27">        BUILD_ROAD,</span>
+<span class="fc" id="L28">        UNKNOWN</span>
+    }
+
+    class ParsedCommand {
+        public final CommandType type;
+        public final int nodeA;
+        public final int nodeB;
+
+<span class="fc" id="L36">        public ParsedCommand(CommandType type, int nodeA, int nodeB) {</span>
+<span class="fc" id="L37">            this.type  = type;</span>
+<span class="fc" id="L38">            this.nodeA = nodeA;</span>
+<span class="fc" id="L39">            this.nodeB = nodeB;</span>
+<span class="fc" id="L40">        }</span>
+
+        public ParsedCommand(CommandType type) {
+<span class="fc" id="L43">            this(type, -1, -1);</span>
+<span class="fc" id="L44">        }</span>
+    }
+
+    /**
+     * Parses a raw input string into a ParsedCommand.
+     * Never returns null, and returns UNKNOWN if the command is unrecognized.
+     *
+     * @param raw the string typed by the player
+     * @return a ParsedCommand
+     */
+    ParsedCommand parse(String raw);
+
+    /**
+     * Returns a usage hint to display when the player enters an invalid command.
+     *
+     * @return formatted usage string
+     */
+    String usageHint();
+
+
+    /**
+     * R2.1: Regex-based implementation of CommandParser.
+     * All parsing uses regular expressions with Pattern and Matcher.
+     */
+<span class="fc" id="L68">    class ConsoleCommandParser implements CommandParser {</span>
+    	
+        /**
+         * Pattern for &quot;roll&quot; command.
+         * Matches: &quot;roll&quot;, &quot;  roll  &quot;, &quot;ROLL&quot;, &quot;RoLl&quot;, etc.
+         * Regex: ^\\s*roll\\s*$
+         *   ^ = start of string
+         *   \\s* = zero or more whitespace
+         *   roll = literal text (case-insensitive flag)
+         *   \\s* = zero or more whitespace
+         *   $ = end of string
+         */
+<span class="fc" id="L80">        private static final Pattern ROLL_PATTERN = </span>
+<span class="fc" id="L81">            Pattern.compile(&quot;^\\s*roll\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+        /**
+         * Pattern for &quot;go&quot; command.
+         * Matches: &quot;go&quot;, &quot;  go  &quot;, &quot;GO&quot;, &quot;Go&quot;, etc.
+         */
+<span class="fc" id="L87">        private static final Pattern GO_PATTERN = </span>
+<span class="fc" id="L88">            Pattern.compile(&quot;^\\s*go\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+        /**
+         * Pattern for &quot;list&quot; command.
+         * Matches: &quot;list&quot;, &quot;  list  &quot;, &quot;LIST&quot;, &quot;LiSt&quot;, etc.
+         */
+<span class="fc" id="L94">        private static final Pattern LIST_PATTERN = </span>
+<span class="fc" id="L95">            Pattern.compile(&quot;^\\s*list\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+        /**
+         * Pattern for &quot;build settlement &lt;nodeId&gt;&quot; command.
+         * Matches: &quot;build settlement 5&quot;, &quot;  BUILD   SETTLEMENT   10  &quot;, etc.
+         * Regex: ^\\s*build\\s+settlement\\s+(\\d+)\\s*$
+         * 
+         */
+<span class="fc" id="L103">        private static final Pattern BUILD_SETTLEMENT_PATTERN = </span>
+<span class="fc" id="L104">            Pattern.compile(&quot;^\\s*build\\s+settlement\\s+(\\d+)\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+        /**
+         * Pattern for &quot;build city &lt;nodeId&gt;&quot; command.
+         * Matches: &quot;build city 3&quot;, &quot;  BUILD   CITY   8  &quot;, etc.
+         */
+<span class="fc" id="L110">        private static final Pattern BUILD_CITY_PATTERN = </span>
+<span class="fc" id="L111">            Pattern.compile(&quot;^\\s*build\\s+city\\s+(\\d+)\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+        /**
+         * Pattern for &quot;build road &lt;fromNodeId&gt; &lt;toNodeId&gt;&quot; command.
+         * Matches: &quot;build road 5 12&quot;, &quot;  BUILD   ROAD   10   20  &quot;, etc.
+         * Regex: ^\\s*build\\s+road\\s+(\\d+)\\s+(\\d+)\\s*$
+
+         */
+<span class="fc" id="L119">        private static final Pattern BUILD_ROAD_PATTERN = </span>
+<span class="fc" id="L120">            Pattern.compile(&quot;^\\s*build\\s+road\\s+(\\d+)\\s+(\\d+)\\s*$&quot;, Pattern.CASE_INSENSITIVE);</span>
+
+
+        @Override
+        public ParsedCommand parse(String raw) {
+        	
+            // Handle null/empty input
+<span class="fc bfc" id="L127" title="All 4 branches covered.">            if (raw == null || raw.trim().isEmpty()) {</span>
+<span class="fc" id="L128">                return new ParsedCommand(CommandType.UNKNOWN);</span>
+            }
+
+            Matcher matcher;
+
+
+<span class="fc" id="L134">            matcher = ROLL_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+<span class="fc" id="L136">                return new ParsedCommand(CommandType.ROLL);</span>
+            }
+
+<span class="fc" id="L139">            matcher = GO_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+<span class="fc" id="L141">                return new ParsedCommand(CommandType.GO);</span>
+            }
+
+<span class="fc" id="L144">            matcher = LIST_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+<span class="fc" id="L146">                return new ParsedCommand(CommandType.LIST);</span>
+            }
+
+<span class="fc" id="L149">            matcher = BUILD_SETTLEMENT_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+                try {
+<span class="fc" id="L152">                    int nodeId = Integer.parseInt(matcher.group(1));</span>
+<span class="fc" id="L153">                    return new ParsedCommand(CommandType.BUILD_SETTLEMENT, nodeId, -1);</span>
+<span class="nc" id="L154">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L155">                    return new ParsedCommand(CommandType.UNKNOWN);</span>
+                }
+            }
+
+            // Check for &quot;build city &lt;nodeId&gt;&quot;
+<span class="fc" id="L160">            matcher = BUILD_CITY_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+                try {
+<span class="fc" id="L163">                    int nodeId = Integer.parseInt(matcher.group(1));</span>
+<span class="fc" id="L164">                    return new ParsedCommand(CommandType.BUILD_CITY, nodeId, -1);</span>
+<span class="nc" id="L165">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L166">                    return new ParsedCommand(CommandType.UNKNOWN);</span>
+                }
+            }
+
+            // Check for &quot;build road &lt;fromNodeId&gt; &lt;toNodeId&gt;&quot;
+<span class="fc" id="L171">            matcher = BUILD_ROAD_PATTERN.matcher(raw);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">            if (matcher.matches()) {</span>
+                try {
+<span class="fc" id="L174">                    int fromNode = Integer.parseInt(matcher.group(1));</span>
+<span class="fc" id="L175">                    int toNode = Integer.parseInt(matcher.group(2));</span>
+<span class="fc" id="L176">                    return new ParsedCommand(CommandType.BUILD_ROAD, fromNode, toNode);</span>
+<span class="nc" id="L177">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L178">                    return new ParsedCommand(CommandType.UNKNOWN);</span>
+                }
+            }
+
+            // No pattern matched
+<span class="fc" id="L183">            return new ParsedCommand(CommandType.UNKNOWN);</span>
+        }
+
+        @Override
+        public String usageHint() {
+<span class="fc" id="L188">            return &quot;Valid commands:\n&quot;</span>
+                 + &quot;  Roll                               - roll the dice and collect resources\n&quot;
+                 + &quot;  Go                                 - end your turn / step to next agent\n&quot;
+                 + &quot;  List                               - show cards in your hand\n&quot;
+                 + &quot;  Build settlement &lt;nodeId&gt;          - build a settlement\n&quot;
+                 + &quot;  Build city &lt;nodeId&gt;                - upgrade a settlement to a city\n&quot;
+                 + &quot;  Build road &lt;fromNodeId&gt; &lt;toNodeId&gt; - build a road&quot;;
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

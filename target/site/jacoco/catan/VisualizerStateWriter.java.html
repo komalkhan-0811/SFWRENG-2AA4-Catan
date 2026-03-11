@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VisualizerStateWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">catan</a> &gt; <a href="index.source.html" class="el_package">catan</a> &gt; <span class="el_source">VisualizerStateWriter.java</span></div><h1>VisualizerStateWriter.java</h1><pre class="source lang-java linenums">package catan;
+
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Writes the current board state to state.json after every player turn,
+ * in the exact format consumed by light_visualizer.py script.
+ *
+ * @author Alisha Faridi
+ */
+<span class="nc" id="L18">public class VisualizerStateWriter {</span>
+
+    /**
+     * Maps each of our Colour enum values to the colour string token that
+     * light_visualizer.py's _parse_color() method will accept.
+     *
+     * Loaded once into a static map for O(1) look-up on every turn write.
+     */
+<span class="fc" id="L26">    private static final Map&lt;Colour, String&gt; COLOUR_TO_VISUALIZER = new HashMap&lt;&gt;();</span>
+
+    static {
+<span class="fc" id="L29">        COLOUR_TO_VISUALIZER.put(Colour.RED,    &quot;RED&quot;);</span>
+<span class="fc" id="L30">        COLOUR_TO_VISUALIZER.put(Colour.BLUE,   &quot;BLUE&quot;);</span>
+<span class="fc" id="L31">        COLOUR_TO_VISUALIZER.put(Colour.GREEN,  &quot;ORANGE&quot;); // Catanatron has no GREEN</span>
+<span class="fc" id="L32">        COLOUR_TO_VISUALIZER.put(Colour.YELLOW, &quot;WHITE&quot;);  // Catanatron has no YELLOW</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Writes the current board state from the given Game to state.json
+     * in the specified output directory.
+     *
+     * Called from Game.playOneRound() after every single player turn so the
+     * visualizer always reflects the latest board, not just end-of-round state.
+     *
+     * @param game the live Game object to read board state from
+     * @param outputDir the directory to write state.json into
+     * @throws Exception if reflection fails or the file cannot be written
+     */
+    public static void write(Game game, Path outputDir) throws Exception {
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (outputDir == null) {</span>
+<span class="nc" id="L48">            outputDir = Paths.get(&quot;.&quot;);</span>
+        }
+<span class="fc" id="L50">        Files.createDirectories(outputDir);</span>
+
+<span class="fc" id="L52">        Board board = extractBoard(game);</span>
+<span class="fc" id="L53">        List&lt;Player&gt; players = extractPlayers(game);</span>
+
+<span class="fc" id="L55">        Map&lt;Integer, String&gt; playerColours = buildColourMap(players);</span>
+
+<span class="fc" id="L57">        String json = buildJson(board, playerColours);</span>
+<span class="fc" id="L58">        Path outputPath = outputDir.resolve(&quot;state.json&quot;);</span>
+<span class="fc" id="L59">        Files.write(outputPath, json.getBytes(StandardCharsets.UTF_8));</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Extracts the private board field from the Game object via reflection.
+     *
+     * @param game the Game instance
+     * @return the Board currently in use
+     * @throws Exception if the field cannot be accessed
+     */
+    private static Board extractBoard(Game game) throws Exception {
+<span class="fc" id="L70">        Field f = Game.class.getDeclaredField(&quot;board&quot;);</span>
+<span class="fc" id="L71">        f.setAccessible(true);</span>
+<span class="fc" id="L72">        return (Board) f.get(game);</span>
+    }
+
+    /**
+     * Extracts the private players list from the Game object via reflection.
+     *
+     * @param game the Game instance
+     * @return the list of all players in the game
+     * @throws Exception if the field cannot be accessed
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private static List&lt;Player&gt; extractPlayers(Game game) throws Exception {
+<span class="fc" id="L84">        Field f = Game.class.getDeclaredField(&quot;players&quot;);</span>
+<span class="fc" id="L85">        f.setAccessible(true);</span>
+<span class="fc" id="L86">        return (List&lt;Player&gt;) f.get(game);</span>
+    }
+
+    /**
+     * Builds a map from each player's ID to the colour token that
+     * light_visualizer.py will accept without crashing.
+     *
+     * Falls back to &quot;RED&quot; if a Colour value is somehow not in the map
+     *
+     * @param players all players in the game
+     * @return map from player ID to visualizer-compatible colour string
+     */
+    private static Map&lt;Integer, String&gt; buildColourMap(List&lt;Player&gt; players) {
+<span class="fc" id="L99">        Map&lt;Integer, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        for (Player p : players) {</span>
+<span class="fc" id="L101">            String vis = COLOUR_TO_VISUALIZER.getOrDefault(p.getColour(), &quot;RED&quot;);</span>
+<span class="fc" id="L102">            map.put(p.getPlayerId(), vis);</span>
+<span class="fc" id="L103">        }</span>
+<span class="fc" id="L104">        return map;</span>
+    }
+
+    /**
+     * Builds the complete state.json string from the current board state.
+     *
+     * Iterates once over all edges (roads) and once over all intersections
+     * (buildings).
+     * 
+     * @param board the current board
+     * @param playerColours map from player ID to visualizer colour string
+     * @return a JSON string
+     */
+    private static String buildJson(Board board, Map&lt;Integer, String&gt; playerColours) {
+<span class="fc" id="L118">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L119">        sb.append(&quot;{\n&quot;);</span>
+
+        // Roads
+<span class="fc" id="L122">        sb.append(&quot;  \&quot;roads\&quot;: [\n&quot;);</span>
+<span class="fc" id="L123">        boolean firstRoad = true;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (Edge e : board.getAllEdges()) {</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            if (e.isOccupied()) {</span>
+<span class="fc" id="L126">                String colour = playerColours.getOrDefault(e.getRoadOwnerId(), &quot;RED&quot;);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                if (!firstRoad) sb.append(&quot;,\n&quot;);</span>
+<span class="fc" id="L128">                sb.append(&quot;    { \&quot;a\&quot;: &quot;).append(e.getIntersectionA())</span>
+<span class="fc" id="L129">                  .append(&quot;, \&quot;b\&quot;: &quot;).append(e.getIntersectionB())</span>
+<span class="fc" id="L130">                  .append(&quot;, \&quot;owner\&quot;: \&quot;&quot;).append(colour).append(&quot;\&quot; }&quot;);</span>
+<span class="fc" id="L131">                firstRoad = false;</span>
+            }
+        }
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (!firstRoad) sb.append(&quot;\n&quot;);</span>
+<span class="fc" id="L135">        sb.append(&quot;  ],\n&quot;);</span>
+
+        //buildings 
+<span class="fc" id="L138">        sb.append(&quot;  \&quot;buildings\&quot;: [\n&quot;);</span>
+<span class="fc" id="L139">        boolean firstBuilding = true;</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        for (int id : board.getAllIntersectionIds()) {</span>
+<span class="fc" id="L141">            Intersection inter = board.getIntersection(id);</span>
+<span class="pc bpc" id="L142" title="1 of 4 branches missed.">            if (inter != null &amp;&amp; inter.hasBuilding()) {</span>
+<span class="fc" id="L143">                Integer ownerId       = inter.getBuildingOwnerId();</span>
+<span class="fc" id="L144">                Building buildingType = inter.getBuildingType();</span>
+<span class="pc bpc" id="L145" title="2 of 4 branches missed.">                if (ownerId != null &amp;&amp; buildingType != null) {</span>
+<span class="fc" id="L146">                    String colour = playerColours.getOrDefault(ownerId, &quot;RED&quot;);</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">                    if (!firstBuilding) sb.append(&quot;,\n&quot;);</span>
+<span class="fc" id="L148">                    sb.append(&quot;    { \&quot;node\&quot;: &quot;).append(id)</span>
+<span class="fc" id="L149">                      .append(&quot;, \&quot;owner\&quot;: \&quot;&quot;).append(colour).append(&quot;\&quot;&quot;)</span>
+<span class="fc" id="L150">                      .append(&quot;, \&quot;type\&quot;: \&quot;&quot;).append(buildingType.name()).append(&quot;\&quot; }&quot;);</span>
+<span class="fc" id="L151">                    firstBuilding = false;</span>
+                }
+            }
+        }
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (!firstBuilding) sb.append(&quot;\n&quot;);</span>
+<span class="fc" id="L156">        sb.append(&quot;  ]\n&quot;);</span>
+
+<span class="fc" id="L158">        sb.append(&quot;}\n&quot;);</span>
+<span class="fc" id="L159">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JSONWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">catan</a> &gt; <a href="index.source.html" class="el_package">catan</a> &gt; <span class="el_source">JSONWriter.java</span></div><h1>JSONWriter.java</h1><pre class="source lang-java linenums">package catan;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+/**
+ * Converts a GameSnapshot into a JSON string and writes it to disk.
+ * 
+ * Responsible only for formatting and file I/O. It never reads from
+ * the live Game object directly.
+ * 
+ * @author Alisha Faridi
+ * 
+ */
+<span class="fc" id="L19">public class JSONWriter {</span>
+
+    /**
+     * Writes the given GameSnapshot to a JSON file in the specified output directory.
+     *
+     * The filename format is: gamestate_round_0001.json, gamestate_round_0002.json, etc.
+     * This format is required by the visualizer (R2.3).
+     *
+     * When JSON is updated:
+     * - This method is called at the END of each round, after all players have taken turns
+     * - It is never called mid-turn to avoid writing incomplete state
+     * - The visualizer reads the file after each round completes
+     *
+     * @param snapshot the GameSnapshot to write
+     * @param outputDir the directory to write the file into
+     * @throws IOException if the file cannot be written
+     */
+    public void write(GameSnapshot snapshot, Path outputDir) throws IOException {
+    	
+    	// Default to current directory if no output path provided
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (outputDir == null) {</span>
+<span class="nc" id="L40">            outputDir = Paths.get(&quot;.&quot;);</span>
+        }
+
+        // Ensure the output directory exists
+<span class="fc" id="L44">        Files.createDirectories(outputDir);</span>
+
+        // Build the filename from the round number
+<span class="fc" id="L47">        String filename = String.format(&quot;gamestate_round_%04d.json&quot;, snapshot.getRoundNumber());</span>
+<span class="fc" id="L48">        Path outputPath = outputDir.resolve(filename);</span>
+
+        // Build and write the JSON
+<span class="fc" id="L51">        String json = buildJson(snapshot);</span>
+<span class="fc" id="L52">        Files.write(outputPath, json.getBytes(StandardCharsets.UTF_8));</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Builds a JSON string from the given GameSnapshot.
+     *
+     * @param snapshot the snapshot to serialize
+     * @return a JSON string representing the snapshot
+     */
+    private String buildJson(GameSnapshot snapshot) {
+<span class="fc" id="L62">        List&lt;GameSnapshot.PlayerSnapshot&gt; players = snapshot.getPlayers();</span>
+
+<span class="fc" id="L64">        StringBuilder sb = new StringBuilder();</span>
+        
+     // Opening brace and round number
+<span class="fc" id="L67">        sb.append(&quot;{\n&quot;);</span>
+<span class="fc" id="L68">        sb.append(&quot;  \&quot;round\&quot;: &quot;).append(snapshot.getRoundNumber()).append(&quot;,\n&quot;);</span>
+<span class="fc" id="L69">        sb.append(&quot;  \&quot;players\&quot;: [\n&quot;);</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (int i = 0; i &lt; players.size(); i++) {</span>
+<span class="fc" id="L72">            GameSnapshot.PlayerSnapshot p = players.get(i);</span>
+            
+         // One player object per line with all relevant fields
+<span class="fc" id="L75">            sb.append(&quot;    {&quot;)</span>
+<span class="fc" id="L76">              .append(&quot; \&quot;id\&quot;: &quot;).append(p.getPlayerId())</span>
+<span class="fc" id="L77">              .append(&quot;, \&quot;colour\&quot;: \&quot;&quot;).append(p.getColour()).append(&quot;\&quot;&quot;)</span>
+<span class="fc" id="L78">              .append(&quot;, \&quot;victoryPoints\&quot;: &quot;).append(p.getVictoryPoints())</span>
+<span class="fc" id="L79">              .append(&quot;, \&quot;totalCards\&quot;: &quot;).append(p.getTotalCards())</span>
+<span class="fc" id="L80">              .append(&quot; }&quot;);</span>
+            
+            // Add comma after every player except the last
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (i &lt; players.size() - 1) sb.append(&quot;,&quot;);</span>
+<span class="fc" id="L84">            sb.append(&quot;\n&quot;);</span>
+        }
+
+
+        // Close players array and root object
+<span class="fc" id="L89">        sb.append(&quot;  ]\n&quot;);</span>
+<span class="fc" id="L90">        sb.append(&quot;}\n&quot;);</span>
+        
+<span class="fc" id="L92">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

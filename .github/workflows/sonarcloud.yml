@@ -11,7 +11,6 @@ permissions:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,13 +23,8 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Compile Java source files only
-        run: |
-          mkdir -p build/classes
-          find ./src -name "*.java" \
-            ! -name "*Test.java" \
-            ! -name "AllTests.java" > main_sources.txt
-          javac -encoding UTF-8 -d build/classes @main_sources.txt
+      - name: Build and run tests with coverage
+        run: mvn verify
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -41,7 +35,8 @@ jobs:
           args: >
             -Dsonar.projectKey=komalkhan-0811_SFWRENG-2AA4-Catan
             -Dsonar.organization=komalkhan-0811
-            -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.test.inclusions=**/*Test.java,**/AllTests.java
-            -Dsonar.java.binaries=build/classes
+            -Dsonar.sources=src/main/java
+            -Dsonar.tests=src/test/java
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.java.test.binaries=target/test-classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
