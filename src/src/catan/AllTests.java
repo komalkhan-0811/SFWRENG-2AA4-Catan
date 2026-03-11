@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.Suite;
  * Test suite that groups all JUnit test classes together.
  * Method to run all tests at once:
  * 
- * @author Komal Khan
+ * @author Komal Khan, Alisha Faridi
  * 
  */
 @Suite
@@ -23,7 +23,8 @@ import org.junit.platform.suite.api.Suite;
     ConfigParsingTest.class,
     TurnEngineTest.class,
     RobberTest.class,
-    CommandParserTest.class
+    CommandParserTest.class,
+    JsonStatePerRoundTest.class
 })
 public class AllTests {
     

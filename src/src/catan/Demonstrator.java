@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * This class demonstrates the complete functionality of the Catan game simulator.
  * It initializes and runs a simulation that satisfies all assignment requirements
- * @author komal khan
+ * @author Komal Khan, Alisha Faridi
  */
 public class Demonstrator {
 
@@ -62,6 +62,14 @@ public class Demonstrator {
 		
 		Game game = new Game(maxRounds);
 
+
+		/**
+		 * Point state.json output at the visualize folder
+		 * The python visualizer watches for state.json in its own folder.
+		 * This path works as long as program is run from the 
+		 * project root directory
+		 */
+		game.setStateOutputDir(java.nio.file.Paths.get("visualize"));
 		
 		/**
 		 * 
