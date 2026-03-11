@@ -75,17 +75,17 @@ public class Rules {
      */
     public boolean canBuildSettlement(Player player, Board board, int intersectionId) {
 
-        // Check 1: intersection must be unoccupied
+        // intersection must be unoccupied
         if (board.isIntersectionOccupied(intersectionId)) {
             return false;
         }
 
-        // Check 2: no adjacent intersection may be occupied
+        // no adjacent intersection may be occupied
         if (!isDistanceRuleSatisfied(board, intersectionId)) {
             return false;
         }
 
-        // Check 3: settlement must connect to player's road network.
+        // settlement must connect to player's road network.
         if (!playerHasNoRoads(player, board)) {
             if (!player.ownsRoadConnectedTo(intersectionId, board)) {
                 return false;

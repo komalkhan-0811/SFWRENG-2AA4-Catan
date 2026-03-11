@@ -11,8 +11,7 @@ import java.util.Map;
  *
  *Turn flow is governed by the {@link TurnState} automaton:
  *START → (Roll) → ROLLED → (Build*) → ROLLED → (Go) → DONE
- *Illegal commands for the current state are rejected with a clear message
- *and do NOT advance the state.
+ *Illegal commands for the current state are rejected with a clear message and do not advance the state.
  * 
  * @author Rameen Tariq
  */
@@ -39,7 +38,7 @@ public class HumanPlayer extends Player {
     }
 
     /**
-     * Constructs a HumanPlayer with an injected parser (useful for testing).
+     * Constructs a HumanPlayer with an injected parser
      *
      * @param playerId unique player identifier
      * @param colour colour assigned to this player
@@ -63,14 +62,14 @@ public class HumanPlayer extends Player {
      * The turn is governed by the {@link TurnState} automaton.
      * The state starts at START and only advances to DONE when the player
      * types Go after having rolled. Every command is validated against the
-     * current state before being executed; illegal commands are rejected with
-     * a descriptive message and the state is not changed.
+     * current state before being executed
+     * illegal commands are rejected with a descriptive message and the state is not changed.
      *
      * Legal transitions:
-     * START  --[Roll]--> ROLLED
-     * ROLLED --[Build]--> ROLLED  (self-loop, repeatable)
-     * ROLLED --[Go]  --> DONE
-     * ANY    --[List]--> (no change, informational)
+     * START: [Roll] -> ROLLED
+     * ROLLED:[Build] -> ROLLED
+     * ROLLED: [Go]  -> DONE
+     * ANY: [List]
      *
      * @param roundNumber the current round number
      * @param game        the Game instance
@@ -81,10 +80,9 @@ public class HumanPlayer extends Player {
         //Automaton starts in START state for every fresh turn
     	TurnState state = TurnState.START;
 
-    	inputHandler.displayMessage(
-                "\n=== Player " + getPlayerId()
-                + " (" + getColour().getDisplayName() + ") — your turn ===");
-            inputHandler.displayMessage("State: " + state + " | " + parser.usageHint());
+    	inputHandler.displayMessage("\n=== Player " + getPlayerId()+ " (" + getColour().getDisplayName() + ") — your turn ===");
+           
+    	inputHandler.displayMessage("State: " + state + " | " + parser.usageHint());
 
         while (!state.isDone()) {
             String raw = inputHandler.readLine("> ");
@@ -93,7 +91,6 @@ public class HumanPlayer extends Player {
             switch (cmd.type) {
             
             	//ROLL: only legal in START
-
                 case ROLL:
                     if (!state.canRoll()) {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You have already rolled this turn.");
@@ -102,24 +99,21 @@ public class HumanPlayer extends Player {
                     int roll = game.rollDice();
                     GameLogger.printTurnAction(roundNumber, getPlayerId(), "Rolled " + roll);
                     if (roll == 7) {
-                        inputHandler.displayMessage(
-                            "Rolled 7 — robber activated, no resources distributed.");
+                        inputHandler.displayMessage("Rolled 7 — robber activated, no resources distributed.");
                     } 
                     else {
                         game.distributeResourcesForRoll(roll);
-                        inputHandler.displayMessage(
-                            "Resources distributed for roll of " + roll + ".");
+                        inputHandler.displayMessage("Resources distributed for roll of " + roll + ".");
                     }
-                    //Transition: START -> ROLLED
+                    
+                    //Transition
                     state = TurnState.ROLLED;
                     inputHandler.displayMessage("State:" + state);
                     break;
                     
                  //LIST : always legal, no state change
-         
-
                 case LIST:
-                	// canList() is alwats true but is checked to mirror the automaton
+                	
                 	if(!state.canList()) {
                 		inputHandler.displayMessage("[ILLEGAL] Cannot list in state " + state);
                 		break;
@@ -128,14 +122,12 @@ public class HumanPlayer extends Player {
                     break;
                     
                 //BUILD commands: only legal is ROLLED
-
                 case BUILD_SETTLEMENT:
                     if (!state.canBuild()) {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
                     handleBuildSettlement(roundNumber, board, rules, cmd.nodeA);
-                    //state stays ROLLED
                     break;
 
                 case BUILD_CITY:
@@ -154,7 +146,7 @@ public class HumanPlayer extends Player {
                     handleBuildRoad(roundNumber, board, rules, cmd.nodeA, cmd.nodeB);
                     break;
 
-                // GO; Only legal in ROLLED
+                // GO: Only legal in ROLLED
                 case GO:
                     if (!state.canGo()) {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before ending your turn.");
@@ -204,12 +196,10 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildSettlement(int roundNumber, Board board,
-                                        Rules rules, int nodeId) {
+    private void handleBuildSettlement(int roundNumber, Board board, Rules rules, int nodeId) {
         Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_SETTLEMENT);
         if (!rules.canBuildSettlement(this, board, nodeId)) {
-            inputHandler.displayMessage("Cannot build settlement at node " + nodeId
-                + " — occupied or distance rule violated.");
+            inputHandler.displayMessage("Cannot build settlement at node " + nodeId + " — occupied or distance rule violated.");
             return;
         }
         if (!ownsRoadConnectedTo(nodeId, board) && !hasNoRoadsYet(board)) {
@@ -217,16 +207,15 @@ public class HumanPlayer extends Player {
             return;
         }
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost)
-                + " | You have: " + describeHand());
+            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
             return;
         }
+        
         payCost(cost);
         board.placeSettlement(getPlayerId(), nodeId);
         recordPlacedSettlement(nodeId);
         addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());
-        GameLogger.printTurnAction(roundNumber, getPlayerId(),
-            "Built settlement at intersection " + nodeId);
+        GameLogger.printTurnAction(roundNumber, getPlayerId(),"Built settlement at intersection " + nodeId);
     }
 
     /**
@@ -238,25 +227,22 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildCity(int roundNumber, Board board,
-                                  Rules rules, int nodeId) {
+    private void handleBuildCity(int roundNumber, Board board, Rules rules, int nodeId) {
+    	
         Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_CITY);
         if (!rules.canBuildCity(this, board, nodeId)) {
-            inputHandler.displayMessage("Cannot build city at node " + nodeId
-                + " — you must own a settlement there.");
+            inputHandler.displayMessage("Cannot build city at node " + nodeId + " — you must own a settlement there.");
             return;
         }
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost)
-                + " | You have: " + describeHand());
+            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
             return;
         }
         payCost(cost);
         board.upgradeSettlementToCity(getPlayerId(), nodeId);
         recordUpgradedCity(nodeId);
         addVictoryPoints(1);
-        GameLogger.printTurnAction(roundNumber, getPlayerId(),
-            "Upgraded to city at intersection " + nodeId);
+        GameLogger.printTurnAction(roundNumber, getPlayerId(), "Upgraded to city at intersection " + nodeId);
     }
 
     /**
@@ -269,30 +255,26 @@ public class HumanPlayer extends Player {
      * @param fromNode first endpoint intersection ID
      * @param toNode second endpoint intersection ID
      */
-    private void handleBuildRoad(int roundNumber, Board board,
-                                  Rules rules, int fromNode, int toNode) {
-        Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_ROAD);
+    private void handleBuildRoad(int roundNumber, Board board, Rules rules, int fromNode, int toNode) {
+        
+    	Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_ROAD);
         Edge targetEdge = findEdge(board, fromNode, toNode);
         if (targetEdge == null) {
-            inputHandler.displayMessage("No edge exists between node "
-                + fromNode + " and " + toNode + ".");
+            inputHandler.displayMessage("No edge exists between node " + fromNode + " and " + toNode + ".");
             return;
         }
         if (!rules.canBuildRoad(this, board, targetEdge)) {
-            inputHandler.displayMessage(
-                "Cannot build road there — must connect to your network.");
+            inputHandler.displayMessage("Cannot build road there — must connect to your network.");
             return;
         }
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost)
-                + " | You have: " + describeHand());
+            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
             return;
         }
         payCost(cost);
         board.placeRoad(getPlayerId(), fromNode, toNode);
         recordPlacedRoad(fromNode, toNode);
-        GameLogger.printTurnAction(roundNumber, getPlayerId(),
-            "Built road between " + fromNode + " and " + toNode);
+        GameLogger.printTurnAction(roundNumber, getPlayerId(), "Built road between " + fromNode + " and " + toNode);
     }
 
     //Private utility helpers
@@ -307,8 +289,7 @@ public class HumanPlayer extends Player {
      */
     private Edge findEdge(Board board, int fromNode, int toNode) {
         for (Edge e : board.getAllEdges()) {
-            if ((e.getIntersectionA() == fromNode && e.getIntersectionB() == toNode)
-             || (e.getIntersectionA() == toNode   && e.getIntersectionB() == fromNode)) {
+            if ((e.getIntersectionA() == fromNode && e.getIntersectionB() == toNode) || (e.getIntersectionA() == toNode   && e.getIntersectionB() == fromNode)) {
                 return e;
             }
         }
@@ -317,7 +298,7 @@ public class HumanPlayer extends Player {
 
     /**
      * Returns true if this player has not yet placed any roads.
-     * Used to skip road-connectivity check during initial placement.
+     * Used to skip road connectivity check during initial placement.
      *
      * @param board the board
      * @return true if player has no roads
@@ -333,12 +314,11 @@ public class HumanPlayer extends Player {
      * Returns a readable summary of all resource cards in hand.
      * Used by the List command.
      *
-     * @return formatted hand string e.g. "Hand — WOOD: 2, BRICK: 1"
+     * @return formatted hand string e.g. "Hand - WOOD: 2, BRICK: 1"
      */
     private String describeHand() {
-        StringBuilder sb = new StringBuilder("Hand — ");
-        Resources[] all = {Resources.WOOD, Resources.BRICK, Resources.WHEAT,
-                           Resources.SHEEP, Resources.ORE};
+        StringBuilder sb = new StringBuilder("Hand - ");
+        Resources[] all = {Resources.WOOD, Resources.BRICK, Resources.WHEAT, Resources.SHEEP, Resources.ORE};
         for (int i = 0; i < all.length; i++) {
             sb.append(all[i].name()).append(": ").append(getResourceCount(all[i]));
             if (i < all.length - 1) sb.append(", ");

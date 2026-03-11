@@ -23,37 +23,17 @@ import java.util.Set;
  */
 public class Player {
 
-	 /** Unique identifier for this player. */
+	 
     private int playerId;
     
-    /** Colour assigned to this player. */
     private Colour colour;
     
-    /** Current victory point total. */
     private int victoryPoints;
 
-    /**
-     * Resource cards held by the player.
-     * Key = resource type, Value = quantity owned.
-     */
-    
-    /**
-     * Resource cards held by the player.
-     * Key = resource type, Value = quantity owned.
-     */
     private Map<Resources, Integer> resourceCards;
 
-
-    /**
-     * Buildings owned by the player.
-     * Key = intersection ID, Value = building type (SETTLEMENT or CITY).
-     */
     private Map<Integer, Building> ownedBuildings;
 
-    /**
-     * Normalized edge keys for roads owned by the player.
-     * Format: "min-max" where min and max are intersection IDs.
-     */
     private Set<String> ownedRoadEdgeKeys;
 
     private final SecureRandom rng;
@@ -120,7 +100,6 @@ public class Player {
      */
     public int getTotalCardsInHand() {
         int total = 0;
-     // Sum up counts for every resource type
         for (int count : resourceCards.values()) {
             total += count;
         }
@@ -148,7 +127,6 @@ public class Player {
     public boolean hasEnoughResources(Map<Resources, Integer> cost) {
         for (Resources type : cost.keySet()) {
             int owned = resourceCards.getOrDefault(type, 0);
-         // Fail fast if any single resource is insufficient
             if (owned < cost.get(type)) {
                 return false;
             }
@@ -186,8 +164,7 @@ public class Player {
      * @return true if the player owns a settlement at that intersection otherwise false 
      */
     public boolean ownsSettlementAt(int intersectionId) {
-        return ownedBuildings.containsKey(intersectionId) 
-            && ownedBuildings.get(intersectionId) == Building.SETTLEMENT;
+        return ownedBuildings.containsKey(intersectionId) && ownedBuildings.get(intersectionId) == Building.SETTLEMENT;
     }
 
     /**
@@ -215,7 +192,7 @@ public class Player {
 
     /**
      * Records that the player placed a settlement at the given intersection
-     * Note: Victory points are added in Game.executeAction, not here
+     * - Victory points are added in Game.executeAction, not in this class
      *
      * @param intersectionId the intersection where the settlement was placed
      */
@@ -225,7 +202,7 @@ public class Player {
 
     /**
      * records that player upgraded from settlement to city at intersection
-     * Note: Victory points are added in Game.executeAction, not here
+     * - Victory points are added in Game.executeAction
      *
      * @param intersectionId the intersection where the city upgrade occurred
      */
@@ -235,7 +212,7 @@ public class Player {
 
     /**
      * Records that the player placed a road between two intersections.
-     * Stores a normalized edge key so road lookups are order-independent.
+     * Stores a normalized edge key so road lookups are order independent.
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
@@ -247,7 +224,7 @@ public class Player {
     /**
      * Generates a normalized edge key for a road between two intersections.
      * Always stores the smaller ID first so the key is order-independent.
-     * e.g. edge(5,3) and edge(3,5) both produce "3-5".
+     * for example: edge(5,3) and edge(3,5) both produce "3-5".
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
@@ -286,7 +263,6 @@ public class Player {
     public int discardHalfCards() {
     	int totalCards = getTotalCardsInHand();
     	
-    	// No discard needed if hand size is 7 or fewer
     	if(totalCards <= 7) {
     		return 0;
     	}
@@ -295,7 +271,7 @@ public class Player {
     	int haveToDiscard = totalCards / 2; 
     	int discarded = 0;
     	
-    	 // Build a flat list of all individual resource cards in hand
+    
     	List<Resources> allCards = new ArrayList<>();
     	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
     		Resources type = entry.getKey();
@@ -305,7 +281,7 @@ public class Player {
     		}
     	}
     	
-    	// Randomly pick and remove cards one at a time until discard quota is met
+    	// Randomly pick and remove cards one at a time
     	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
     		int randomNum = rng.nextInt(allCards.size());
     		Resources typeToRemove = allCards.remove(randomNum);
@@ -327,7 +303,7 @@ public class Player {
      *         or null if the player has no cards
      */
     public Resources getRandomResource() {
-    	// Build a flat list of all individual resource cards in hand
+
     	List<Resources> allCards = new ArrayList<>();
     	
     	for(Map.Entry<Resources, Integer> entry: resourceCards.entrySet()) {
@@ -343,7 +319,7 @@ public class Player {
     		return null;
     	}
     	
-    	 // Pick a random card from the flat list
+    	 // Pick a random card from the list
     	return allCards.get(rng.nextInt(allCards.size()));
     	
     	

@@ -115,6 +115,7 @@ public class Game {
      * @param giveResources if true, player receives resources from adjacent tiles
      */
     private void placeInitialSettlementAndRoad(Player player, boolean giveResources) {
+    	
         // Collect all valid settlement locations
         List<Integer> validSettlements = new ArrayList<>();
         for (int id : board.getAllIntersectionIds()) {
@@ -240,17 +241,16 @@ public class Game {
 
         // Computer player turn
 
-        // Step 1: Roll
+     
         int roll = rollDice();
 
-        // Step 2: Handle roll result
+      
         if (roll == 7) {
             handleSevenRoll(player);
         } else {
             distributeResourcesForRoll(roll);
         }
 
-        // Step 3: Action selection
         // R1.8: If player has more than 7 cards, they MUST try to build
         boolean mustBuild = player.getTotalCardsInHand() > 7;
         List<Action> validActions = rules.getValidActionsByLinearScan(player, board);
@@ -264,10 +264,10 @@ public class Game {
             if (!buildActions.isEmpty()) validActions = buildActions;
         }
 
-        // Randomly choose one valid action
+
         Action chosen = rules.chooseRandomAction(validActions, rng);
 
-        // Step 4: Execute and log
+        
         if (chosen != null && chosen.getType() != ActionType.PASS) {
             Map<Resources, Integer> cost = rules.getCost(chosen.getType());
             if (player.hasEnoughResources(cost)) {
@@ -276,11 +276,9 @@ public class Game {
                 GameLogger.printTurnAction(roundNumber, player.getPlayerId(),
                     chosen.describeForLogger());
             } else {
-                // cant afford chosen action, so pass
                 GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
             }
         } else {
-            // PASS action chosen or no actions available
             GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
         }
 
@@ -440,7 +438,7 @@ public class Game {
     private void handleSevenRoll(Player currentPlayer) {
         System.out.println("****** A 7 was rolled... Robber activates....");
 
-        // Step 1: All players with more than 7 cards discard half
+        // All players with more than 7 cards discard half
         for (Player p : players) {
             if (p.getTotalCardsInHand() > 7) {
                 int discarded = p.discardHalfCards();
@@ -449,12 +447,12 @@ public class Game {
             }
         }
 
-        // Step 2: Move robber to a random valid tile
+        // Move robber to a random valid tile
         int newRobberTile = moveRobberRandomly();
         System.out.println("Player " + currentPlayer.getPlayerId()
             + " moved robber to tile " + newRobberTile);
 
-        // Step 3: Steal from a random adjacent player
+        //Steal from a random adjacent player
         stealFromAdjacentPlayer(currentPlayer, newRobberTile);
     }
 
@@ -482,7 +480,7 @@ public class Game {
      * @param robberTileId the tile the robber just moved to
      */
     private void stealFromAdjacentPlayer(Player thief, int robberTileId) {
-        // Find all players with buildings adjacent to the robber
+    	
         List<Integer> adjacentPlayerIds = board.getPlayersAdjacentToTile(robberTileId);
 
         // Remove the thief bc a player cant steal from themselves
@@ -492,22 +490,18 @@ public class Game {
             System.out.println("No players to steal from.");
             return;
         }
-
-        // Randomly pick a victim
+     
         int victimId = adjacentPlayerIds.get(rng.nextInt(adjacentPlayerIds.size()));
         Player victim = getPlayerById(victimId);
 
-        // Should never be null if board data is consistent
         if (victim == null) return;
 
-        // Get a random card from the victim's hand
         Resources stolenCard = victim.getRandomResource();
         if (stolenCard == null) {
             System.out.println("Player " + victimId + " has no cards to steal.");
             return;
         }
 
-        // Transfer the stolen card from victim to thief
         victim.removeResources(stolenCard, 1);
         thief.addResource(stolenCard, 1);
 

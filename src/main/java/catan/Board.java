@@ -131,6 +131,7 @@ public class Board {
                 int b = c[(i + 1) % c.length];// wrap around to close the hexagon
                 
                 String key = Math.min(a, b) + "-" + Math.max(a, b);
+                
              // Check if this edge already exists from a previous tile
                 boolean found = false;
                 for (int[] ep : edgePairs) {
@@ -142,7 +143,7 @@ public class Board {
              // Only add new edges
                 if (!found) {
                     edgePairs.add(new int[]{a, b});
-                 // Register both directions in the adjacency map
+        
                     adjacentIntersectionIdsByIntersectionId
                         .computeIfAbsent(a, k -> new ArrayList<>()).add(b);
                     adjacentIntersectionIdsByIntersectionId

@@ -123,7 +123,7 @@ public interface CommandParser {
         @Override
         public ParsedCommand parse(String raw) {
         	
-            // Handle null/empty input
+            
             if (raw == null || raw.trim().isEmpty()) {
                 return new ParsedCommand(CommandType.UNKNOWN);
             }

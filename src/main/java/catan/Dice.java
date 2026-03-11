@@ -10,9 +10,7 @@ import java.util.Random;
  * 
  */ 
 public class Dice {
-	/**
-	 * 
-	 */
+	
 	private Random rng;
 
 	/**
@@ -23,10 +21,7 @@ public class Dice {
 		this.rng = rng;
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
+	
 	public int rollTwoSixSidedDice() {
 		int dice1 = rng.nextInt(6)+1;
 		int dice2 = rng.nextInt(6)+1;

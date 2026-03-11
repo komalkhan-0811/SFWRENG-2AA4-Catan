@@ -11,7 +11,7 @@ package catan;
  * depending on the action type.
  *
  * @author Maria Shashati
- * @version 1.0
+ * 
  */
 public class Action {
 
@@ -36,22 +36,22 @@ public class Action {
         this.edgeIntersectionB = edgeIntersectionB;
     }
 
-    /** Creates a BUILD_ROAD action between two intersections. */
+   
     public static Action buildRoad(int intersectionA, int intersectionB) {
         return new Action(ActionType.BUILD_ROAD, -1, intersectionA, intersectionB);
     }
 
-    /** Creates a BUILD_SETTLEMENT action at the given intersection. */
+  
     public static Action buildSettlement(int intersectionId) {
         return new Action(ActionType.BUILD_SETTLEMENT, intersectionId, -1, -1);
     }
 
-    /** Creates a BUILD_CITY action at the given intersection. */
+    
     public static Action buildCity(int intersectionId) {
         return new Action(ActionType.BUILD_CITY, intersectionId, -1, -1);
     }
 
-    /** Creates a PASS action. */
+    
     public static Action pass() {
         return new Action(ActionType.PASS, -1, -1, -1);
     }
