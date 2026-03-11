@@ -2,8 +2,8 @@
   "round": 1,
   "players": [
     { "id": 1, "colour": "RED", "victoryPoints": 0, "totalCards": 0 },
-    { "id": 2, "colour": "BLUE", "victoryPoints": 2, "totalCards": 2 },
-    { "id": 3, "colour": "GREEN", "victoryPoints": 2, "totalCards": 6 },
+    { "id": 2, "colour": "BLUE", "victoryPoints": 2, "totalCards": 0 },
+    { "id": 3, "colour": "GREEN", "victoryPoints": 2, "totalCards": 3 },
     { "id": 4, "colour": "YELLOW", "victoryPoints": 2, "totalCards": 3 }
   ]
 }

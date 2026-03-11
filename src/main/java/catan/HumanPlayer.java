@@ -202,10 +202,7 @@ public class HumanPlayer extends Player {
             inputHandler.displayMessage("Cannot build settlement at node " + nodeId + " — occupied or distance rule violated.");
             return;
         }
-        if (!ownsRoadConnectedTo(nodeId, board) && !hasNoRoadsYet(board)) {
-            inputHandler.displayMessage("Settlement must connect to your road network.");
-            return;
-        }
+        
         if (!hasEnoughResources(cost)) {
             inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
             return;
@@ -317,7 +314,7 @@ public class HumanPlayer extends Player {
      * @return formatted hand string e.g. "Hand - WOOD: 2, BRICK: 1"
      */
     private String describeHand() {
-        StringBuilder sb = new StringBuilder("Hand - ");
+        StringBuilder sb = new StringBuilder("Hand — ");
         Resources[] all = {Resources.WOOD, Resources.BRICK, Resources.WHEAT, Resources.SHEEP, Resources.ORE};
         for (int i = 0; i < all.length; i++) {
             sb.append(all[i].name()).append(": ").append(getResourceCount(all[i]));

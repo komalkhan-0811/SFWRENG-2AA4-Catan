@@ -85,11 +85,11 @@ public class Rules {
             return false;
         }
 
-        // settlement must connect to player's road network.
-        if (!player.ownsRoadConnectedTo(intersectionId, board)) {
-            return false; 
+        if(!playerHasNoRoads(player, board)) {
+        	if(!player.ownsRoadConnectedTo(intersectionId, board)) {
+        		return false;
+        	}
         }
-
         return true;
     }
 
@@ -227,6 +227,23 @@ public class Rules {
         if (intersection == null) return false;
         Integer ownerId = intersection.getBuildingOwnerId();
         return ownerId != null && ownerId == player.getPlayerId();
+    }
+    
+    /**
+     * Helper method to check if a player has zero roads on the board.
+     * Used to allow first settlement without road connectivity.
+     *
+     * @param player the player to check
+     * @param board the current board state
+     * @return true if the player has no roads yet
+     */
+    private boolean playerHasNoRoads(Player player, Board board) {
+        for (Edge e : board.getAllEdges()) {
+            if (e.isOccupied() && e.getRoadOwnerId() == player.getPlayerId()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     

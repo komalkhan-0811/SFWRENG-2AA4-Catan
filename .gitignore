@@ -3,3 +3,4 @@ bin/
 src/bin/
 visualize/scraped_boards/*.png
 visualize/.venv/
+/target/
