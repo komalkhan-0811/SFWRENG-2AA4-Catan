@@ -1,9 +1,9 @@
 {
   "round": 1,
   "players": [
-    { "id": 1, "colour": "RED", "victoryPoints": 0, "totalCards": 1 },
-    { "id": 2, "colour": "BLUE", "victoryPoints": 1, "totalCards": 1 },
-    { "id": 3, "colour": "GREEN", "victoryPoints": 1, "totalCards": 1 },
-    { "id": 4, "colour": "YELLOW", "victoryPoints": 1, "totalCards": 1 }
+    { "id": 1, "colour": "RED", "victoryPoints": 0, "totalCards": 0 },
+    { "id": 2, "colour": "BLUE", "victoryPoints": 1, "totalCards": 0 },
+    { "id": 3, "colour": "GREEN", "victoryPoints": 1, "totalCards": 0 },
+    { "id": 4, "colour": "YELLOW", "victoryPoints": 1, "totalCards": 0 }
   ]
 }
