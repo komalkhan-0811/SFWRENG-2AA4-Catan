@@ -56,6 +56,8 @@ public class Player {
      */
     private Set<String> ownedRoadEdgeKeys;
 
+    private final SecureRandom rng;
+
     /**
      * Constructs a new Player with the given ID and colour
      *
@@ -66,6 +68,7 @@ public class Player {
         this.playerId = playerId;
         this.colour = colour;
         this.victoryPoints = 0;
+        this.rng = new SecureRandom();
 
         // Initialize all collections as empty
         this.resourceCards = new HashMap<>();
@@ -305,7 +308,7 @@ public class Player {
     	// Randomly pick and remove cards one at a time until discard quota is met
     	SecureRandom r = new SecureRandom();
     	for (int x = 0; x < haveToDiscard && !allCards.isEmpty(); x++) {
-    		int randomNum = r.nextInt(allCards.size());
+    		int randomNum = rng.nextInt(allCards.size());
     		Resources typeToRemove = allCards.remove(randomNum);
     		removeResources(typeToRemove, 1);
     		discarded++;
@@ -343,7 +346,7 @@ public class Player {
     	
     	 // Pick a random card from the flat list
     	SecureRandom r = new SecureRandom();
-    	return allCards.get(r.nextInt(allCards.size()));
+    	return allCards.get(rng.nextInt(allCards.size()));
     	
     	
     }
