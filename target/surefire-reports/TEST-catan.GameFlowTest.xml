@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="catan.GameFlowTest" time="0.012" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="catan.GameFlowTest" time="0.018" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/test-classes:/Users/alisha/SFWRENG-2AA4-Catan/target/classes:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/alisha/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-api/1.10.1/junit-platform-suite-api-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.10.1/junit-platform-suite-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.10.1/junit-platform-suite-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-launcher/1.10.1/junit-platform-launcher-1.10.1.jar:"/>
+    <property name="java.class.path" value="/Users/komalkhan/SFWRENG-2AA4-Catan/target/test-classes:/Users/komalkhan/SFWRENG-2AA4-Catan/target/classes:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/komalkhan/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/komalkhan/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-api/1.10.1/junit-platform-suite-api-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.10.1/junit-platform-suite-engine-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.10.1/junit-platform-suite-commons-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-launcher/1.10.1/junit-platform-launcher-1.10.1.jar:"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
@@ -12,43 +12,43 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CA"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311164915166_3.jar /Users/alisha/SFWRENG-2AA4-Catan/target/surefire 2026-03-11T16-49-15_108-jvmRun1 surefire-20260311164915166_1tmp surefire_0-20260311164915166_2tmp"/>
+    <property name="sun.java.command" value="/Users/komalkhan/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311231709842_3.jar /Users/komalkhan/SFWRENG-2AA4-Catan/target/surefire 2026-03-11T23-17-08_906-jvmRun1 surefire-20260311231709842_1tmp surefire_0-20260311231709842_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/test-classes:/Users/alisha/SFWRENG-2AA4-Catan/target/classes:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/alisha/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-api/1.10.1/junit-platform-suite-api-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.10.1/junit-platform-suite-engine-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.10.1/junit-platform-suite-commons-1.10.1.jar:/Users/alisha/.m2/repository/org/junit/platform/junit-platform-launcher/1.10.1/junit-platform-launcher-1.10.1.jar:"/>
+    <property name="surefire.test.class.path" value="/Users/komalkhan/SFWRENG-2AA4-Catan/target/test-classes:/Users/komalkhan/SFWRENG-2AA4-Catan/target/classes:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/komalkhan/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/komalkhan/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite/1.10.1/junit-platform-suite-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-api/1.10.1/junit-platform-suite-api-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-engine/1.10.1/junit-platform-suite-engine-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-suite-commons/1.10.1/junit-platform-suite-commons-1.10.1.jar:/Users/komalkhan/.m2/repository/org/junit/platform/junit-platform-launcher/1.10.1/junit-platform-launcher-1.10.1.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
-    <property name="user.home" value="/Users/alisha"/>
+    <property name="user.home" value="/Users/komalkhan"/>
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.version.date" value="2025-10-21"/>
     <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home"/>
     <property name="file.separator" value="/"/>
-    <property name="basedir" value="/Users/alisha/SFWRENG-2AA4-Catan"/>
+    <property name="basedir" value="/Users/komalkhan/SFWRENG-2AA4-Catan"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/alisha/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311164915166_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/komalkhan/SFWRENG-2AA4-Catan/target/surefire/surefirebooter-20260311231709842_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="25.0.1+8-LTS-27"/>
-    <property name="user.name" value="alisha"/>
+    <property name="user.name" value="komalkhan"/>
     <property name="stdout.encoding" value="UTF-8"/>
     <property name="path.separator" value=":"/>
-    <property name="os.version" value="14.4"/>
+    <property name="os.version" value="15.6.1"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
-    <property name="localRepository" value="/Users/alisha/.m2/repository"/>
+    <property name="localRepository" value="/Users/komalkhan/.m2/repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
-    <property name="java.io.tmpdir" value="/var/folders/8n/q246w66549v1wm0_rg970ffm0000gn/T/"/>
+    <property name="java.io.tmpdir" value="/var/folders/xx/yjv19vpj6dn9sz8mjw52kmbm0000gn/T/"/>
     <property name="java.version" value="25.0.1"/>
-    <property name="user.dir" value="/Users/alisha/SFWRENG-2AA4-Catan"/>
-    <property name="os.arch" value="aarch64"/>
+    <property name="user.dir" value="/Users/komalkhan/SFWRENG-2AA4-Catan"/>
+    <property name="os.arch" value="x86_64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="native.encoding" value="UTF-8"/>
-    <property name="java.library.path" value="/Users/alisha/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.library.path" value="/Users/komalkhan/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
     <property name="stderr.encoding" value="UTF-8"/>
     <property name="java.vendor" value="Oracle Corporation"/>
@@ -64,72 +64,72 @@ Max Rounds: 5
 
 
 === Initial Placement Phase ===
-Player 1: Placed initial settlement at intersection 10
-Player 1: Placed initial road between 8 and 10
-Player 2: Placed initial settlement at intersection 0
-Player 2: Placed initial road between 0 and 1
-Player 3: Placed initial settlement at intersection 2
-Player 3: Placed initial road between 1 and 2
-Player 4: Placed initial settlement at intersection 21
-Player 4: Placed initial road between 20 and 21
-Player 4: Placed initial settlement at intersection 42
-Player 4: Placed initial road between 42 and 43
-Player 3: Placed initial settlement at intersection 24
-Player 3: Placed initial road between 6 and 24
-Player 2: Placed initial settlement at intersection 49
-Player 2: Placed initial road between 48 and 49
-Player 1: Placed initial settlement at intersection 9
-Player 1: Placed initial road between 13 and 9
+Player 1: Placed initial settlement at intersection 39
+Player 1: Placed initial road between 35 and 39
+Player 2: Placed initial settlement at intersection 21
+Player 2: Placed initial road between 21 and 1
+Player 3: Placed initial settlement at intersection 47
+Player 3: Placed initial road between 46 and 47
+Player 4: Placed initial settlement at intersection 7
+Player 4: Placed initial road between 6 and 7
+Player 4: Placed initial settlement at intersection 29
+Player 4: Placed initial road between 29 and 10
+Player 3: Placed initial settlement at intersection 45
+Player 3: Placed initial road between 45 and 46
+Player 2: Placed initial settlement at intersection 19
+Player 2: Placed initial road between 17 and 19
+Player 1: Placed initial settlement at intersection 26
+Player 1: Placed initial road between 25 and 26
 
 ]]></system-out>
   </testcase>
-  <testcase name="testTerminationNotReached_afterInit" classname="catan.GameFlowTest" time="0.001">
+  <testcase name="testTerminationNotReached_afterInit" classname="catan.GameFlowTest" time="0.002">
     <system-out><![CDATA[=== START GAME ===
 Max Rounds: 5
 
 
 === Initial Placement Phase ===
-Player 1: Placed initial settlement at intersection 31
-Player 1: Placed initial road between 31 and 48
-Player 2: Placed initial settlement at intersection 52
-Player 2: Placed initial road between 51 and 52
+Player 1: Placed initial settlement at intersection 25
+Player 1: Placed initial road between 24 and 25
+Player 2: Placed initial settlement at intersection 19
+Player 2: Placed initial road between 17 and 19
+Player 3: Placed initial settlement at intersection 34
+Player 3: Placed initial road between 33 and 34
+Player 4: Placed initial settlement at intersection 9
+Player 4: Placed initial road between 8 and 9
+Player 4: Placed initial settlement at intersection 46
+Player 4: Placed initial road between 46 and 47
 Player 3: Placed initial settlement at intersection 29
-Player 3: Placed initial road between 29 and 12
-Player 4: Placed initial settlement at intersection 44
-Player 4: Placed initial road between 25 and 44
-Player 4: Placed initial settlement at intersection 0
-Player 4: Placed initial road between 0 and 1
-Player 3: Placed initial settlement at intersection 20
-Player 3: Placed initial road between 23 and 20
-Player 2: Placed initial settlement at intersection 13
-Player 2: Placed initial road between 13 and 9
-Player 1: Placed initial settlement at intersection 8
-Player 1: Placed initial road between 26 and 8
+Player 3: Placed initial road between 28 and 29
+Player 2: Placed initial settlement at intersection 31
+Player 2: Placed initial road between 30 and 31
+Player 1: Placed initial settlement at intersection 13
+Player 1: Placed initial road between 13 and 18
 
 ]]></system-out>
   </testcase>
-  <testcase name="testTerminationReached_whenRoundsExceeded" classname="catan.GameFlowTest" time="0.002">
+  <testcase name="testTerminationReached_whenRoundsExceeded" classname="catan.GameFlowTest" time="0.001">
     <system-out><![CDATA[=== START GAME ===
 Max Rounds: 5
 
 
 === Initial Placement Phase ===
+Player 1: Placed initial settlement at intersection 18
+Player 1: Placed initial road between 18 and 16
+Player 2: Placed initial settlement at intersection 51
+Player 2: Placed initial road between 51 and 52
+Player 3: Placed initial settlement at intersection 43
+Player 3: Placed initial road between 41 and 43
+Player 4: Placed initial settlement at intersection 4
+Player 4: Placed initial road between 12 and 4
+Player 4: Placed initial settlement at intersection 53
+Player 4: Placed initial road between 52 and 53
+Player 3: Placed initial settlement at intersection 49
+Player 3: Placed initial road between 49 and 22
+Player 2: Placed initial settlement at intersection 34
+Player 2: Placed initial road between 33 and 34
 Player 1: Placed initial settlement at intersection 37
-Player 1: Placed initial road between 36 and 37
-Player 2: Placed initial settlement at intersection 18
-Player 2: Placed initial road between 14 and 18
-Player 3: Placed initial settlement at intersection 15
-Player 3: Placed initial road between 15 and 14
-Player 4: Placed initial settlement at intersection 51
-Player 4: Placed initial road between 51 and 52
-Player 4: Placed initial settlement at intersection 30
-Player 4: Placed initial road between 30 and 31
-Player 3: Placed initial settlement at intersection 1
-Player 3: Placed initial road between 1 and 2
-Player 2: Placed initial settlement at intersection 24
-Player 2: Placed initial road between 6 and 24
-Player 1: Placed initial settlement at intersection 21
-Player 1: Placed initial road between 21 and 17
+Player 1: Placed initial road between 37 and 35
 
 ]]></system-out>
   </testcase>
@@ -139,47 +139,47 @@ Max Rounds: 5
 
 
 === Initial Placement Phase ===
-Player 1: Placed initial settlement at intersection 42
-Player 1: Placed initial road between 42 and 43
-Player 2: Placed initial settlement at intersection 44
-Player 2: Placed initial road between 44 and 45
-Player 3: Placed initial settlement at intersection 26
-Player 3: Placed initial road between 26 and 8
-Player 4: Placed initial settlement at intersection 31
-Player 4: Placed initial road between 31 and 48
-Player 4: Placed initial settlement at intersection 22
-Player 4: Placed initial road between 16 and 22
-Player 3: Placed initial settlement at intersection 29
-Player 3: Placed initial road between 28 and 29
-Player 2: Placed initial settlement at intersection 21
-Player 2: Placed initial road between 20 and 21
-Player 1: Placed initial settlement at intersection 15
-Player 1: Placed initial road between 32 and 15
+Player 1: Placed initial settlement at intersection 26
+Player 1: Placed initial road between 26 and 27
+Player 2: Placed initial settlement at intersection 31
+Player 2: Placed initial road between 30 and 31
+Player 3: Placed initial settlement at intersection 12
+Player 3: Placed initial road between 12 and 14
+Player 4: Placed initial settlement at intersection 47
+Player 4: Placed initial road between 47 and 48
+Player 4: Placed initial settlement at intersection 6
+Player 4: Placed initial road between 23 and 6
+Player 3: Placed initial settlement at intersection 37
+Player 3: Placed initial road between 37 and 35
+Player 2: Placed initial settlement at intersection 50
+Player 2: Placed initial road between 49 and 50
+Player 1: Placed initial settlement at intersection 18
+Player 1: Placed initial road between 38 and 18
 
 ]]></system-out>
   </testcase>
-  <testcase name="testDiceRollDistribution_partitions" classname="catan.GameFlowTest" time="0.002">
+  <testcase name="testDiceRollDistribution_partitions" classname="catan.GameFlowTest" time="0.003">
     <system-out><![CDATA[=== START GAME ===
 Max Rounds: 5
 
 
 === Initial Placement Phase ===
-Player 1: Placed initial settlement at intersection 20
-Player 1: Placed initial road between 23 and 20
-Player 2: Placed initial settlement at intersection 49
-Player 2: Placed initial road between 48 and 49
-Player 3: Placed initial settlement at intersection 52
-Player 3: Placed initial road between 51 and 52
-Player 4: Placed initial settlement at intersection 27
-Player 4: Placed initial road between 10 and 27
-Player 4: Placed initial settlement at intersection 12
-Player 4: Placed initial road between 11 and 12
-Player 3: Placed initial settlement at intersection 31
-Player 3: Placed initial road between 31 and 48
-Player 2: Placed initial settlement at intersection 14
-Player 2: Placed initial road between 15 and 14
-Player 1: Placed initial settlement at intersection 44
-Player 1: Placed initial road between 25 and 44
+Player 1: Placed initial settlement at intersection 5
+Player 1: Placed initial road between 4 and 5
+Player 2: Placed initial settlement at intersection 22
+Player 2: Placed initial road between 49 and 22
+Player 3: Placed initial settlement at intersection 2
+Player 3: Placed initial road between 1 and 2
+Player 4: Placed initial settlement at intersection 50
+Player 4: Placed initial road between 50 and 51
+Player 4: Placed initial settlement at intersection 10
+Player 4: Placed initial road between 9 and 10
+Player 3: Placed initial settlement at intersection 43
+Player 3: Placed initial road between 43 and 44
+Player 2: Placed initial settlement at intersection 47
+Player 2: Placed initial road between 46 and 47
+Player 1: Placed initial settlement at intersection 35
+Player 1: Placed initial road between 37 and 35
 
 ]]></system-out>
   </testcase>
@@ -189,22 +189,22 @@ Max Rounds: 5
 
 
 === Initial Placement Phase ===
-Player 1: Placed initial settlement at intersection 45
-Player 1: Placed initial road between 44 and 45
-Player 2: Placed initial settlement at intersection 5
-Player 2: Placed initial road between 5 and 0
-Player 3: Placed initial settlement at intersection 33
-Player 3: Placed initial road between 32 and 33
-Player 4: Placed initial settlement at intersection 7
-Player 4: Placed initial road between 7 and 8
-Player 4: Placed initial settlement at intersection 10
-Player 4: Placed initial road between 10 and 11
-Player 3: Placed initial settlement at intersection 18
-Player 3: Placed initial road between 14 and 18
-Player 2: Placed initial settlement at intersection 31
-Player 2: Placed initial road between 31 and 32
-Player 1: Placed initial settlement at intersection 24
-Player 1: Placed initial road between 24 and 25
+Player 1: Placed initial settlement at intersection 7
+Player 1: Placed initial road between 7 and 24
+Player 2: Placed initial settlement at intersection 10
+Player 2: Placed initial road between 29 and 10
+Player 3: Placed initial settlement at intersection 39
+Player 3: Placed initial road between 35 and 39
+Player 4: Placed initial settlement at intersection 48
+Player 4: Placed initial road between 47 and 48
+Player 4: Placed initial settlement at intersection 28
+Player 4: Placed initial road between 27 and 28
+Player 3: Placed initial settlement at intersection 1
+Player 3: Placed initial road between 21 and 1
+Player 2: Placed initial settlement at intersection 42
+Player 2: Placed initial road between 38 and 42
+Player 1: Placed initial settlement at intersection 17
+Player 1: Placed initial road between 17 and 0
 
 ]]></system-out>
   </testcase>

@@ -10,28 +10,23 @@ import java.util.Random;
  * 
  */ 
 public class Dice {
-	/**
-	 * 
-	 */
+	
 	private Random rng;
 
 	/**
 	 * 
 	 * @param rng 
 	 */
-<span class="fc" id="L22">	public Dice(Random rng) {</span>
-<span class="fc" id="L23">		this.rng = rng;</span>
-<span class="fc" id="L24">	}</span>
+<span class="fc" id="L20">	public Dice(Random rng) {</span>
+<span class="fc" id="L21">		this.rng = rng;</span>
+<span class="fc" id="L22">	}</span>
 
-	/**
-	 * 
-	 * @return 
-	 */
+	
 	public int rollTwoSixSidedDice() {
-<span class="fc" id="L31">		int dice1 = rng.nextInt(6)+1;</span>
-<span class="fc" id="L32">		int dice2 = rng.nextInt(6)+1;</span>
+<span class="fc" id="L26">		int dice1 = rng.nextInt(6)+1;</span>
+<span class="fc" id="L27">		int dice2 = rng.nextInt(6)+1;</span>
 		
-<span class="fc" id="L34">		return dice1 + dice2;</span>
+<span class="fc" id="L29">		return dice1 + dice2;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

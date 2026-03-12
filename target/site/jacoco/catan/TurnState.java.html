@@ -5,10 +5,10 @@
  * 
  * Legal state transitions are:
  * 
- *START  --[Roll]--&gt;  ROLLED
- *ROLLED --[Build]--&gt; ROLLED  (self-loop, repeatable)
- *ROLLED --[Go]--&gt;    DONE
- *ANY    --[List]--&gt;  (no change, informational only)
+ *START: [Roll] -&gt; ROLLED
+ *ROLLED: [Build] -&gt; ROLLED
+ *ROLLED: [Go] -&gt;  DONE
+ *ANY: [List]
  *
  * LIST is allowed in any state without causing a transition.
  * Any command that is illegal in the current state is rejected with a message.
@@ -18,25 +18,11 @@
 
 <span class="fc" id="L19">public enum TurnState {</span>
 	
-	/**
-	 * The turn has now begun. only ROLL is allowed. BUILD and GO are illegal until the player has rolled.
-	 * 
-	 */
-<span class="fc" id="L25">	START,</span>
 	
-	/**
-     * The player has rolled the dice. BUILD (any number of times) and GO are permitted.
-     * A second ROLL is illegal.
-     */
-<span class="fc" id="L31">    ROLLED,</span>
-
-    /**
-     * The player typed GO after rolling. The turn is over.
-     * No further commands are accepted.
-     */
-<span class="fc" id="L37">    DONE;</span>
+<span class="fc" id="L22">	START,</span>
+<span class="fc" id="L23">    ROLLED,</span>
+<span class="fc" id="L24">    DONE;</span>
 	
-	//Used by HumanPlayer to enforce the automaton
 	
 	/**
      * Returns true if ROLL is a legal command in this state.
@@ -45,7 +31,7 @@
      * @return true when the player has not yet rolled
      */
     public boolean canRoll() {
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        return this == START;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        return this == START;</span>
     }
 
     /**
@@ -55,7 +41,7 @@
      * @return true when the player has already rolled
      */
     public boolean canBuild() {
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        return this == ROLLED;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        return this == ROLLED;</span>
     }
 
     /**
@@ -65,7 +51,7 @@
      * @return true when the player has already rolled
      */
     public boolean canGo() {
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        return this == ROLLED;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        return this == ROLLED;</span>
     }
 
     /**
@@ -75,7 +61,7 @@
      * @return always true
      */
     public boolean canList() {
-<span class="fc" id="L78">        return true;</span>
+<span class="fc" id="L64">        return true;</span>
     }
 
     /**
@@ -84,7 +70,7 @@
      * @return true when state is DONE
      */
     public boolean isDone() {
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        return this == DONE;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        return this == DONE;</span>
     }
 	
 	
