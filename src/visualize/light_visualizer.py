@@ -132,33 +132,26 @@ class CatanBoardVisualizer:
         return catan_map
 
     def _apply_state_to_board(self, board: Board):
-        """Apply roads and buildings from JSON state to the board."""
+        from catanatron.models.enums import SETTLEMENT, CITY
 
-        # For buildings
+        # Clear catanatron's own initial placement
+        board.buildings = {}
+        board.roads = {}
+
+        # Write buildings directly to dict
         for building_data in self.state_data.get("buildings", []):
             node_id = building_data["node"]
             color = self._parse_color(building_data["owner"])
-            building_type = building_data["type"]
+            building_type = SETTLEMENT if building_data["type"] == "SETTLEMENT" else CITY
+            board.buildings[node_id] = (color, building_type)
 
-            if building_type == "SETTLEMENT":
-                board.build_settlement(
-                    color,
-                    node_id,
-                    initial_build_phase=True
-                )
-            elif building_type == "CITY":
-                # Note: build_city assumes a settlement already exists there
-                # For visualization from JSON, we need to build settlement first
-                board.build_settlement(color, node_id, initial_build_phase=True)
-                board.build_city(color, node_id)
-            else:
-                raise ValueError(f"Unknown building type: {building_type}")
-
-        # For roads
+        # Write roads directly to dict
         for road_data in self.state_data.get("roads", []):
-            edge = (road_data["a"], road_data["b"])
+            a = road_data["a"]
+            b = road_data["b"]
             color = self._parse_color(road_data["owner"])
-            board.build_road(color, edge)
+            board.roads[(a, b)] = color
+            board.roads[(b, a)] = color
 
     def build_game(self) -> Game:
         """
@@ -273,15 +266,18 @@ if __name__ == "__main__":
         if sys.argv[2] != "--watch" and sys.argv[2].endswith(".json"):
             state_path = sys.argv[2]
     last_mtime = None
+    last_fsize = None
     print("Visualizer started.")
     if watch_mode:
         print("Watch mode enabled. Waiting for state.json changes...")
     while True:
         state = {}
-        if os.path.exists(state_path):
+        if os.path.exists(state_path) or (mtime != last_mtime) or (fsize != last_fsize):
             mtime = os.path.getmtime(state_path)
+            fsize = os.path.getsize(state_path)
             if (not watch_mode) or (mtime != last_mtime):
                 last_mtime = mtime
+                last_fsize = fsize
                 visualize_board_from_json(base_map_path,state_path)
         if not watch_mode:
             break

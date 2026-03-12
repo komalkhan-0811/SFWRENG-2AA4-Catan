@@ -4,3 +4,16 @@ src/bin/
 visualize/scraped_boards/*.png
 visualize/.venv/
 /target/
+
+# Visualizer output
+scraped_boards/
+src/visualize/gamestate_round_*.json
+visualize/gamestate_round_*.json
+visualize/state.json
+
+# Python venv
+src/visualize/.venv/
+
+# Python cache
+__pycache__/
+*.pyc

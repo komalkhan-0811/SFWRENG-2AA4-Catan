@@ -97,7 +97,7 @@ public class Demonstrator {
 		 * This path works as long as program is run from the 
 		 * project root directory
 		 */
-		game.setStateOutputDir(java.nio.file.Paths.get("visualize"));
+		game.setStateOutputDir(java.nio.file.Paths.get("src/visualize"));
 		
 		/**
 		 * 
