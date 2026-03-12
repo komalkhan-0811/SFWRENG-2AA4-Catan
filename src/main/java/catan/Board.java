@@ -166,10 +166,6 @@ public class Board {
             edges[i] = new Edge(edgePairs.get(i)[0], edgePairs.get(i)[1]);
         }
 
-        for (Edge e : edges) {
-            System.out.println("Legal edge: " + Edge.edgeKey(e.getIntersectionA(), e.getIntersectionB()));
-        }
-
     }
 
     /**
