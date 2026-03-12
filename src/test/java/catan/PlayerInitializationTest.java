@@ -53,6 +53,7 @@ public class PlayerInitializationTest {
      * Tests that after initial placement,
      * each player has exactly 2 victory points
      * (one per settlement placed).
+     */
      
     @Test
     public void test_initializeNewGame_initialPlacementGives2VP() throws Exception {
@@ -62,7 +63,7 @@ public class PlayerInitializationTest {
             assertEquals(2, p.getVictoryPoints());
         }
     }
-*/
+
     @SuppressWarnings("unchecked")
     private static List<Player> getPlayers(Game g) throws Exception {
         Field f = Game.class.getDeclaredField("players");
