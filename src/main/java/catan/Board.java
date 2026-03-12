@@ -24,13 +24,12 @@ public class Board {
 
     private Intersection[] intersections;
     private Edge[] edges;
-    
+
     /**
      * Maps each intersection ID to the list of adjacent intersection IDs.
      * Built once during initialization and used for distance rule checks.
      */
     private Map<Integer, List<Integer>> adjacentIntersectionIdsByIntersectionId;
-    
 
     /**
      * Maps each intersection ID to the list of adjacent tile IDs.
@@ -45,6 +44,7 @@ public class Board {
      */
     public Board() {
         initializeFixedMapLayout();
+        initializeRobber();
     }
 
     /**
@@ -87,27 +87,38 @@ public class Board {
         }
 
         Map<Integer, int[]> tileCorners = new HashMap<>();
-        tileCorners.put(0,  new int[]{4, 5, 0, 1, 2, 3});
-        tileCorners.put(1,  new int[]{3, 2, 6, 7, 8, 9});
-        tileCorners.put(2,  new int[]{9, 8, 10, 11, 12, 13});
-        tileCorners.put(3,  new int[]{14, 4, 3, 13, 12, 15});
-        tileCorners.put(4,  new int[]{16, 17, 5, 4, 14, 18});
-        tileCorners.put(5,  new int[]{19, 20, 21, 17, 16, 22});
-        tileCorners.put(6,  new int[]{1, 0, 23, 20, 19, 2});
-        tileCorners.put(7,  new int[]{7, 6, 24, 25, 26, 8});
-        tileCorners.put(8,  new int[]{11, 10, 27, 28, 29, 12});
-        tileCorners.put(9,  new int[]{15, 12, 29, 30, 31, 32});
-        tileCorners.put(10, new int[]{18, 14, 15, 32, 33, 34});
-        tileCorners.put(11, new int[]{35, 16, 18, 34, 36, 37});
-        tileCorners.put(12, new int[]{22, 16, 35, 37, 38, 39});
-        tileCorners.put(13, new int[]{19, 22, 39, 40, 41, 20});
-        tileCorners.put(14, new int[]{23, 0, 1, 41, 42, 43});
-        tileCorners.put(15, new int[]{26, 25, 44, 45, 46, 27});
-        tileCorners.put(16, new int[]{29, 28, 46, 47, 48, 30});
-        tileCorners.put(17, new int[]{32, 31, 48, 49, 50, 33});
-        tileCorners.put(18, new int[]{34, 33, 50, 51, 52, 36});
 
-     // For each intersection, record which tiles it belongs to
+        /*
+         * CHANGE:
+         * This tile-to-corner mapping matches the visualizer / Catanatron
+         * node numbering.
+         */
+        tileCorners.put(0,  new int[]{0, 1, 2, 3, 4, 5});
+
+        tileCorners.put(1,  new int[]{2, 6, 7, 8, 9, 3});
+        tileCorners.put(2,  new int[]{4, 3, 9, 10, 11, 12});
+        tileCorners.put(3,  new int[]{13, 5, 4, 12, 14, 15});
+        tileCorners.put(4,  new int[]{16, 17, 0, 5, 13, 18});
+        tileCorners.put(5,  new int[]{19, 20, 21, 1, 0, 17});
+        tileCorners.put(6,  new int[]{21, 22, 23, 6, 2, 1});
+
+        tileCorners.put(7,  new int[]{7, 24, 25, 26, 27, 8});
+        tileCorners.put(8,  new int[]{9, 8, 27, 28, 29, 10});
+        tileCorners.put(9,  new int[]{11, 10, 29, 30, 31, 32});
+        tileCorners.put(10, new int[]{14, 12, 11, 32, 33, 34});
+        tileCorners.put(11, new int[]{35, 15, 14, 34, 36, 37});
+        tileCorners.put(12, new int[]{38, 18, 13, 15, 35, 39});
+        tileCorners.put(13, new int[]{40, 41, 16, 18, 38, 42});
+        tileCorners.put(14, new int[]{43, 44, 19, 17, 16, 41});
+        tileCorners.put(15, new int[]{45, 46, 47, 20, 19, 44});
+        tileCorners.put(16, new int[]{47, 48, 49, 22, 21, 20});
+        tileCorners.put(17, new int[]{49, 50, 51, 52, 23, 22});
+        tileCorners.put(18, new int[]{23, 52, 53, 24, 7, 6});
+
+        /*
+         * CHANGE:
+         * Build intersection -> adjacent tile mapping.
+         */
         adjacentTileIdsByIntersectionId = new HashMap<>();
         for (int tileId = 0; tileId < 19; tileId++) {
             int[] corners = tileCorners.get(tileId);
@@ -118,45 +129,47 @@ public class Board {
             }
         }
 
-        
-        // Walk every tile's corners and add edges between adjacent corners
-        // Skip duplicate edges (shared between two tiles)
+        /*
+         * CHANGE:
+         * Generate legal edges directly from the correct tile corner map.
+         * This produces exactly 72 unique edges.
+         */
         adjacentIntersectionIdsByIntersectionId = new HashMap<>();
         List<int[]> edgePairs = new ArrayList<>();
+        Map<String, Boolean> seenEdges = new HashMap<>();
 
         for (int tileId = 0; tileId < 19; tileId++) {
-            int[] c = tileCorners.get(tileId);
-            for (int i = 0; i < c.length; i++) {
-                int a = c[i];
-                int b = c[(i + 1) % c.length];// wrap around to close the hexagon
-                
-                String key = Math.min(a, b) + "-" + Math.max(a, b);
-                
-             // Check if this edge already exists from a previous tile
-                boolean found = false;
-                for (int[] ep : edgePairs) {
-                    if ((ep[0] == a && ep[1] == b) || (ep[0] == b && ep[1] == a)) {
-                        found = true;
-                        break;
-                    }
-                }
-             // Only add new edges
-                if (!found) {
+            int[] corners = tileCorners.get(tileId);
+
+            for (int i = 0; i < corners.length; i++) {
+                int a = corners[i];
+                int b = corners[(i + 1) % corners.length];
+
+                String key = Edge.edgeKey(a, b);
+
+                if (!seenEdges.containsKey(key)) {
+                    seenEdges.put(key, true);
                     edgePairs.add(new int[]{a, b});
-        
+
                     adjacentIntersectionIdsByIntersectionId
-                        .computeIfAbsent(a, k -> new ArrayList<>()).add(b);
+                        .computeIfAbsent(a, k -> new ArrayList<>())
+                        .add(b);
                     adjacentIntersectionIdsByIntersectionId
-                        .computeIfAbsent(b, k -> new ArrayList<>()).add(a);
+                        .computeIfAbsent(b, k -> new ArrayList<>())
+                        .add(a);
                 }
             }
         }
 
-     // Convert edge pair list to Edge object array
         edges = new Edge[edgePairs.size()];
         for (int i = 0; i < edgePairs.size(); i++) {
             edges[i] = new Edge(edgePairs.get(i)[0], edgePairs.get(i)[1]);
         }
+
+        for (Edge e : edges) {
+            System.out.println("Legal edge: " + Edge.edgeKey(e.getIntersectionA(), e.getIntersectionB()));
+        }
+
     }
 
     /**
@@ -164,7 +177,6 @@ public class Board {
      * Must be called after initializeFixedMapLayout().
      */
     public void initializeRobber() {
-        // Desert tile is tile index 16
         robberTileId = 16;
         tiles[16].setHasRobber(true);
     }
@@ -349,11 +361,10 @@ public class Board {
      * @param newTileId the tile ID to move the robber to
      */
     public void moveRobber(int newTileId) {
-    	// Remove robber from current tile
         if (robberTileId >= 0 && robberTileId < tiles.length) {
             tiles[robberTileId].setHasRobber(false);
         }
-     // Place robber on new tile
+
         robberTileId = newTileId;
         if (newTileId >= 0 && newTileId < tiles.length) {
             tiles[newTileId].setHasRobber(true);
@@ -386,7 +397,6 @@ public class Board {
             Intersection inter = getIntersection(intersectionId);
             if (inter != null && inter.hasBuilding()) {
                 Integer ownerId = inter.getBuildingOwnerId();
-             // Only add each player once even if they have multiple buildings adjacent
                 if (ownerId != null && !playerIds.contains(ownerId)) {
                     playerIds.add(ownerId);
                 }

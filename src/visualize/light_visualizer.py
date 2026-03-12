@@ -210,20 +210,17 @@ class CatanBoardVisualizer:
         rgb_array = renderer.render(self.game)
 
         # Save image
+        if output_dir is None:
+            output_dir = "scraped_boards"
         os.makedirs(output_dir, exist_ok=True)
         file_count = len(
             [f for f in os.listdir(output_dir) if os.path.isfile(os.path.join(output_dir, f))]
         )
         output_path = os.path.join(output_dir, f"board{file_count}.png")
 
-        if output_path is not None:
-            img = Image.fromarray(rgb_array)
-            img.save(output_path)
-            print(f"Board rendered and saved to {output_path}")
-
-        os.makedirs(output_dir, exist_ok=True)
-
-        return output_path
+        img = Image.fromarray(rgb_array)
+        img.save(output_path)
+        print(f"Board rendered and saved to {output_path}")
 
         # Clean up
         renderer.close()
@@ -261,7 +258,7 @@ if __name__ == "__main__":
         sys.exit(1)
     base_map_path = sys.argv[1]
     watch_mode = "--watch" in sys.argv
-    state_path = "state.json"
+    state_path = os.path.join(os.path.dirname(base_map_path), "state.json")
     if len(sys.argv) >= 3:
         if sys.argv[2] != "--watch" and sys.argv[2].endswith(".json"):
             state_path = sys.argv[2]
@@ -271,11 +268,10 @@ if __name__ == "__main__":
     if watch_mode:
         print("Watch mode enabled. Waiting for state.json changes...")
     while True:
-        state = {}
-        if os.path.exists(state_path) or (mtime != last_mtime) or (fsize != last_fsize):
+        if os.path.exists(state_path):
             mtime = os.path.getmtime(state_path)
             fsize = os.path.getsize(state_path)
-            if (not watch_mode) or (mtime != last_mtime):
+            if (not watch_mode) or (mtime != last_mtime) or (fsize != last_fsize):
                 last_mtime = mtime
                 last_fsize = fsize
                 visualize_board_from_json(base_map_path,state_path)
