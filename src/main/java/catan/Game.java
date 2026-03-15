@@ -28,6 +28,9 @@ public class Game {
     private int roundNumber;
     private int maxRounds;
     private int victoryPointsToWin;
+    
+    /** Manages undo/redo history using the Command Pattern (R3.1). */
+    private final GameHistory gameHistory = new GameHistory();
 
     // Directory to write JSON game state files into. Defaults to current folder.
     private Path stateOutputDir = Paths.get(".");
@@ -507,5 +510,14 @@ public class Game {
 
         System.out.println("Player " + thief.getPlayerId()
             + " stole 1 " + stolenCard + " from Player " + victimId);
+    }
+    
+    /**
+     * Returns the GameHistory instance managing undo/redo for this game.
+     *
+     * @return the GameHistory object
+     */
+    public GameHistory getGameHistory() {
+        return gameHistory;
     }
 }

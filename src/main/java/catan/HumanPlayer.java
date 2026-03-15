@@ -127,7 +127,7 @@ public class HumanPlayer extends Player {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
-                    handleBuildSettlement(roundNumber, board, rules, cmd.nodeA);
+                    handleBuildSettlement(roundNumber, game, board, rules, cmd.nodeA);
                     break;
 
                 case BUILD_CITY:
@@ -135,7 +135,7 @@ public class HumanPlayer extends Player {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
-                    handleBuildCity(roundNumber, board, rules, cmd.nodeA);
+                    handleBuildCity(roundNumber, game, board, rules, cmd.nodeA);
                     break;
 
                 case BUILD_ROAD:
@@ -143,7 +143,33 @@ public class HumanPlayer extends Player {
                         inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
                         break;
                     }
-                    handleBuildRoad(roundNumber, board, rules, cmd.nodeA, cmd.nodeB);
+                    handleBuildRoad(roundNumber, game, board, rules, cmd.nodeA, cmd.nodeB);
+                    break;
+                    
+                case UNDO:
+                    if (!state.canBuild()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] Cannot undo before rolling.");
+                        break;
+                    }
+                    if (game.getGameHistory().canUndo()) {
+                        game.getGameHistory().undo();
+                        inputHandler.displayMessage("Undo successful. Last action reversed.");
+                    } else {
+                        inputHandler.displayMessage("Nothing to undo.");
+                    }
+                    break;
+
+                case REDO:
+                    if (!state.canBuild()) {
+                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] Cannot redo before rolling.");
+                        break;
+                    }
+                    if (game.getGameHistory().canRedo()) {
+                        game.getGameHistory().redo();
+                        inputHandler.displayMessage("Redo successful. Action re-applied.");
+                    } else {
+                        inputHandler.displayMessage("Nothing to redo.");
+                    }
                     break;
 
                 // GO: Only legal in ROLLED
@@ -196,7 +222,7 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildSettlement(int roundNumber, Board board, Rules rules, int nodeId) {
+    private void handleBuildSettlement(int roundNumber, Game game, Board board, Rules rules, int nodeId) {
         Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_SETTLEMENT);
         if (!rules.canBuildSettlement(this, board, nodeId)) {
             inputHandler.displayMessage("Cannot build settlement at node " + nodeId + " — occupied or distance rule violated.");
@@ -209,10 +235,10 @@ public class HumanPlayer extends Player {
         }
         
         payCost(cost);
-        board.placeSettlement(getPlayerId(), nodeId);
+        Command buildCmd = new BuildSettlementCommand(board, this, nodeId);
+        game.getGameHistory().executeCommand(buildCmd);
         recordPlacedSettlement(nodeId);
-        addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());
-        GameLogger.printTurnAction(roundNumber, getPlayerId(),"Built settlement at intersection " + nodeId);
+        GameLogger.printTurnAction(roundNumber, getPlayerId(), "Built settlement at intersection " + nodeId);
     }
 
     /**
@@ -224,7 +250,7 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildCity(int roundNumber, Board board, Rules rules, int nodeId) {
+    private void handleBuildCity(int roundNumber, Game game, Board board, Rules rules, int nodeId) {
     	
         Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_CITY);
         if (!rules.canBuildCity(this, board, nodeId)) {
@@ -236,10 +262,11 @@ public class HumanPlayer extends Player {
             return;
         }
         payCost(cost);
-        board.upgradeSettlementToCity(getPlayerId(), nodeId);
+        Command buildCmd = new BuildCityCommand(board, this, nodeId);
+        game.getGameHistory().executeCommand(buildCmd);
         recordUpgradedCity(nodeId);
-        addVictoryPoints(1);
         GameLogger.printTurnAction(roundNumber, getPlayerId(), "Upgraded to city at intersection " + nodeId);
+    
     }
 
     /**
@@ -252,7 +279,7 @@ public class HumanPlayer extends Player {
      * @param fromNode first endpoint intersection ID
      * @param toNode second endpoint intersection ID
      */
-    private void handleBuildRoad(int roundNumber, Board board, Rules rules, int fromNode, int toNode) {
+    private void handleBuildRoad(int roundNumber, Game game, Board board, Rules rules, int fromNode, int toNode) {
         
     	Map<Resources, Integer> cost = rules.getCost(ActionType.BUILD_ROAD);
         Edge targetEdge = findEdge(board, fromNode, toNode);
@@ -269,7 +296,8 @@ public class HumanPlayer extends Player {
             return;
         }
         payCost(cost);
-        board.placeRoad(getPlayerId(), fromNode, toNode);
+        Command buildCmd = new BuildRoadCommand(board, this, fromNode, toNode);
+        game.getGameHistory().executeCommand(buildCmd);
         recordPlacedRoad(fromNode, toNode);
         GameLogger.printTurnAction(roundNumber, getPlayerId(), "Built road between " + fromNode + " and " + toNode);
     }

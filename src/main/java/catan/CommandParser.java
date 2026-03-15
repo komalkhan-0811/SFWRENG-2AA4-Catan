@@ -25,6 +25,8 @@ public interface CommandParser {
         BUILD_SETTLEMENT,
         BUILD_CITY,
         BUILD_ROAD,
+        UNDO,
+        REDO,
         UNKNOWN
     }
 
@@ -119,6 +121,13 @@ public interface CommandParser {
         private static final Pattern BUILD_ROAD_PATTERN = 
             Pattern.compile("^\\s*build\\s+road\\s+(\\d+)\\s+(\\d+)\\s*$", Pattern.CASE_INSENSITIVE);
 
+        // Pattern for undo command
+        private static final Pattern UNDO_PATTERN =
+            Pattern.compile("^\\s*undo\\s*$", Pattern.CASE_INSENSITIVE);
+
+        // Pattern for redo command
+        private static final Pattern REDO_PATTERN =
+            Pattern.compile("^\\s*redo\\s*$", Pattern.CASE_INSENSITIVE);
 
         @Override
         public ParsedCommand parse(String raw) {
@@ -178,6 +187,16 @@ public interface CommandParser {
                     return new ParsedCommand(CommandType.UNKNOWN);
                 }
             }
+            
+            matcher = UNDO_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                return new ParsedCommand(CommandType.UNDO);
+            }
+
+            matcher = REDO_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                return new ParsedCommand(CommandType.REDO);
+            }
 
             // No pattern matched
             return new ParsedCommand(CommandType.UNKNOWN);
@@ -191,6 +210,8 @@ public interface CommandParser {
                  + "  List                               - show cards in your hand\n"
                  + "  Build settlement <nodeId>          - build a settlement\n"
                  + "  Build city <nodeId>                - upgrade a settlement to a city\n"
+                 + "  Undo                               - undo your last action\n"
+                 + "  Redo                               - redo your last undone action\n"
                  + "  Build road <fromNodeId> <toNodeId> - build a road";
         }
     }

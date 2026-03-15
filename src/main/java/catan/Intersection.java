@@ -139,4 +139,23 @@ public class Intersection implements OwnedBoardElement {
     public int getOwnerId() {
         return buildingOwnerId;
     }
+    
+    /**
+     * Removes the building at this intersection, resetting it to empty.
+     * Used by undo operations in the Command Pattern (R3.1).
+     */
+    public void clearBuilding() {
+        building = null;
+        buildingOwnerId = -1;
+    }
+
+    /**
+     * Sets the building type at this intersection directly.
+     * Used by undo operations in the Command Pattern (R3.1).
+     *
+     * @param building the building type to set
+     */
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
 }
