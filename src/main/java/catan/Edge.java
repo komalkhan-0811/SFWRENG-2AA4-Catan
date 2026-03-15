@@ -113,4 +113,14 @@ public class Edge implements OwnedBoardElement {
         int max = Math.max(a, b);
         return min + "-" + max;
     }
+    
+    /**
+     * Removes the road from this edge and resets it to unoccupied.
+     * Used by undo operations in the Command Pattern (R3.1).
+     *
+     * @author Rameen Tariq
+     */
+    public void clearRoad() {
+        this.roadOwnerId = -1;
+    }
 }
