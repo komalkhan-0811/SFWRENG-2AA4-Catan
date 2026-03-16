@@ -1,22 +1,23 @@
 {
   "roads": [
-    { "a": 0, "b": 1, "owner": "BLUE" },
-    { "a": 2, "b": 3, "owner": "WHITE" },
-    { "a": 11, "b": 12, "owner": "RED" },
-    { "a": 27, "b": 28, "owner": "ORANGE" },
-    { "a": 37, "b": 35, "owner": "RED" },
-    { "a": 46, "b": 47, "owner": "ORANGE" },
-    { "a": 50, "b": 51, "owner": "WHITE" },
+    { "a": 5, "b": 0, "owner": "RED" },
+    { "a": 12, "b": 4, "owner": "WHITE" },
+    { "a": 19, "b": 20, "owner": "RED" },
+    { "a": 7, "b": 24, "owner": "BLUE" },
+    { "a": 26, "b": 27, "owner": "ORANGE" },
+    { "a": 34, "b": 36, "owner": "ORANGE" },
+    { "a": 39, "b": 38, "owner": "BLUE" },
+    { "a": 49, "b": 22, "owner": "WHITE" },
     { "a": 53, "b": 24, "owner": "BLUE" }
   ],
   "buildings": [
-    { "node": 0, "owner": "BLUE", "type": "SETTLEMENT" },
-    { "node": 3, "owner": "WHITE", "type": "SETTLEMENT" },
-    { "node": 12, "owner": "RED", "type": "SETTLEMENT" },
-    { "node": 27, "owner": "ORANGE", "type": "SETTLEMENT" },
-    { "node": 35, "owner": "RED", "type": "SETTLEMENT" },
-    { "node": 47, "owner": "ORANGE", "type": "SETTLEMENT" },
-    { "node": 51, "owner": "WHITE", "type": "SETTLEMENT" },
+    { "node": 0, "owner": "RED", "type": "SETTLEMENT" },
+    { "node": 12, "owner": "WHITE", "type": "SETTLEMENT" },
+    { "node": 20, "owner": "RED", "type": "SETTLEMENT" },
+    { "node": 22, "owner": "WHITE", "type": "SETTLEMENT" },
+    { "node": 26, "owner": "ORANGE", "type": "SETTLEMENT" },
+    { "node": 36, "owner": "ORANGE", "type": "SETTLEMENT" },
+    { "node": 38, "owner": "BLUE", "type": "SETTLEMENT" },
     { "node": 53, "owner": "BLUE", "type": "SETTLEMENT" }
   ]
 }
