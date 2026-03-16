@@ -14,7 +14,7 @@ import java.security.SecureRandom;
 /**
  * Main game controller for the Catan simulation.
  *
- * @author Komal Khan, Rameen Tariq, Alisha Faridi
+ * @author Komal Khan, Rameen Tariq, Alisha Faridi, Maria Shashati
  */
 public class Game {
 
@@ -34,6 +34,10 @@ public class Game {
 
     // Directory to write JSON game state files into. Defaults to current folder.
     private Path stateOutputDir = Paths.get(".");
+
+
+    // Implements the rule evaluation system required for R3.2
+    private final RuleBasedDecisionEngine decisionEngine = new RuleBasedDecisionEngine();
 
     /**
      * Sets the directory to write game state JSON files into.
@@ -258,6 +262,22 @@ public class Game {
         boolean mustBuild = player.getTotalCardsInHand() > 7;
         List<Action> validActions = rules.getValidActionsByLinearScan(player, board);
 
+
+        // Ensure the AI only evaluates actions that the player can actually afford.
+        List<Action> affordableActions = new ArrayList<>();
+
+        for (Action action : validActions) {
+            if (action.getType() == ActionType.PASS) {
+                affordableActions.add(action);
+            } else {
+                Map<Resources, Integer> cost = rules.getCost(action.getType());
+                if (player.hasEnoughResources(cost)) {
+                    affordableActions.add(action);
+                }
+            }
+        }
+        validActions = affordableActions;
+
         // R1.8: Filter out PASS if player has > 7 cards and build actions exist
         if (mustBuild) {
             List<Action> buildActions = new ArrayList<>();
@@ -268,7 +288,13 @@ public class Game {
         }
 
 
-        Action chosen = rules.chooseRandomAction(validActions, rng);
+        // commenting for now but changing the random action to the decision engine deciding 
+        // Action chosen = rules.chooseRandomAction(validActions, rng);
+
+
+        // Instead of choosing a random valid action, selecting action with highest value after evaluating (R3.2)
+        // If actions tie a random one is chose 
+        Action chosen = decisionEngine.chooseBestAction(player, board, validActions);
 
         
         if (chosen != null && chosen.getType() != ActionType.PASS) {
