@@ -411,4 +411,46 @@ public class Board {
     public String edgeKey(int intersectionA, int intersectionB) {
         return Edge.edgeKey(intersectionA, intersectionB);
     }
+    /**
+     * Removes the settlement at the specified intersection.
+     * Used by undo operations in the Command Pattern (R3.1).
+     *
+     * @param intersectionId the ID of the intersection to clear
+     */
+    public void removeSettlement(int intersectionId) {
+        Intersection inter = getIntersection(intersectionId);
+        if (inter != null) {
+            inter.clearBuilding();
+        }
+    }
+
+    /**
+     * Removes the road between two specified intersections.
+     * Used by undo operations in the Command Pattern (R3.1).
+     *
+     * @param intersectionA the ID of the first intersection
+     * @param intersectionB the ID of the second intersection
+     */
+    public void removeRoad(int intersectionA, int intersectionB) {
+        for (Edge e : edges) {
+            if ((e.getIntersectionA() == intersectionA && e.getIntersectionB() == intersectionB) ||
+                (e.getIntersectionA() == intersectionB && e.getIntersectionB() == intersectionA)) {
+                e.clearRoad();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Downgrades a city back to a settlement at the specified intersection.
+     * Used by undo operations in the Command Pattern (R3.1).
+     *
+     * @param intersectionId the ID of the intersection to downgrade
+     */
+    public void downgradeCityToSettlement(int intersectionId) {
+        Intersection inter = getIntersection(intersectionId);
+        if (inter != null && inter.getBuilding() == Building.CITY) {
+            inter.setBuilding(Building.SETTLEMENT);
+        }
+    }
 }
