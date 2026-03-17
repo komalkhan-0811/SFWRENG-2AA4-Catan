@@ -55,6 +55,21 @@ public class LongestRoadTest {
         assertEquals(120.0, value, "Should trigger at exactly 5 roads");
     }
     
+    
+    @Test
+    void test_constraintActive_playerHas10_opponentHas9_roadExtends() {
+    	
+        // Large longest roads
+        setupRoadChain(player, 1, 11);  // 10 roads
+        setupRoadChain(opponent, 20, 29);  // 9 roads
+        
+        Action action = Action.buildRoad(11, 12);
+        
+        double value = constraint.evaluate(player, board, action);
+        
+        assertEquals(120.0, value, "Should work with very long roads");
+    }
+    
     @Test
     void test_constraintActive_opponentExactlyOneBehind() {
     	
@@ -72,19 +87,9 @@ public class LongestRoadTest {
     }
     
     
-    @Test
-    void test_constraintActive_playerHas10_opponentHas9_roadExtends() {
-    	
-        // Large longest roads
-        setupRoadChain(player, 1, 11);  // 10 roads
-        setupRoadChain(opponent, 20, 29);  // 9 roads
-        
-        Action action = Action.buildRoad(11, 12);
-        
-        double value = constraint.evaluate(player, board, action);
-        
-        assertEquals(120.0, value, "Should work with very long roads");
-    }
+    
+    
+   
     
     @Test
     void test_constraintInactive_playerHas7_opponentHas5_tooFarBehind() {
@@ -129,6 +134,38 @@ public class LongestRoadTest {
         assertEquals(-1.0, value, "Settlement should never trigger constraint");
     }
     
+    @Test
+    void test_constraintInactive_roadDoesntExtend() {
+        // Player: 7 roads (1-2-3-4-5-6-7-8)
+        setupRoadChain(player, 1, 8);
+        
+        // Opponent: 6 roads
+        setupRoadChain(opponent, 20, 26);
+        
+        // Road that doesn't connect to existing network
+        Action action = Action.buildRoad(30, 31);
+        
+        double value = constraint.evaluate(player, board, action);
+        
+        assertEquals(-1.0, value, "Should not trigger if road doesn't extend network");
+    }
+    
+    @Test
+    void test_constraintInactive_opponentAhead() {
+        // Player: 6 roads
+        setupRoadChain(player, 1, 7);
+        
+        // Opponent: 8 roads (ahead)
+        setupRoadChain(opponent, 20, 28);
+        
+        Action action = Action.buildRoad(7, 8);
+        
+        double value = constraint.evaluate(player, board, action);
+        
+        assertEquals(-1.0, value, "Should not trigger when player is behind");
+    }
+
+    
     
     
     @Test
@@ -142,6 +179,19 @@ public class LongestRoadTest {
         double value = constraint.evaluate(player, board, action);
         
         assertEquals(-1.0, value, "Pass should never trigger constraint");
+    }
+    
+    
+    @Test
+    void test_nonRoadAction_city_returnsNegative() {
+        setupRoadChain(player, 1, 8);
+        setupRoadChain(opponent, 20, 26);
+        
+        Action action = Action.buildCity(10);
+        
+        double value = constraint.evaluate(player, board, action);
+        
+        assertEquals(-1.0, value, "City should never trigger constraint");
     }
     
     
@@ -185,6 +235,20 @@ public class LongestRoadTest {
         assertEquals(120.0, value, "Should trigger if ANY opponent is 1 behind");
     }
     
+    @Test
+    void test_opponentTied_triggersConstraint() {
+        // Player: 6 roads
+        setupRoadChain(player, 1, 7);
+        
+        // Opponent: 6 roads (tied, which is >= player-1)
+        setupRoadChain(opponent, 20, 26);
+        
+        Action action = Action.buildRoad(7, 8);
+        
+        double value = constraint.evaluate(player, board, action);
+        
+        assertEquals(120.0, value, "Should trigger when opponent is tied");
+    }
     
     
     /**

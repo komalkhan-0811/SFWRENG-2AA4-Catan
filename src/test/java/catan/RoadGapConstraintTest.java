@@ -122,7 +122,7 @@ public class RoadGapConstraintTest {
     @Test
     void test_singleRoadInEachSegment() {
     	
-        // Edge caseL two single road segments
+        // Edge case: two single road segments
         board.placeRoad(player.getPlayerId(), 1, 2);
         board.placeRoad(player.getPlayerId(), 4, 5);
         player.recordPlacedRoad(1, 2);
