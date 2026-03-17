@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: catan.JsonStatePerRoundTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in catan.JsonStatePerRoundTest
+=======
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 s -- in catan.JsonStatePerRoundTest
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb

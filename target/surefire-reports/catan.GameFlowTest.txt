@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: catan.GameFlowTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in catan.GameFlowTest
+=======
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in catan.GameFlowTest
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb

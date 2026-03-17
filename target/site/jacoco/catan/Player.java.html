@@ -102,7 +102,11 @@ public class Player {
 <span class="fc" id="L102">        int total = 0;</span>
 <span class="fc bfc" id="L103" title="All 2 branches covered.">        for (int count : resourceCards.values()) {</span>
 <span class="fc" id="L104">            total += count;</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L105">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L106">        return total;</span>
     }
 
@@ -130,7 +134,11 @@ public class Player {
 <span class="fc bfc" id="L130" title="All 2 branches covered.">            if (owned &lt; cost.get(type)) {</span>
 <span class="fc" id="L131">                return false;</span>
             }
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L133">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L134">        return true;</span>
     }
 
@@ -147,14 +155,22 @@ public class Player {
     	// should never be reached if caller checks first
 <span class="fc bfc" id="L148" title="All 2 branches covered.">    	if (!hasEnoughResources(cost)) {</span>
 <span class="fc" id="L149">              throw new IllegalArgumentException(</span>
+<<<<<<< HEAD
 <span class="fc" id="L150">                  &quot;Player &quot; + playerId + &quot; does not have enough resources to pay the cost.&quot;);</span>
+=======
+                  &quot;Player &quot; + playerId + &quot; does not have enough resources to pay the cost.&quot;);
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
           }
 
     	// Deduct each resource in the cost map
 <span class="fc bfc" id="L154" title="All 2 branches covered.">        for (Resources type : cost.keySet()) {</span>
 <span class="fc" id="L155">            int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);</span>
 <span class="fc" id="L156">            resourceCards.put(type, remaining);</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L157">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L158">    }</span>
 
     /**
@@ -186,7 +202,11 @@ public class Player {
 <span class="fc bfc" id="L186" title="All 4 branches covered.">            if (key.startsWith(intersectionId + &quot;-&quot;) || key.endsWith(&quot;-&quot; + intersectionId)) {</span>
 <span class="fc" id="L187">                return true;</span>
             }
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L189">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L190">        return false;</span>
     }
 
@@ -279,6 +299,7 @@ public class Player {
 <span class="fc bfc" id="L279" title="All 2 branches covered.">    		for(int x = 0; x &lt;count; x++) {</span>
 <span class="fc" id="L280">    			allCards.add(type);</span>
     		}
+<<<<<<< HEAD
     	}
     	
     	// Randomly pick and remove cards one at a time
@@ -289,6 +310,18 @@ public class Player {
 <span class="fc" id="L289">    		discarded++;</span>
     	}
     	
+=======
+<span class="fc" id="L282">    	}</span>
+    	
+    	// Randomly pick and remove cards one at a time
+<span class="pc bpc" id="L285" title="1 of 4 branches missed.">    	for (int x = 0; x &lt; haveToDiscard &amp;&amp; !allCards.isEmpty(); x++) {</span>
+<span class="fc" id="L286">    		int randomNum = rng.nextInt(allCards.size());</span>
+<span class="fc" id="L287">    		Resources typeToRemove = allCards.remove(randomNum);</span>
+<span class="fc" id="L288">    		removeResources(typeToRemove, 1);</span>
+<span class="fc" id="L289">    		discarded++;</span>
+    	}
+    	
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L292">    	return discarded;</span>
     	
     	
@@ -312,6 +345,7 @@ public class Player {
 <span class="fc bfc" id="L312" title="All 2 branches covered.">    		for (int x = 0; x &lt; count; x++) {</span>
 <span class="fc" id="L313">    			allCards.add(type);</span>
     		}
+<<<<<<< HEAD
     	}
     	
     	// Return null if player has nothing to steal
@@ -319,6 +353,15 @@ public class Player {
 <span class="fc" id="L319">    		return null;</span>
     	}
     	
+=======
+<span class="fc" id="L315">    	}</span>
+    	
+    	// Return null if player has nothing to steal
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    	if(allCards.isEmpty()) {</span>
+<span class="fc" id="L319">    		return null;</span>
+    	}
+    	
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
     	 // Pick a random card from the list
 <span class="fc" id="L323">    	return allCards.get(rng.nextInt(allCards.size()));</span>
     	

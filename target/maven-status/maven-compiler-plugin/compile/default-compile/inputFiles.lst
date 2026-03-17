@@ -1,3 +1,31 @@
+<<<<<<< HEAD
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Action.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/ActionType.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Board.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Building.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Colour.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/CommandParser.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/ConsoleInputHandler.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Demonstrator.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Dice.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Edge.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Game.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/GameLogger.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/GameSnapshot.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/GameStateExporter.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/GameStateWriter.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/HumanPlayer.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/InputHandler.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Intersection.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/JSONWriter.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/OwnedBoardElement.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Player.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Resources.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Rules.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/Tile.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/TurnState.java
+/Users/komalkhan/SFWRENG-2AA4-Catan/src/main/java/catan/VisualizerStateWriter.java
+=======
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\Action.java
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\ActionType.java
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\Board.java
@@ -35,3 +63,4 @@ C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\Rules.java
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\Tile.java
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\TurnState.java
 C:\Users\shash\SFWRENG-2AA4-Catan\src\main\java\catan\VisualizerStateWriter.java
+>>>>>>> a543b9b15f1f6201fa425b7b04f01a98ccf3f104

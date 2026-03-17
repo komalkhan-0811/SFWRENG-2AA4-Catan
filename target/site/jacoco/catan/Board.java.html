@@ -337,7 +337,11 @@ public class Board {
 <span class="fc bfc" id="L337" title="All 2 branches covered.">            if (entry.getValue().contains(tileId)) {</span>
 <span class="fc" id="L338">                result.add(entry.getKey());</span>
             }
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L340">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L341">        return result;</span>
     }
 
@@ -393,11 +397,19 @@ public class Board {
 <span class="fc" id="L393">            Intersection inter = getIntersection(intersectionId);</span>
 <span class="pc bpc" id="L394" title="1 of 4 branches missed.">            if (inter != null &amp;&amp; inter.hasBuilding()) {</span>
 <span class="fc" id="L395">                Integer ownerId = inter.getBuildingOwnerId();</span>
+<<<<<<< HEAD
 <span class="pc bpc" id="L396" title="1 of 4 branches missed.">                if (ownerId != null &amp;&amp; !playerIds.contains(ownerId)) {</span>
 <span class="fc" id="L397">                    playerIds.add(ownerId);</span>
                 }
             }
         }
+=======
+<span class="pc bpc" id="L396" title="2 of 4 branches missed.">                if (ownerId != null &amp;&amp; !playerIds.contains(ownerId)) {</span>
+<span class="fc" id="L397">                    playerIds.add(ownerId);</span>
+                }
+            }
+<span class="fc" id="L400">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L401">        return playerIds;</span>
     }
 

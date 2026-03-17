@@ -100,7 +100,11 @@ public class HumanPlayer extends Player {
 <span class="fc" id="L100">                    GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Rolled &quot; + roll);</span>
 <span class="pc bpc" id="L101" title="1 of 2 branches missed.">                    if (roll == 7) {</span>
 <span class="nc" id="L102">                        inputHandler.displayMessage(&quot;Rolled 7 — robber activated, no resources distributed.&quot;);</span>
+<<<<<<< HEAD
 <span class="nc" id="L103">                    } </span>
+=======
+                    } 
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
                     else {
 <span class="fc" id="L105">                        game.distributeResourcesForRoll(roll);</span>
 <span class="fc" id="L106">                        inputHandler.displayMessage(&quot;Resources distributed for roll of &quot; + roll + &quot;.&quot;);</span>
@@ -162,7 +166,11 @@ public class HumanPlayer extends Player {
 <span class="fc" id="L162">                    inputHandler.displayMessage(&quot;[ILLEGAL] Unknown command.\n&quot; + parser.usageHint());</span>
                     break;
             }
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L165">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L166">    }</span>
 
     /**
@@ -177,6 +185,7 @@ public class HumanPlayer extends Player {
     public void waitForGo(String message) {
 <span class="pc bpc" id="L178" title="2 of 4 branches missed.">        if (message != null &amp;&amp; !message.isEmpty()) {</span>
 <span class="fc" id="L179">            inputHandler.displayMessage(message);</span>
+<<<<<<< HEAD
         }
 <span class="fc" id="L181">        inputHandler.displayMessage(&quot;--- Type Go to continue to the next turn ---&quot;);</span>
 <span class="fc" id="L182">        while (true) {</span>
@@ -185,6 +194,16 @@ public class HumanPlayer extends Player {
 <span class="fc bfc" id="L185" title="All 2 branches covered.">            if (cmd.type == CommandParser.CommandType.GO) return;</span>
 <span class="fc" id="L186">            inputHandler.displayMessage(&quot;Type 'Go' to proceed.&quot;);</span>
         }
+=======
+        }
+<span class="fc" id="L181">        inputHandler.displayMessage(&quot;--- Type Go to continue to the next turn ---&quot;);</span>
+        while (true) {
+<span class="fc" id="L183">            String raw = inputHandler.readLine(&quot;&gt; &quot;);</span>
+<span class="fc" id="L184">            CommandParser.ParsedCommand cmd = parser.parse(raw);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">            if (cmd.type == CommandParser.CommandType.GO) return;</span>
+<span class="fc" id="L186">            inputHandler.displayMessage(&quot;Type 'Go' to proceed.&quot;);</span>
+<span class="fc" id="L187">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
     }
 
     /**
@@ -350,7 +369,11 @@ public class HumanPlayer extends Player {
 <span class="fc bfc" id="L350" title="All 2 branches covered.">        for (Map.Entry&lt;Resources, Integer&gt; entry : cost.entrySet()) {</span>
 <span class="fc bfc" id="L351" title="All 2 branches covered.">            if (sb.length() &gt; 0) sb.append(&quot;, &quot;);</span>
 <span class="fc" id="L352">            sb.append(entry.getKey().name()).append(&quot; x&quot;).append(entry.getValue());</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L353">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L354">        return sb.toString();</span>
     }
 

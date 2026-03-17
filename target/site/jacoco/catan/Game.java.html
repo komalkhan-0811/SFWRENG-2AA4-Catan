@@ -136,7 +136,11 @@ public class Game {
 <span class="fc" id="L136">        player.addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());</span>
 
 <span class="fc" id="L138">        System.out.println(&quot;Player &quot; + player.getPlayerId()</span>
+<<<<<<< HEAD
 <span class="fc" id="L139">            + &quot;: Placed initial settlement at intersection &quot; + settlementId);</span>
+=======
+            + &quot;: Placed initial settlement at intersection &quot; + settlementId);
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 
         // Second placement only and give resources from adjacent tiles
 <span class="fc bfc" id="L142" title="All 2 branches covered.">        if (giveResources) {</span>
@@ -151,7 +155,11 @@ public class Game {
             }
         }
 
+<<<<<<< HEAD
 <span class="fc bfc" id="L154" title="All 2 branches covered.">        if (!validRoads.isEmpty()) {</span>
+=======
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        if (!validRoads.isEmpty()) {</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L155">            Edge roadEdge = validRoads.get(rng.nextInt(validRoads.size()));</span>
 <span class="fc" id="L156">            board.placeRoad(player.getPlayerId(),</span>
 <span class="fc" id="L157">                roadEdge.getIntersectionA(), roadEdge.getIntersectionB());</span>
@@ -195,9 +203,15 @@ public class Game {
             // Write JSON state at end of each round
             try {
 <span class="fc" id="L197">                GameStateWriter.writeBasicRoundState(this, stateOutputDir);</span>
+<<<<<<< HEAD
 <span class="pc" id="L198">            } catch (Exception e) {</span>
 <span class="nc" id="L199">                System.out.println(&quot;Failed to write game state: &quot; + e.getMessage());</span>
             }
+=======
+<span class="nc" id="L198">            } catch (Exception e) {</span>
+<span class="nc" id="L199">                System.out.println(&quot;Failed to write game state: &quot; + e.getMessage());</span>
+<span class="fc" id="L200">            }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L201">            roundNumber++;</span>
         }
 
@@ -215,7 +229,11 @@ public class Game {
 
 
 <span class="pc bpc" id="L217" title="1 of 2 branches missed.">            if (isTerminationReached()) break;</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L218">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L219">    }</span>
 
     /**
@@ -247,7 +265,11 @@ public class Game {
       
 <span class="fc bfc" id="L248" title="All 2 branches covered.">        if (roll == 7) {</span>
 <span class="fc" id="L249">            handleSevenRoll(player);</span>
+<<<<<<< HEAD
 <span class="fc" id="L250">        } else {</span>
+=======
+        } else {
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L251">            distributeResourcesForRoll(roll);</span>
         }
 
@@ -260,7 +282,11 @@ public class Game {
 <span class="fc" id="L260">            List&lt;Action&gt; buildActions = new ArrayList&lt;&gt;();</span>
 <span class="fc bfc" id="L261" title="All 2 branches covered.">            for (Action action : validActions) {</span>
 <span class="pc bpc" id="L262" title="1 of 2 branches missed.">                if (action.getType() != ActionType.PASS) buildActions.add(action);</span>
+<<<<<<< HEAD
             }
+=======
+<span class="fc" id="L263">            }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="pc bpc" id="L264" title="1 of 2 branches missed.">            if (!buildActions.isEmpty()) validActions = buildActions;</span>
         }
 
@@ -275,7 +301,11 @@ public class Game {
 <span class="fc" id="L275">                executeAction(player, chosen);</span>
 <span class="fc" id="L276">                GameLogger.printTurnAction(roundNumber, player.getPlayerId(),</span>
 <span class="fc" id="L277">                    chosen.describeForLogger());</span>
+<<<<<<< HEAD
 <span class="fc" id="L278">            } else {</span>
+=======
+            } else {
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L279">                GameLogger.printTurnAction(roundNumber, player.getPlayerId(), &quot;Passed&quot;);</span>
             }
 <span class="fc" id="L281">        } else {</span>
@@ -289,7 +319,11 @@ public class Game {
 <span class="fc" id="L289">                ((HumanPlayer) p).waitForGo(</span>
 <span class="fc" id="L290">                    &quot;Player &quot; + player.getPlayerId() + &quot; finished their turn.&quot;);</span>
             }
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L292">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
         
         try {
 <span class="fc" id="L295">        	VisualizerStateWriter.write(this, stateOutputDir);</span>
@@ -298,6 +332,12 @@ public class Game {
 <span class="nc" id="L298">        catch (Exception e){</span>
 <span class="nc" id="L299">        	System.out.println(&quot;Failed to write visualizer state: &quot; + e.getMessage());</span>
         }
+<<<<<<< HEAD
+=======
+<span class="nc" id="L298">        catch (Exception e){</span>
+<span class="nc" id="L299">        	System.out.println(&quot;Failed to write visualizer state: &quot; + e.getMessage());</span>
+<span class="fc" id="L300">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L301">    }</span>
 
     /**
@@ -337,13 +377,22 @@ public class Game {
 <span class="pc bpc" id="L337" title="1 of 2 branches missed.">                        if (owner != null) {</span>
 
                             // Cities produce 2 resources, settlements produce 1
+<<<<<<< HEAD
 <span class="pc bpc" id="L340" title="1 of 2 branches missed.">                            int amount = (buildingType == Building.CITY) ? 2 : 1;</span>
+=======
+<span class="fc bfc" id="L340" title="All 2 branches covered.">                            int amount = (buildingType == Building.CITY) ? 2 : 1;</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L341">                            owner.addResource(resource, amount);</span>
                         }
                     }
                 }
+<<<<<<< HEAD
             }
         }
+=======
+<span class="fc" id="L345">            }</span>
+<span class="fc" id="L346">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L347">    }</span>
 
     /**
@@ -352,7 +401,11 @@ public class Game {
     private Player getPlayerById(int playerId) {
 <span class="pc bpc" id="L353" title="1 of 2 branches missed.">        for (Player p : players) {</span>
 <span class="fc bfc" id="L354" title="All 2 branches covered.">            if (p.getPlayerId() == playerId) return p;</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L355">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="nc" id="L356">        return null;</span>
     }
 
@@ -369,7 +422,11 @@ public class Game {
 <span class="fc bfc" id="L369" title="All 2 branches covered.">        if (roundNumber &gt; maxRounds) return true;</span>
 <span class="fc bfc" id="L370" title="All 2 branches covered.">        for (Player p : players) {</span>
 <span class="fc bfc" id="L371" title="All 2 branches covered.">            if (p.getVictoryPoints() &gt;= victoryPointsToWin) return true;</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L372">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L373">        return false;</span>
     }
 
@@ -410,7 +467,11 @@ public class Game {
     public Player getWinnerOrNull() {
 <span class="fc bfc" id="L411" title="All 2 branches covered.">        for (Player p : players) {</span>
 <span class="fc bfc" id="L412" title="All 2 branches covered.">            if (p.getVictoryPoints() &gt;= victoryPointsToWin) return p;</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L413">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L414">        return null;</span>
     }
 
@@ -421,7 +482,11 @@ public class Game {
 <span class="fc" id="L421">        System.out.println(&quot;-----Round &quot; + roundNumber + &quot; ----&quot;);</span>
 <span class="fc bfc" id="L422" title="All 2 branches covered.">        for (Player p : players) {</span>
 <span class="fc" id="L423">            System.out.println(&quot;Player &quot; + p.getPlayerId() + &quot; VP: &quot; + p.getVictoryPoints());</span>
+<<<<<<< HEAD
         }
+=======
+<span class="fc" id="L424">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L425">    }</span>
 
     /**
@@ -443,14 +508,24 @@ public class Game {
 <span class="fc bfc" id="L443" title="All 2 branches covered.">            if (p.getTotalCardsInHand() &gt; 7) {</span>
 <span class="fc" id="L444">                int discarded = p.discardHalfCards();</span>
 <span class="fc" id="L445">                System.out.println(&quot;Player &quot; + p.getPlayerId()</span>
+<<<<<<< HEAD
 <span class="fc" id="L446">                    + &quot; discarded &quot; + discarded + &quot; cards.&quot;);</span>
             }
         }
+=======
+                    + &quot; discarded &quot; + discarded + &quot; cards.&quot;);
+            }
+<span class="fc" id="L448">        }</span>
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 
         // Move robber to a random valid tile
 <span class="fc" id="L451">        int newRobberTile = moveRobberRandomly();</span>
 <span class="fc" id="L452">        System.out.println(&quot;Player &quot; + currentPlayer.getPlayerId()</span>
+<<<<<<< HEAD
 <span class="fc" id="L453">            + &quot; moved robber to tile &quot; + newRobberTile);</span>
+=======
+            + &quot; moved robber to tile &quot; + newRobberTile);
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 
         //Steal from a random adjacent player
 <span class="fc" id="L456">        stealFromAdjacentPlayer(currentPlayer, newRobberTile);</span>
@@ -506,7 +581,11 @@ public class Game {
 <span class="fc" id="L506">        thief.addResource(stolenCard, 1);</span>
 
 <span class="fc" id="L508">        System.out.println(&quot;Player &quot; + thief.getPlayerId()</span>
+<<<<<<< HEAD
 <span class="fc" id="L509">            + &quot; stole 1 &quot; + stolenCard + &quot; from Player &quot; + victimId);</span>
+=======
+            + &quot; stole 1 &quot; + stolenCard + &quot; from Player &quot; + victimId);
+>>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb
 <span class="fc" id="L510">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
