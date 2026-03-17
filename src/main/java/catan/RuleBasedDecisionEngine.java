@@ -20,12 +20,25 @@ public class RuleBasedDecisionEngine {
     private final List<Rule> rules;
     private final Random random;
 
+
+    //R3.3 Constraint checkers
+    private final SevenCardConstraint cardConstraint;
+    private final RoadGapConstraint gapConstraint;
+    private final LongestRoadDefense longestRoad;
+
     /**
      * Constructs a decision engine with all supported evaluation rules.
      */
     public RuleBasedDecisionEngine() {
         this.rules = new ArrayList<>();
         this.random = new Random();
+
+
+        //initializign constraint checkers
+        this.cardConstraint = new SevenCardConstraint();
+        this.gapConstraint = new RoadGapConstraint();
+        this.longestRoad = new LongestRoadDefense();
+
 
         rules.add(new BuildCityRule());
         rules.add(new BuildSettlementRule());
@@ -50,11 +63,7 @@ public class RuleBasedDecisionEngine {
         List<Action> bestActions = new ArrayList<>();
 
         for (Action action : actions) {
-            double value = -1.0;
-
-            for (Rule rule : rules) {
-                value = Math.max(value, rule.evaluate(player, board, action));
-            }
+            double value = evaluateAction(player, board, action);
 
             // temporary line im just seeing if ai is acctually doing anyhting 
             System.out.println("AI evaluating: " + action.getType() + " value=" + value);
@@ -63,11 +72,54 @@ public class RuleBasedDecisionEngine {
                 bestValue = value;
                 bestActions.clear();
                 bestActions.add(action);
-            } else if (value == bestValue) {
+            }
+            else if (value == bestValue) {
                 bestActions.add(action);
             }
         }
 
-        return bestActions.get(random.nextInt(bestActions.size()));
+        Action chosen = bestActions.get(random.nextInt(bestActions.size()));
+
+
+        if (bestValue >= 100.0){
+            System.out.println("--> CONSTRAINT ACTIVE: Resolving with priority" + bestValue);
+        }
+        return chosen;
+
+    }
+
+    private double evaluateAction(Player player, Board board, Action action){
+        double value = -1.0;
+
+        value = Math.max(value, cardConstraint.evaluate(player, board, action));
+        value = Math.max(value, gapConstraint.evaluate(player, board, action));
+        value = Math.max(value, longestRoad.evaluate(player, board, action));
+
+
+        if (value >= 100.0){
+            return value;
+        }
+
+
+        for (Rule rule: rules){
+            double ruleValue = rule.evaluate(player, board, action);
+            value = Math.max(value, ruleValue);
+        }
+
+        return value;
+    }
+
+    private String getActionLocation(Action action){
+        switch (action.getType()){
+            case BUILD_ROAD:
+                return "(" + action.getEdgeIntersectionA() + "-" + action.getEdgeIntersectionB() + ")";
+            case BUILD_SETTLEMENT:
+            case BUILD_CITY:
+                return "[" + action.getIntersectionId() + "]";
+            case PASS:
+            default:
+                return "";
+
+        }
     }
 }
