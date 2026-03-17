@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: catan.TurnLimitTest
--------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in catan.TurnLimitTest
-=======
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in catan.TurnLimitTest
->>>>>>> fef0a8dfd860c222bd465e5c267bc1ad887828eb

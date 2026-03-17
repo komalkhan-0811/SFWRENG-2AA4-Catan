@@ -1,18 +1,29 @@
+# Maven build output (compiled classes, test reports, JaCoCo coverage)
+target/
+
+# Java compiled classes
 *.class
 bin/
 src/bin/
-visualize/scraped_boards/*.png
-visualize/.venv/
-/target/
 
-# Visualizer output
-scraped_boards/
+# Game-generated state files (root level)
+gamestate_round_*.json
+state.json
+
+# Game-generated state files (visualize folder variants)
 src/visualize/gamestate_round_*.json
+src/visualize/state.json
 visualize/gamestate_round_*.json
 visualize/state.json
 
-# Python venv
+# Visualizer screenshot output
+scraped_boards/
+visualize/scraped_boards/*.png
+
+# Python virtual environment
+.venv/
 src/visualize/.venv/
+visualize/.venv/
 
 # Python cache
 __pycache__/
