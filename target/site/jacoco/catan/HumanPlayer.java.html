@@ -11,8 +11,7 @@ import java.util.Map;
  *
  *Turn flow is governed by the {@link TurnState} automaton:
  *START → (Roll) → ROLLED → (Build*) → ROLLED → (Go) → DONE
- *Illegal commands for the current state are rejected with a clear message
- *and do NOT advance the state.
+ *Illegal commands for the current state are rejected with a clear message and do not advance the state.
  * 
  * @author Rameen Tariq
  */
@@ -30,16 +29,16 @@ public class HumanPlayer extends Player {
      * @throws IllegalArgumentException if inputHandler is null
      */
     public HumanPlayer(int playerId, Colour colour, InputHandler inputHandler) {
-<span class="fc" id="L33">        super(playerId, colour);</span>
-<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (inputHandler == null) {</span>
-<span class="nc" id="L35">            throw new IllegalArgumentException(&quot;InputHandler must not be null.&quot;);</span>
+<span class="fc" id="L32">        super(playerId, colour);</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (inputHandler == null) {</span>
+<span class="nc" id="L34">            throw new IllegalArgumentException(&quot;InputHandler must not be null.&quot;);</span>
         }
-<span class="fc" id="L37">        this.inputHandler = inputHandler;</span>
-<span class="fc" id="L38">        this.parser = new CommandParser.ConsoleCommandParser();</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L36">        this.inputHandler = inputHandler;</span>
+<span class="fc" id="L37">        this.parser = new CommandParser.ConsoleCommandParser();</span>
+<span class="fc" id="L38">    }</span>
 
     /**
-     * Constructs a HumanPlayer with an injected parser (useful for testing).
+     * Constructs a HumanPlayer with an injected parser
      *
      * @param playerId unique player identifier
      * @param colour colour assigned to this player
@@ -48,14 +47,14 @@ public class HumanPlayer extends Player {
      * @throws IllegalArgumentException if inputHandler or parser is null
      */
     public HumanPlayer(int playerId, Colour colour, InputHandler inputHandler, CommandParser parser) {
-<span class="fc" id="L51">        super(playerId, colour);</span>
-<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (inputHandler == null)</span>
-<span class="nc" id="L53">            throw new IllegalArgumentException(&quot;InputHandler must not be null.&quot;);</span>
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (parser == null)</span>
-<span class="nc" id="L55">            throw new IllegalArgumentException(&quot;CommandParser must not be null.&quot;);</span>
-<span class="fc" id="L56">        this.inputHandler = inputHandler;</span>
-<span class="fc" id="L57">        this.parser = parser;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L50">        super(playerId, colour);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (inputHandler == null)</span>
+<span class="nc" id="L52">            throw new IllegalArgumentException(&quot;InputHandler must not be null.&quot;);</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (parser == null)</span>
+<span class="nc" id="L54">            throw new IllegalArgumentException(&quot;CommandParser must not be null.&quot;);</span>
+<span class="fc" id="L55">        this.inputHandler = inputHandler;</span>
+<span class="fc" id="L56">        this.parser = parser;</span>
+<span class="fc" id="L57">    }</span>
 
     /**
      * Runs a full interactive turn for this human player.
@@ -63,14 +62,14 @@ public class HumanPlayer extends Player {
      * The turn is governed by the {@link TurnState} automaton.
      * The state starts at START and only advances to DONE when the player
      * types Go after having rolled. Every command is validated against the
-     * current state before being executed; illegal commands are rejected with
-     * a descriptive message and the state is not changed.
+     * current state before being executed
+     * illegal commands are rejected with a descriptive message and the state is not changed.
      *
      * Legal transitions:
-     * START  --[Roll]--&gt; ROLLED
-     * ROLLED --[Build]--&gt; ROLLED  (self-loop, repeatable)
-     * ROLLED --[Go]  --&gt; DONE
-     * ANY    --[List]--&gt; (no change, informational)
+     * START: [Roll] -&gt; ROLLED
+     * ROLLED:[Build] -&gt; ROLLED
+     * ROLLED: [Go]  -&gt; DONE
+     * ANY: [List]
      *
      * @param roundNumber the current round number
      * @param game        the Game instance
@@ -79,99 +78,92 @@ public class HumanPlayer extends Player {
      */
     public void takeTurn(int roundNumber, Game game, Board board, Rules rules) {
         //Automaton starts in START state for every fresh turn
-<span class="fc" id="L82">    	TurnState state = TurnState.START;</span>
+<span class="fc" id="L81">    	TurnState state = TurnState.START;</span>
 
-<span class="fc" id="L84">    	inputHandler.displayMessage(</span>
-<span class="fc" id="L85">                &quot;\n=== Player &quot; + getPlayerId()</span>
-<span class="fc" id="L86">                + &quot; (&quot; + getColour().getDisplayName() + &quot;) — your turn ===&quot;);</span>
-<span class="fc" id="L87">            inputHandler.displayMessage(&quot;State: &quot; + state + &quot; | &quot; + parser.usageHint());</span>
+<span class="fc" id="L83">    	inputHandler.displayMessage(&quot;\n=== Player &quot; + getPlayerId()+ &quot; (&quot; + getColour().getDisplayName() + &quot;) — your turn ===&quot;);</span>
+           
+<span class="fc" id="L85">    	inputHandler.displayMessage(&quot;State: &quot; + state + &quot; | &quot; + parser.usageHint());</span>
 
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        while (!state.isDone()) {</span>
-<span class="fc" id="L90">            String raw = inputHandler.readLine(&quot;&gt; &quot;);</span>
-<span class="fc" id="L91">            CommandParser.ParsedCommand cmd = parser.parse(raw);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        while (!state.isDone()) {</span>
+<span class="fc" id="L88">            String raw = inputHandler.readLine(&quot;&gt; &quot;);</span>
+<span class="fc" id="L89">            CommandParser.ParsedCommand cmd = parser.parse(raw);</span>
 
-<span class="fc bfc" id="L93" title="All 7 branches covered.">            switch (cmd.type) {</span>
+<span class="fc bfc" id="L91" title="All 7 branches covered.">            switch (cmd.type) {</span>
             
             	//ROLL: only legal in START
-
                 case ROLL:
-<span class="fc bfc" id="L98" title="All 2 branches covered.">                    if (!state.canRoll()) {</span>
-<span class="fc" id="L99">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You have already rolled this turn.&quot;);</span>
-<span class="fc" id="L100">                        break;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                    if (!state.canRoll()) {</span>
+<span class="fc" id="L96">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You have already rolled this turn.&quot;);</span>
+<span class="fc" id="L97">                        break;</span>
                     }
-<span class="fc" id="L102">                    int roll = game.rollDice();</span>
-<span class="fc" id="L103">                    GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Rolled &quot; + roll);</span>
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">                    if (roll == 7) {</span>
-<span class="nc" id="L105">                        inputHandler.displayMessage(</span>
-                            &quot;Rolled 7 — robber activated, no resources distributed.&quot;);
-                    } 
+<span class="fc" id="L99">                    int roll = game.rollDice();</span>
+<span class="fc" id="L100">                    GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Rolled &quot; + roll);</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">                    if (roll == 7) {</span>
+<span class="nc" id="L102">                        inputHandler.displayMessage(&quot;Rolled 7 — robber activated, no resources distributed.&quot;);</span>
+<span class="nc" id="L103">                    } </span>
                     else {
-<span class="fc" id="L109">                        game.distributeResourcesForRoll(roll);</span>
-<span class="fc" id="L110">                        inputHandler.displayMessage(</span>
-                            &quot;Resources distributed for roll of &quot; + roll + &quot;.&quot;);
+<span class="fc" id="L105">                        game.distributeResourcesForRoll(roll);</span>
+<span class="fc" id="L106">                        inputHandler.displayMessage(&quot;Resources distributed for roll of &quot; + roll + &quot;.&quot;);</span>
                     }
-                    //Transition: START -&gt; ROLLED
-<span class="fc" id="L114">                    state = TurnState.ROLLED;</span>
-<span class="fc" id="L115">                    inputHandler.displayMessage(&quot;State:&quot; + state);</span>
-<span class="fc" id="L116">                    break;</span>
+                    
+                    //Transition
+<span class="fc" id="L110">                    state = TurnState.ROLLED;</span>
+<span class="fc" id="L111">                    inputHandler.displayMessage(&quot;State:&quot; + state);</span>
+<span class="fc" id="L112">                    break;</span>
                     
                  //LIST : always legal, no state change
-         
-
                 case LIST:
-                	// canList() is alwats true but is checked to mirror the automaton
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">                	if(!state.canList()) {</span>
-<span class="nc" id="L124">                		inputHandler.displayMessage(&quot;[ILLEGAL] Cannot list in state &quot; + state);</span>
-<span class="nc" id="L125">                		break;</span>
+                	
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">                	if(!state.canList()) {</span>
+<span class="nc" id="L118">                		inputHandler.displayMessage(&quot;[ILLEGAL] Cannot list in state &quot; + state);</span>
+<span class="nc" id="L119">                		break;</span>
                 	}
-<span class="fc" id="L127">                    inputHandler.displayMessage(describeHand());</span>
-<span class="fc" id="L128">                    break;</span>
+<span class="fc" id="L121">                    inputHandler.displayMessage(describeHand());</span>
+<span class="fc" id="L122">                    break;</span>
                     
                 //BUILD commands: only legal is ROLLED
-
                 case BUILD_SETTLEMENT:
-<span class="fc bfc" id="L133" title="All 2 branches covered.">                    if (!state.canBuild()) {</span>
-<span class="fc" id="L134">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
-<span class="fc" id="L135">                        break;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                    if (!state.canBuild()) {</span>
+<span class="fc" id="L127">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
+<span class="fc" id="L128">                        break;</span>
                     }
-<span class="fc" id="L137">                    handleBuildSettlement(roundNumber, board, rules, cmd.nodeA);</span>
-                    //state stays ROLLED
-<span class="fc" id="L139">                    break;</span>
+<span class="fc" id="L130">                    handleBuildSettlement(roundNumber, board, rules, cmd.nodeA);</span>
+<span class="fc" id="L131">                    break;</span>
 
                 case BUILD_CITY:
-<span class="fc bfc" id="L142" title="All 2 branches covered.">                    if (!state.canBuild()) {</span>
-<span class="fc" id="L143">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
-<span class="fc" id="L144">                        break;</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                    if (!state.canBuild()) {</span>
+<span class="fc" id="L135">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
+<span class="fc" id="L136">                        break;</span>
                     }
-<span class="fc" id="L146">                    handleBuildCity(roundNumber, board, rules, cmd.nodeA);</span>
-<span class="fc" id="L147">                    break;</span>
+<span class="fc" id="L138">                    handleBuildCity(roundNumber, board, rules, cmd.nodeA);</span>
+<span class="fc" id="L139">                    break;</span>
 
                 case BUILD_ROAD:
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">                    if (!state.canBuild()) {</span>
-<span class="nc" id="L151">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
-<span class="nc" id="L152">                        break;</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                    if (!state.canBuild()) {</span>
+<span class="nc" id="L143">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before building.&quot;);</span>
+<span class="nc" id="L144">                        break;</span>
                     }
-<span class="fc" id="L154">                    handleBuildRoad(roundNumber, board, rules, cmd.nodeA, cmd.nodeB);</span>
-<span class="fc" id="L155">                    break;</span>
+<span class="fc" id="L146">                    handleBuildRoad(roundNumber, board, rules, cmd.nodeA, cmd.nodeB);</span>
+<span class="fc" id="L147">                    break;</span>
 
-                // GO; Only legal in ROLLED
+                // GO: Only legal in ROLLED
                 case GO:
-<span class="fc bfc" id="L159" title="All 2 branches covered.">                    if (!state.canGo()) {</span>
-<span class="fc" id="L160">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before ending your turn.&quot;);</span>
-<span class="fc" id="L161">                        break;</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">                    if (!state.canGo()) {</span>
+<span class="fc" id="L152">                        inputHandler.displayMessage(&quot;[ILLEGAL in state &quot; + state + &quot;] You must Roll before ending your turn.&quot;);</span>
+<span class="fc" id="L153">                        break;</span>
                     }
-<span class="fc" id="L163">                    GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Passed&quot;);</span>
-<span class="fc" id="L164">                    state = TurnState.DONE;</span>
-<span class="fc" id="L165">                    break;</span>
+<span class="fc" id="L155">                    GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Passed&quot;);</span>
+<span class="fc" id="L156">                    state = TurnState.DONE;</span>
+<span class="fc" id="L157">                    break;</span>
 
                 //UNKNOWN: reject with usage hint no state change
                 case UNKNOWN:
                 default:
-<span class="fc" id="L170">                    inputHandler.displayMessage(&quot;[ILLEGAL] Unknown command.\n&quot; + parser.usageHint());</span>
+<span class="fc" id="L162">                    inputHandler.displayMessage(&quot;[ILLEGAL] Unknown command.\n&quot; + parser.usageHint());</span>
                     break;
             }
-<span class="fc" id="L173">        }</span>
-<span class="fc" id="L174">    }</span>
+        }
+<span class="fc" id="L166">    }</span>
 
     /**
      * Blocks until the human types &quot;go&quot;
@@ -183,16 +175,16 @@ public class HumanPlayer extends Player {
      * @param message summary of the computer player action just performed
      */
     public void waitForGo(String message) {
-<span class="pc bpc" id="L186" title="2 of 4 branches missed.">        if (message != null &amp;&amp; !message.isEmpty()) {</span>
-<span class="fc" id="L187">            inputHandler.displayMessage(message);</span>
+<span class="pc bpc" id="L178" title="2 of 4 branches missed.">        if (message != null &amp;&amp; !message.isEmpty()) {</span>
+<span class="fc" id="L179">            inputHandler.displayMessage(message);</span>
         }
-<span class="fc" id="L189">        inputHandler.displayMessage(&quot;--- Type Go to continue to the next turn ---&quot;);</span>
-        while (true) {
-<span class="fc" id="L191">            String raw = inputHandler.readLine(&quot;&gt; &quot;);</span>
-<span class="fc" id="L192">            CommandParser.ParsedCommand cmd = parser.parse(raw);</span>
-<span class="fc bfc" id="L193" title="All 2 branches covered.">            if (cmd.type == CommandParser.CommandType.GO) return;</span>
-<span class="fc" id="L194">            inputHandler.displayMessage(&quot;Type 'Go' to proceed.&quot;);</span>
-<span class="fc" id="L195">        }</span>
+<span class="fc" id="L181">        inputHandler.displayMessage(&quot;--- Type Go to continue to the next turn ---&quot;);</span>
+<span class="fc" id="L182">        while (true) {</span>
+<span class="fc" id="L183">            String raw = inputHandler.readLine(&quot;&gt; &quot;);</span>
+<span class="fc" id="L184">            CommandParser.ParsedCommand cmd = parser.parse(raw);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">            if (cmd.type == CommandParser.CommandType.GO) return;</span>
+<span class="fc" id="L186">            inputHandler.displayMessage(&quot;Type 'Go' to proceed.&quot;);</span>
+        }
     }
 
     /**
@@ -204,30 +196,24 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildSettlement(int roundNumber, Board board,
-                                        Rules rules, int nodeId) {
-<span class="fc" id="L209">        Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_SETTLEMENT);</span>
-<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (!rules.canBuildSettlement(this, board, nodeId)) {</span>
-<span class="fc" id="L211">            inputHandler.displayMessage(&quot;Cannot build settlement at node &quot; + nodeId</span>
-                + &quot; — occupied or distance rule violated.&quot;);
-<span class="fc" id="L213">            return;</span>
+    private void handleBuildSettlement(int roundNumber, Board board, Rules rules, int nodeId) {
+<span class="fc" id="L200">        Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_SETTLEMENT);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (!rules.canBuildSettlement(this, board, nodeId)) {</span>
+<span class="fc" id="L202">            inputHandler.displayMessage(&quot;Cannot build settlement at node &quot; + nodeId + &quot; — occupied or distance rule violated.&quot;);</span>
+<span class="fc" id="L203">            return;</span>
         }
-<span class="pc bpc" id="L215" title="2 of 4 branches missed.">        if (!ownsRoadConnectedTo(nodeId, board) &amp;&amp; !hasNoRoadsYet(board)) {</span>
-<span class="nc" id="L216">            inputHandler.displayMessage(&quot;Settlement must connect to your road network.&quot;);</span>
-<span class="nc" id="L217">            return;</span>
+        
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
+<span class="fc" id="L207">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost) + &quot; | You have: &quot; + describeHand());</span>
+<span class="fc" id="L208">            return;</span>
         }
-<span class="fc bfc" id="L219" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
-<span class="fc" id="L220">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost)</span>
-<span class="fc" id="L221">                + &quot; | You have: &quot; + describeHand());</span>
-<span class="fc" id="L222">            return;</span>
-        }
-<span class="fc" id="L224">        payCost(cost);</span>
-<span class="fc" id="L225">        board.placeSettlement(getPlayerId(), nodeId);</span>
-<span class="fc" id="L226">        recordPlacedSettlement(nodeId);</span>
-<span class="fc" id="L227">        addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());</span>
-<span class="fc" id="L228">        GameLogger.printTurnAction(roundNumber, getPlayerId(),</span>
-            &quot;Built settlement at intersection &quot; + nodeId);
-<span class="fc" id="L230">    }</span>
+        
+<span class="fc" id="L211">        payCost(cost);</span>
+<span class="fc" id="L212">        board.placeSettlement(getPlayerId(), nodeId);</span>
+<span class="fc" id="L213">        recordPlacedSettlement(nodeId);</span>
+<span class="fc" id="L214">        addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());</span>
+<span class="fc" id="L215">        GameLogger.printTurnAction(roundNumber, getPlayerId(),&quot;Built settlement at intersection &quot; + nodeId);</span>
+<span class="fc" id="L216">    }</span>
 
     /**
      * Handles the &quot;Build city&quot; command.
@@ -238,26 +224,23 @@ public class HumanPlayer extends Player {
      * @param rules the rules engine
      * @param nodeId the target intersection ID
      */
-    private void handleBuildCity(int roundNumber, Board board,
-                                  Rules rules, int nodeId) {
-<span class="fc" id="L243">        Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_CITY);</span>
-<span class="fc bfc" id="L244" title="All 2 branches covered.">        if (!rules.canBuildCity(this, board, nodeId)) {</span>
-<span class="fc" id="L245">            inputHandler.displayMessage(&quot;Cannot build city at node &quot; + nodeId</span>
-                + &quot; — you must own a settlement there.&quot;);
-<span class="fc" id="L247">            return;</span>
+    private void handleBuildCity(int roundNumber, Board board, Rules rules, int nodeId) {
+    	
+<span class="fc" id="L229">        Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_CITY);</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (!rules.canBuildCity(this, board, nodeId)) {</span>
+<span class="fc" id="L231">            inputHandler.displayMessage(&quot;Cannot build city at node &quot; + nodeId + &quot; — you must own a settlement there.&quot;);</span>
+<span class="fc" id="L232">            return;</span>
         }
-<span class="fc bfc" id="L249" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
-<span class="fc" id="L250">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost)</span>
-<span class="fc" id="L251">                + &quot; | You have: &quot; + describeHand());</span>
-<span class="fc" id="L252">            return;</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
+<span class="fc" id="L235">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost) + &quot; | You have: &quot; + describeHand());</span>
+<span class="fc" id="L236">            return;</span>
         }
-<span class="fc" id="L254">        payCost(cost);</span>
-<span class="fc" id="L255">        board.upgradeSettlementToCity(getPlayerId(), nodeId);</span>
-<span class="fc" id="L256">        recordUpgradedCity(nodeId);</span>
-<span class="fc" id="L257">        addVictoryPoints(1);</span>
-<span class="fc" id="L258">        GameLogger.printTurnAction(roundNumber, getPlayerId(),</span>
-            &quot;Upgraded to city at intersection &quot; + nodeId);
-<span class="fc" id="L260">    }</span>
+<span class="fc" id="L238">        payCost(cost);</span>
+<span class="fc" id="L239">        board.upgradeSettlementToCity(getPlayerId(), nodeId);</span>
+<span class="fc" id="L240">        recordUpgradedCity(nodeId);</span>
+<span class="fc" id="L241">        addVictoryPoints(1);</span>
+<span class="fc" id="L242">        GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Upgraded to city at intersection &quot; + nodeId);</span>
+<span class="fc" id="L243">    }</span>
 
     /**
      * Handles the &quot;Build road&quot; command.
@@ -269,31 +252,27 @@ public class HumanPlayer extends Player {
      * @param fromNode first endpoint intersection ID
      * @param toNode second endpoint intersection ID
      */
-    private void handleBuildRoad(int roundNumber, Board board,
-                                  Rules rules, int fromNode, int toNode) {
-<span class="fc" id="L274">        Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_ROAD);</span>
-<span class="fc" id="L275">        Edge targetEdge = findEdge(board, fromNode, toNode);</span>
-<span class="fc bfc" id="L276" title="All 2 branches covered.">        if (targetEdge == null) {</span>
-<span class="fc" id="L277">            inputHandler.displayMessage(&quot;No edge exists between node &quot;</span>
-                + fromNode + &quot; and &quot; + toNode + &quot;.&quot;);
-<span class="fc" id="L279">            return;</span>
+    private void handleBuildRoad(int roundNumber, Board board, Rules rules, int fromNode, int toNode) {
+        
+<span class="fc" id="L257">    	Map&lt;Resources, Integer&gt; cost = rules.getCost(ActionType.BUILD_ROAD);</span>
+<span class="fc" id="L258">        Edge targetEdge = findEdge(board, fromNode, toNode);</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">        if (targetEdge == null) {</span>
+<span class="fc" id="L260">            inputHandler.displayMessage(&quot;No edge exists between node &quot; + fromNode + &quot; and &quot; + toNode + &quot;.&quot;);</span>
+<span class="fc" id="L261">            return;</span>
         }
-<span class="fc bfc" id="L281" title="All 2 branches covered.">        if (!rules.canBuildRoad(this, board, targetEdge)) {</span>
-<span class="fc" id="L282">            inputHandler.displayMessage(</span>
-                &quot;Cannot build road there — must connect to your network.&quot;);
-<span class="fc" id="L284">            return;</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (!rules.canBuildRoad(this, board, targetEdge)) {</span>
+<span class="fc" id="L264">            inputHandler.displayMessage(&quot;Cannot build road there — must connect to your network.&quot;);</span>
+<span class="fc" id="L265">            return;</span>
         }
-<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
-<span class="fc" id="L287">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost)</span>
-<span class="fc" id="L288">                + &quot; | You have: &quot; + describeHand());</span>
-<span class="fc" id="L289">            return;</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">        if (!hasEnoughResources(cost)) {</span>
+<span class="fc" id="L268">            inputHandler.displayMessage(&quot;Not enough resources. Need: &quot; + describeCost(cost) + &quot; | You have: &quot; + describeHand());</span>
+<span class="fc" id="L269">            return;</span>
         }
-<span class="fc" id="L291">        payCost(cost);</span>
-<span class="fc" id="L292">        board.placeRoad(getPlayerId(), fromNode, toNode);</span>
-<span class="fc" id="L293">        recordPlacedRoad(fromNode, toNode);</span>
-<span class="fc" id="L294">        GameLogger.printTurnAction(roundNumber, getPlayerId(),</span>
-            &quot;Built road between &quot; + fromNode + &quot; and &quot; + toNode);
-<span class="fc" id="L296">    }</span>
+<span class="fc" id="L271">        payCost(cost);</span>
+<span class="fc" id="L272">        board.placeRoad(getPlayerId(), fromNode, toNode);</span>
+<span class="fc" id="L273">        recordPlacedRoad(fromNode, toNode);</span>
+<span class="fc" id="L274">        GameLogger.printTurnAction(roundNumber, getPlayerId(), &quot;Built road between &quot; + fromNode + &quot; and &quot; + toNode);</span>
+<span class="fc" id="L275">    }</span>
 
     //Private utility helpers
     
@@ -306,44 +285,42 @@ public class HumanPlayer extends Player {
      * @return the matching Edge, or null
      */
     private Edge findEdge(Board board, int fromNode, int toNode) {
-<span class="fc bfc" id="L309" title="All 2 branches covered.">        for (Edge e : board.getAllEdges()) {</span>
-<span class="fc bfc" id="L310" title="All 4 branches covered.">            if ((e.getIntersectionA() == fromNode &amp;&amp; e.getIntersectionB() == toNode)</span>
-<span class="pc bpc" id="L311" title="3 of 4 branches missed.">             || (e.getIntersectionA() == toNode   &amp;&amp; e.getIntersectionB() == fromNode)) {</span>
-<span class="fc" id="L312">                return e;</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">        for (Edge e : board.getAllEdges()) {</span>
+<span class="pc bpc" id="L289" title="1 of 8 branches missed.">            if ((e.getIntersectionA() == fromNode &amp;&amp; e.getIntersectionB() == toNode) || (e.getIntersectionA() == toNode   &amp;&amp; e.getIntersectionB() == fromNode)) {</span>
+<span class="fc" id="L290">                return e;</span>
             }
         }
-<span class="fc" id="L315">        return null;</span>
+<span class="fc" id="L293">        return null;</span>
     }
 
     /**
      * Returns true if this player has not yet placed any roads.
-     * Used to skip road-connectivity check during initial placement.
+     * Used to skip road connectivity check during initial placement.
      *
      * @param board the board
      * @return true if player has no roads
      */
     private boolean hasNoRoadsYet(Board board) {
-<span class="fc bfc" id="L326" title="All 2 branches covered.">        for (Edge e : board.getAllEdges()) {</span>
-<span class="pc bpc" id="L327" title="1 of 2 branches missed.">            if (e.getRoadOwnerId() == getPlayerId()) return false;</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">        for (Edge e : board.getAllEdges()) {</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">            if (e.getRoadOwnerId() == getPlayerId()) return false;</span>
         }
-<span class="fc" id="L329">        return true;</span>
+<span class="nc" id="L307">        return true;</span>
     }
 
     /**
      * Returns a readable summary of all resource cards in hand.
      * Used by the List command.
      *
-     * @return formatted hand string e.g. &quot;Hand — WOOD: 2, BRICK: 1&quot;
+     * @return formatted hand string e.g. &quot;Hand - WOOD: 2, BRICK: 1&quot;
      */
     private String describeHand() {
-<span class="fc" id="L339">        StringBuilder sb = new StringBuilder(&quot;Hand — &quot;);</span>
-<span class="fc" id="L340">        Resources[] all = {Resources.WOOD, Resources.BRICK, Resources.WHEAT,</span>
-                           Resources.SHEEP, Resources.ORE};
-<span class="fc bfc" id="L342" title="All 2 branches covered.">        for (int i = 0; i &lt; all.length; i++) {</span>
-<span class="fc" id="L343">            sb.append(all[i].name()).append(&quot;: &quot;).append(getResourceCount(all[i]));</span>
-<span class="fc bfc" id="L344" title="All 2 branches covered.">            if (i &lt; all.length - 1) sb.append(&quot;, &quot;);</span>
+<span class="fc" id="L317">        StringBuilder sb = new StringBuilder(&quot;Hand — &quot;);</span>
+<span class="fc" id="L318">        Resources[] all = {Resources.WOOD, Resources.BRICK, Resources.WHEAT, Resources.SHEEP, Resources.ORE};</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">        for (int i = 0; i &lt; all.length; i++) {</span>
+<span class="fc" id="L320">            sb.append(all[i].name()).append(&quot;: &quot;).append(getResourceCount(all[i]));</span>
+<span class="fc bfc" id="L321" title="All 2 branches covered.">            if (i &lt; all.length - 1) sb.append(&quot;, &quot;);</span>
         }
-<span class="fc" id="L346">        return sb.toString();</span>
+<span class="fc" id="L323">        return sb.toString();</span>
     }
 
     /**
@@ -354,12 +331,12 @@ public class HumanPlayer extends Player {
      * @return number of cards of that resource
      */
     private int getResourceCount(Resources resource) {
-<span class="fc" id="L357">        java.util.Map&lt;Resources, Integer&gt; probe = new java.util.EnumMap&lt;&gt;(Resources.class);</span>
-<span class="pc bpc" id="L358" title="1 of 2 branches missed.">        for (int n = 1; n &lt;= 50; n++) {</span>
-<span class="fc" id="L359">            probe.put(resource, n);</span>
-<span class="fc bfc" id="L360" title="All 2 branches covered.">            if (!hasEnoughResources(probe)) return n - 1;</span>
+<span class="fc" id="L334">        java.util.Map&lt;Resources, Integer&gt; probe = new java.util.EnumMap&lt;&gt;(Resources.class);</span>
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">        for (int n = 1; n &lt;= 50; n++) {</span>
+<span class="fc" id="L336">            probe.put(resource, n);</span>
+<span class="fc bfc" id="L337" title="All 2 branches covered.">            if (!hasEnoughResources(probe)) return n - 1;</span>
         }
-<span class="nc" id="L362">        return 50;</span>
+<span class="nc" id="L339">        return 50;</span>
     }
 
     /**
@@ -369,12 +346,12 @@ public class HumanPlayer extends Player {
      * @return formatted string e.g. &quot;WOOD x1, BRICK x1&quot;
      */
     private String describeCost(Map&lt;Resources, Integer&gt; cost) {
-<span class="fc" id="L372">        StringBuilder sb = new StringBuilder();</span>
-<span class="fc bfc" id="L373" title="All 2 branches covered.">        for (Map.Entry&lt;Resources, Integer&gt; entry : cost.entrySet()) {</span>
-<span class="fc bfc" id="L374" title="All 2 branches covered.">            if (sb.length() &gt; 0) sb.append(&quot;, &quot;);</span>
-<span class="fc" id="L375">            sb.append(entry.getKey().name()).append(&quot; x&quot;).append(entry.getValue());</span>
-<span class="fc" id="L376">        }</span>
-<span class="fc" id="L377">        return sb.toString();</span>
+<span class="fc" id="L349">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">        for (Map.Entry&lt;Resources, Integer&gt; entry : cost.entrySet()) {</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">            if (sb.length() &gt; 0) sb.append(&quot;, &quot;);</span>
+<span class="fc" id="L352">            sb.append(entry.getKey().name()).append(&quot; x&quot;).append(entry.getValue());</span>
+        }
+<span class="fc" id="L354">        return sb.toString();</span>
     }
 
     /**
@@ -383,7 +360,7 @@ public class HumanPlayer extends Player {
      * @return the input handler
      */
     public InputHandler getInputHandler() {
-<span class="nc" id="L386">        return inputHandler;</span>
+<span class="nc" id="L363">        return inputHandler;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

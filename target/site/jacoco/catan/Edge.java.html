@@ -86,7 +86,7 @@ public class Edge implements OwnedBoardElement {
      */
     @Override
     public int getOwnerId() {
-<span class="fc" id="L89">        return roadOwnerId;</span>
+<span class="nc" id="L89">        return roadOwnerId;</span>
     }
 
     /**
@@ -109,9 +109,9 @@ public class Edge implements OwnedBoardElement {
      * @return normalized key string e.g. &quot;2-5&quot;
      */
     public static String edgeKey(int a, int b) {
-<span class="nc" id="L112">        int min = Math.min(a, b);</span>
-<span class="nc" id="L113">        int max = Math.max(a, b);</span>
-<span class="nc" id="L114">        return min + &quot;-&quot; + max;</span>
+<span class="fc" id="L112">        int min = Math.min(a, b);</span>
+<span class="fc" id="L113">        int max = Math.max(a, b);</span>
+<span class="fc" id="L114">        return min + &quot;-&quot; + max;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

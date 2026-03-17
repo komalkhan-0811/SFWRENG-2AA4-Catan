@@ -66,10 +66,10 @@ import java.io.IOException;
 		try {
 <span class="nc" id="L67">			maxRounds = readConfigFile(&quot;config.txt&quot;);</span>
 			
-		}
+<span class="nc" id="L69">		}</span>
 <span class="nc" id="L70">		catch(IOException e){</span>
 <span class="nc" id="L71">			System.out.println(&quot;Could not read config file, using default: &quot; + maxRounds + &quot; rounds&quot;);</span>
-<span class="nc" id="L72">		}</span>
+		}
 		
 		//Validating that turns value is within acceptable range 
 		//R1.4 specifies: turns: int [1-8192]
@@ -97,7 +97,7 @@ import java.io.IOException;
 		 * This path works as long as program is run from the 
 		 * project root directory
 		 */
-<span class="nc" id="L100">		game.setStateOutputDir(java.nio.file.Paths.get(&quot;visualize&quot;));</span>
+<span class="nc" id="L100">		game.setStateOutputDir(java.nio.file.Paths.get(&quot;src/visualize&quot;));</span>
 		
 		/**
 		 * 
@@ -154,7 +154,7 @@ import java.io.IOException;
 <span class="fc" id="L154">					return Integer.parseInt(parts[1].trim());</span>
 					
 				}
-<span class="nc" id="L157">			}</span>
+			}
 		}
 <span class="fc" id="L159">		reader.close();</span>
 <span class="fc" id="L160">		throw new IOException(&quot;No valid 'turns' configuration found &quot;);</span>

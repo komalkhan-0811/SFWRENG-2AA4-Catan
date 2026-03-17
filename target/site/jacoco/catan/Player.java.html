@@ -7,7 +7,7 @@ package catan;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,38 +23,20 @@ import java.util.Set;
  */
 public class Player {
 
-	 /** Unique identifier for this player. */
+	 
     private int playerId;
     
-    /** Colour assigned to this player. */
     private Colour colour;
     
-    /** Current victory point total. */
     private int victoryPoints;
 
-    /**
-     * Resource cards held by the player.
-     * Key = resource type, Value = quantity owned.
-     */
-    
-    /**
-     * Resource cards held by the player.
-     * Key = resource type, Value = quantity owned.
-     */
     private Map&lt;Resources, Integer&gt; resourceCards;
 
-
-    /**
-     * Buildings owned by the player.
-     * Key = intersection ID, Value = building type (SETTLEMENT or CITY).
-     */
     private Map&lt;Integer, Building&gt; ownedBuildings;
 
-    /**
-     * Normalized edge keys for roads owned by the player.
-     * Format: &quot;min-max&quot; where min and max are intersection IDs.
-     */
     private Set&lt;String&gt; ownedRoadEdgeKeys;
+
+    private final SecureRandom rng;
 
     /**
      * Constructs a new Player with the given ID and colour
@@ -62,16 +44,17 @@ public class Player {
      * @param playerId the unique identifier for the player
      * @param colour the colour assigned to the player
      */
-<span class="fc" id="L65">    public Player(int playerId, Colour colour) {</span>
-<span class="fc" id="L66">        this.playerId = playerId;</span>
-<span class="fc" id="L67">        this.colour = colour;</span>
-<span class="fc" id="L68">        this.victoryPoints = 0;</span>
+<span class="fc" id="L47">    public Player(int playerId, Colour colour) {</span>
+<span class="fc" id="L48">        this.playerId = playerId;</span>
+<span class="fc" id="L49">        this.colour = colour;</span>
+<span class="fc" id="L50">        this.victoryPoints = 0;</span>
+<span class="fc" id="L51">        this.rng = new SecureRandom();</span>
 
         // Initialize all collections as empty
-<span class="fc" id="L71">        this.resourceCards = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L72">        this.ownedBuildings = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L73">        this.ownedRoadEdgeKeys = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L54">        this.resourceCards = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L55">        this.ownedBuildings = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L56">        this.ownedRoadEdgeKeys = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L57">    }</span>
 
     /**
      * Returns the player's unique ID
@@ -79,7 +62,7 @@ public class Player {
      * @return the player ID
      */
     public int getPlayerId() {
-<span class="fc" id="L82">        return playerId;</span>
+<span class="fc" id="L65">        return playerId;</span>
     }
 
     /**
@@ -88,7 +71,7 @@ public class Player {
      * @return the player's colour
      */
     public Colour getColour() {
-<span class="fc" id="L91">        return colour;</span>
+<span class="fc" id="L74">        return colour;</span>
     }
 
     /**
@@ -97,7 +80,7 @@ public class Player {
      * @return the current victory point total
      */
     public int getVictoryPoints() {
-<span class="fc" id="L100">        return victoryPoints;</span>
+<span class="fc" id="L83">        return victoryPoints;</span>
     }
 
     /**
@@ -106,8 +89,8 @@ public class Player {
      * @param points the number of points to add
      */
     public void addVictoryPoints(int points) {
-<span class="fc" id="L109">        victoryPoints += points;</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L92">        victoryPoints += points;</span>
+<span class="fc" id="L93">    }</span>
 
     /**
      * Returns the total number of resource cards in the player's hand.
@@ -116,12 +99,11 @@ public class Player {
      * @return the total number of resource cards in hand
      */
     public int getTotalCardsInHand() {
-<span class="fc" id="L119">        int total = 0;</span>
-     // Sum up counts for every resource type
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        for (int count : resourceCards.values()) {</span>
-<span class="fc" id="L122">            total += count;</span>
-<span class="fc" id="L123">        }</span>
-<span class="fc" id="L124">        return total;</span>
+<span class="fc" id="L102">        int total = 0;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        for (int count : resourceCards.values()) {</span>
+<span class="fc" id="L104">            total += count;</span>
+        }
+<span class="fc" id="L106">        return total;</span>
     }
 
     /**
@@ -133,8 +115,8 @@ public class Player {
      */
     public void addResource(Resources type, int amount) {
     	// getOrDefault handles the case where player has none of this resource yet
-<span class="fc" id="L136">        resourceCards.put(type, resourceCards.getOrDefault(type, 0) + amount);</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L118">        resourceCards.put(type, resourceCards.getOrDefault(type, 0) + amount);</span>
+<span class="fc" id="L119">    }</span>
 
     /**
      * Checks whether the player has enough resources to pay a given cost
@@ -143,14 +125,13 @@ public class Player {
      * @return true if the player can afford the cost otherwise false 
      */
     public boolean hasEnoughResources(Map&lt;Resources, Integer&gt; cost) {
-<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (Resources type : cost.keySet()) {</span>
-<span class="fc" id="L147">            int owned = resourceCards.getOrDefault(type, 0);</span>
-         // Fail fast if any single resource is insufficient
-<span class="fc bfc" id="L149" title="All 2 branches covered.">            if (owned &lt; cost.get(type)) {</span>
-<span class="fc" id="L150">                return false;</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        for (Resources type : cost.keySet()) {</span>
+<span class="fc" id="L129">            int owned = resourceCards.getOrDefault(type, 0);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (owned &lt; cost.get(type)) {</span>
+<span class="fc" id="L131">                return false;</span>
             }
-<span class="fc" id="L152">        }</span>
-<span class="fc" id="L153">        return true;</span>
+        }
+<span class="fc" id="L134">        return true;</span>
     }
 
     /**
@@ -164,17 +145,17 @@ public class Player {
     public void payCost(Map&lt;Resources, Integer&gt; cost) {
     	
     	// should never be reached if caller checks first
-<span class="fc bfc" id="L167" title="All 2 branches covered.">    	if (!hasEnoughResources(cost)) {</span>
-<span class="fc" id="L168">              throw new IllegalArgumentException(</span>
-                  &quot;Player &quot; + playerId + &quot; does not have enough resources to pay the cost.&quot;);
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    	if (!hasEnoughResources(cost)) {</span>
+<span class="fc" id="L149">              throw new IllegalArgumentException(</span>
+<span class="fc" id="L150">                  &quot;Player &quot; + playerId + &quot; does not have enough resources to pay the cost.&quot;);</span>
           }
 
     	// Deduct each resource in the cost map
-<span class="fc bfc" id="L173" title="All 2 branches covered.">        for (Resources type : cost.keySet()) {</span>
-<span class="fc" id="L174">            int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);</span>
-<span class="fc" id="L175">            resourceCards.put(type, remaining);</span>
-<span class="fc" id="L176">        }</span>
-<span class="fc" id="L177">    }</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        for (Resources type : cost.keySet()) {</span>
+<span class="fc" id="L155">            int remaining = resourceCards.getOrDefault(type, 0) - cost.get(type);</span>
+<span class="fc" id="L156">            resourceCards.put(type, remaining);</span>
+        }
+<span class="fc" id="L158">    }</span>
 
     /**
      * Checks whether the player owns a settlement at that intersection 
@@ -183,8 +164,7 @@ public class Player {
      * @return true if the player owns a settlement at that intersection otherwise false 
      */
     public boolean ownsSettlementAt(int intersectionId) {
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        return ownedBuildings.containsKey(intersectionId) </span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">            &amp;&amp; ownedBuildings.get(intersectionId) == Building.SETTLEMENT;</span>
+<span class="nc bnc" id="L167" title="All 4 branches missed.">        return ownedBuildings.containsKey(intersectionId) &amp;&amp; ownedBuildings.get(intersectionId) == Building.SETTLEMENT;</span>
     }
 
     /**
@@ -197,63 +177,63 @@ public class Player {
      * @return true if any owned road touches this intersection otherwise false 
      */
     public boolean ownsRoadConnectedTo(int intersectionId, Board board) {
-<span class="pc bpc" id="L200" title="1 of 2 branches missed.">        if (board == null) {</span>
-<span class="nc" id="L201">            return false;</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if (board == null) {</span>
+<span class="nc" id="L181">            return false;</span>
         }
 
         // Check both endpoints of each owned road edge key
-<span class="fc bfc" id="L205" title="All 2 branches covered.">        for (String key : ownedRoadEdgeKeys) {</span>
-<span class="fc bfc" id="L206" title="All 4 branches covered.">            if (key.startsWith(intersectionId + &quot;-&quot;) || key.endsWith(&quot;-&quot; + intersectionId)) {</span>
-<span class="fc" id="L207">                return true;</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        for (String key : ownedRoadEdgeKeys) {</span>
+<span class="fc bfc" id="L186" title="All 4 branches covered.">            if (key.startsWith(intersectionId + &quot;-&quot;) || key.endsWith(&quot;-&quot; + intersectionId)) {</span>
+<span class="fc" id="L187">                return true;</span>
             }
-<span class="fc" id="L209">        }</span>
-<span class="fc" id="L210">        return false;</span>
+        }
+<span class="fc" id="L190">        return false;</span>
     }
 
     /**
      * Records that the player placed a settlement at the given intersection
-     * Note: Victory points are added in Game.executeAction, not here
+     * - Victory points are added in Game.executeAction, not in this class
      *
      * @param intersectionId the intersection where the settlement was placed
      */
     public void recordPlacedSettlement(int intersectionId) {
-<span class="fc" id="L220">        ownedBuildings.put(intersectionId, Building.SETTLEMENT);</span>
-<span class="fc" id="L221">    }</span>
+<span class="fc" id="L200">        ownedBuildings.put(intersectionId, Building.SETTLEMENT);</span>
+<span class="fc" id="L201">    }</span>
 
     /**
      * records that player upgraded from settlement to city at intersection
-     * Note: Victory points are added in Game.executeAction, not here
+     * - Victory points are added in Game.executeAction
      *
      * @param intersectionId the intersection where the city upgrade occurred
      */
     public void recordUpgradedCity(int intersectionId) {
-<span class="fc" id="L230">        ownedBuildings.put(intersectionId, Building.CITY);</span>
-<span class="fc" id="L231">    }</span>
+<span class="fc" id="L210">        ownedBuildings.put(intersectionId, Building.CITY);</span>
+<span class="fc" id="L211">    }</span>
 
     /**
      * Records that the player placed a road between two intersections.
-     * Stores a normalized edge key so road lookups are order-independent.
+     * Stores a normalized edge key so road lookups are order independent.
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
      */
     public void recordPlacedRoad(int intersectionA, int intersectionB) {
-<span class="fc" id="L241">        ownedRoadEdgeKeys.add(edgeKey(intersectionA, intersectionB));</span>
-<span class="fc" id="L242">    }</span>
+<span class="fc" id="L221">        ownedRoadEdgeKeys.add(edgeKey(intersectionA, intersectionB));</span>
+<span class="fc" id="L222">    }</span>
 
     /**
      * Generates a normalized edge key for a road between two intersections.
      * Always stores the smaller ID first so the key is order-independent.
-     * e.g. edge(5,3) and edge(3,5) both produce &quot;3-5&quot;.
+     * for example: edge(5,3) and edge(3,5) both produce &quot;3-5&quot;.
      *
      * @param intersectionA the first endpoint intersection ID
      * @param intersectionB the second endpoint intersection ID
      * @return a String key representing the edge
      */
     public String edgeKey(int intersectionA, int intersectionB) {
-<span class="fc" id="L254">        int min = Math.min(intersectionA, intersectionB);</span>
-<span class="fc" id="L255">        int max = Math.max(intersectionA, intersectionB);</span>
-<span class="fc" id="L256">        return min + &quot;-&quot; + max;</span>
+<span class="fc" id="L234">        int min = Math.min(intersectionA, intersectionB);</span>
+<span class="fc" id="L235">        int max = Math.max(intersectionA, intersectionB);</span>
+<span class="fc" id="L236">        return min + &quot;-&quot; + max;</span>
     }
     
     
@@ -265,12 +245,12 @@ public class Player {
      * @param amount the number of cards to remove
      */
     public void removeResources(Resources type, int amount) {
-<span class="fc" id="L268">    	int current = resourceCards.getOrDefault(type, 0);</span>
-<span class="fc" id="L269">    	int newAmount = Math.max(0,  current - amount);</span>
-<span class="fc" id="L270">    	resourceCards.put(type,  newAmount);</span>
+<span class="fc" id="L248">    	int current = resourceCards.getOrDefault(type, 0);</span>
+<span class="fc" id="L249">    	int newAmount = Math.max(0,  current - amount);</span>
+<span class="fc" id="L250">    	resourceCards.put(type,  newAmount);</span>
     	
     	
-<span class="fc" id="L273">    }</span>
+<span class="fc" id="L253">    }</span>
     
     /**
      * Discards half of the player's cards when they have more than 7
@@ -281,37 +261,35 @@ public class Player {
      */
     
     public int discardHalfCards() {
-<span class="fc" id="L284">    	int totalCards = getTotalCardsInHand();</span>
+<span class="fc" id="L264">    	int totalCards = getTotalCardsInHand();</span>
     	
-    	// No discard needed if hand size is 7 or fewer
-<span class="fc bfc" id="L287" title="All 2 branches covered.">    	if(totalCards &lt;= 7) {</span>
-<span class="fc" id="L288">    		return 0;</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">    	if(totalCards &lt;= 7) {</span>
+<span class="fc" id="L267">    		return 0;</span>
     	}
     	
     	// player discards floor(total/2)
-<span class="fc" id="L292">    	int haveToDiscard = totalCards / 2; </span>
-<span class="fc" id="L293">    	int discarded = 0;</span>
+<span class="fc" id="L271">    	int haveToDiscard = totalCards / 2; </span>
+<span class="fc" id="L272">    	int discarded = 0;</span>
     	
-    	 // Build a flat list of all individual resource cards in hand
-<span class="fc" id="L296">    	List&lt;Resources&gt; allCards = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L297" title="All 2 branches covered.">    	for(Map.Entry&lt;Resources, Integer&gt; entry: resourceCards.entrySet()) {</span>
-<span class="fc" id="L298">    		Resources type = entry.getKey();</span>
-<span class="fc" id="L299">    		int count = entry.getValue();</span>
-<span class="fc bfc" id="L300" title="All 2 branches covered.">    		for(int x = 0; x &lt;count; x++) {</span>
-<span class="fc" id="L301">    			allCards.add(type);</span>
+    
+<span class="fc" id="L275">    	List&lt;Resources&gt; allCards = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">    	for(Map.Entry&lt;Resources, Integer&gt; entry: resourceCards.entrySet()) {</span>
+<span class="fc" id="L277">    		Resources type = entry.getKey();</span>
+<span class="fc" id="L278">    		int count = entry.getValue();</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">    		for(int x = 0; x &lt;count; x++) {</span>
+<span class="fc" id="L280">    			allCards.add(type);</span>
     		}
-<span class="fc" id="L303">    	}</span>
-    	
-    	// Randomly pick and remove cards one at a time until discard quota is met
-<span class="fc" id="L306">    	Random r = new Random();</span>
-<span class="pc bpc" id="L307" title="1 of 4 branches missed.">    	for (int x = 0; x &lt; haveToDiscard &amp;&amp; !allCards.isEmpty(); x++) {</span>
-<span class="fc" id="L308">    		int randomNum = r.nextInt(allCards.size());</span>
-<span class="fc" id="L309">    		Resources typeToRemove = allCards.remove(randomNum);</span>
-<span class="fc" id="L310">    		removeResources(typeToRemove, 1);</span>
-<span class="fc" id="L311">    		discarded++;</span>
     	}
     	
-<span class="fc" id="L314">    	return discarded;</span>
+    	// Randomly pick and remove cards one at a time
+<span class="pc bpc" id="L285" title="1 of 4 branches missed.">    	for (int x = 0; x &lt; haveToDiscard &amp;&amp; !allCards.isEmpty(); x++) {</span>
+<span class="fc" id="L286">    		int randomNum = rng.nextInt(allCards.size());</span>
+<span class="fc" id="L287">    		Resources typeToRemove = allCards.remove(randomNum);</span>
+<span class="fc" id="L288">    		removeResources(typeToRemove, 1);</span>
+<span class="fc" id="L289">    		discarded++;</span>
+    	}
+    	
+<span class="fc" id="L292">    	return discarded;</span>
     	
     	
     }
@@ -325,25 +303,24 @@ public class Player {
      *         or null if the player has no cards
      */
     public Resources getRandomResource() {
-    	// Build a flat list of all individual resource cards in hand
-<span class="fc" id="L329">    	List&lt;Resources&gt; allCards = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L307">    	List&lt;Resources&gt; allCards = new ArrayList&lt;&gt;();</span>
     	
-<span class="fc bfc" id="L331" title="All 2 branches covered.">    	for(Map.Entry&lt;Resources, Integer&gt; entry: resourceCards.entrySet()) {</span>
-<span class="fc" id="L332">    		Resources type = entry.getKey();</span>
-<span class="fc" id="L333">    		int count = entry.getValue();</span>
-<span class="fc bfc" id="L334" title="All 2 branches covered.">    		for (int x = 0; x &lt; count; x++) {</span>
-<span class="fc" id="L335">    			allCards.add(type);</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">    	for(Map.Entry&lt;Resources, Integer&gt; entry: resourceCards.entrySet()) {</span>
+<span class="fc" id="L310">    		Resources type = entry.getKey();</span>
+<span class="fc" id="L311">    		int count = entry.getValue();</span>
+<span class="fc bfc" id="L312" title="All 2 branches covered.">    		for (int x = 0; x &lt; count; x++) {</span>
+<span class="fc" id="L313">    			allCards.add(type);</span>
     		}
-<span class="fc" id="L337">    	}</span>
-    	
-    	// Return null if player has nothing to steal
-<span class="fc bfc" id="L340" title="All 2 branches covered.">    	if(allCards.isEmpty()) {</span>
-<span class="fc" id="L341">    		return null;</span>
     	}
     	
-    	 // Pick a random card from the flat list
-<span class="fc" id="L345">    	Random r = new Random();</span>
-<span class="fc" id="L346">    	return allCards.get(r.nextInt(allCards.size()));</span>
+    	// Return null if player has nothing to steal
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    	if(allCards.isEmpty()) {</span>
+<span class="fc" id="L319">    		return null;</span>
+    	}
+    	
+    	 // Pick a random card from the list
+<span class="fc" id="L323">    	return allCards.get(rng.nextInt(allCards.size()));</span>
     	
     	
     }
@@ -357,7 +334,7 @@ public class Player {
      */
     public Map&lt;Resources, Integer&gt;  getResourceCards(){
     	// Return a copy bc we never expose the internal map directly
-<span class="nc" id="L360">    	return new HashMap&lt;&gt;(resourceCards);</span>
+<span class="nc" id="L337">    	return new HashMap&lt;&gt;(resourceCards);</span>
     }
     
     
@@ -368,7 +345,7 @@ public class Player {
      * @return map of intersection ID to building type
      */
     public Map&lt;Integer, Building&gt; getOwnedBuildings(){
-<span class="nc" id="L371">    	return new HashMap&lt;&gt;(ownedBuildings);</span>
+<span class="nc" id="L348">    	return new HashMap&lt;&gt;(ownedBuildings);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
