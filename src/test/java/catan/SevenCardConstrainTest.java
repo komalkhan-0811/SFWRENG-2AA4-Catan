@@ -89,6 +89,7 @@ public class SevenCardConstrainTest {
     
     @Test
     void test_passAction_alwaysReturnsNegative() {
+    	
         // Even with >7 cards, PASS should not trigger constraint
         player.addResource(Resources.WOOD, 10);
         
@@ -102,13 +103,14 @@ public class SevenCardConstrainTest {
     
     @Test
     void test_mixedResources_totalOver7() {
+    	
         // Test with diverse resource mix
         player.addResource(Resources.WOOD, 2);
         player.addResource(Resources.BRICK, 1);
         player.addResource(Resources.WHEAT, 2);
         player.addResource(Resources.SHEEP, 2);
         player.addResource(Resources.ORE, 2);
-        // Total = 9 cards
+      
         
         Action action = Action.buildRoad(1, 2);
         double value = constraint.evaluate(player, board, action);
