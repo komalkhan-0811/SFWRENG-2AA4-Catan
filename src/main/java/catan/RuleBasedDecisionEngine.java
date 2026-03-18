@@ -66,7 +66,7 @@ public class RuleBasedDecisionEngine {
             double value = evaluateAction(player, board, action);
 
             // temporary line im just seeing if ai is acctually doing anyhting 
-            System.out.println("AI evaluating: " + action.getType() + " value=" + value);
+            //System.out.println("AI evaluating: " + action.getType() + " value=" + value);
 
             if (value > bestValue) {
                 bestValue = value;
