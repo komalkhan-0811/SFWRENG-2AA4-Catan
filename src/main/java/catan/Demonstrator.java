@@ -108,7 +108,9 @@ public class Demonstrator {
 			java.io.File[] files = scrapedDir.listFiles();
 			if (files != null) {
 				for (java.io.File f : files) {
-					f.delete();
+					if (!f.delete()) {
+    					System.out.println("Warning: Failed to delete file " + f.getName());
+					}
 				}
 			}
 		}
