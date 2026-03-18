@@ -2,8 +2,7 @@ package catan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
+import java.security.SecureRandom;
 /**
  * Evaluates all legal actions using a list of Rule objects and chooses
  * the highest-value action.
@@ -18,7 +17,7 @@ import java.util.Random;
 public class RuleBasedDecisionEngine {
 
     private final List<Rule> rules;
-    private final Random random;
+    private final SecureRandom random;
 
 
     //R3.3 Constraint checkers
@@ -31,7 +30,7 @@ public class RuleBasedDecisionEngine {
      */
     public RuleBasedDecisionEngine() {
         this.rules = new ArrayList<>();
-        this.random = new Random();
+        this.random = new SecureRandom();
 
 
         //initializign constraint checkers
