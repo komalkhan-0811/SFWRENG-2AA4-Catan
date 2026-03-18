@@ -10,6 +10,7 @@ public class RoadNetworkAnalyzerTest {
     private Player player;
     private Board board;
 
+    @BeforeEach
     void setUp() {
         analyzer = new RoadNetworkAnalyzer();
         player = new Player(1, Colour.RED);

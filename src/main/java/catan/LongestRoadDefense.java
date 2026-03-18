@@ -37,7 +37,7 @@ public class LongestRoadDefense {
         for (Player opponent : allPlayers) {
             if (opponent.getPlayerId() == player.getPlayerId()) continue;
             int opponentLongest = analyzer.calculateLongestRoad(opponent, board);
-            if (opponentLongest >= myLongestRoad - 1) {
+            if (opponentLongest >= myLongestRoad - 1 && opponentLongest <= myLongestRoad) {
                 return analyzer.extendsLongestRoad(player, board, action) ? 120.0 : -1.0;
             }
         }
