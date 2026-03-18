@@ -3,6 +3,7 @@ package catan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 public class LongestRoadTest {
 	
@@ -33,7 +34,8 @@ public class LongestRoadTest {
         // Player extends their road
         Action action = Action.buildRoad(8, 9);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should return 120.0 when defending against close opponent");
     }
@@ -50,7 +52,8 @@ public class LongestRoadTest {
         // Player extends
         Action action = Action.buildRoad(6, 7);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should trigger at exactly 5 roads");
     }
@@ -65,7 +68,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(11, 12);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should work with very long roads");
     }
@@ -81,15 +85,11 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(9, 10);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should trigger when opponent exactly 1 behind");
     }
-    
-    
-    
-    
-   
     
     @Test
     void test_constraintInactive_playerHas7_opponentHas5_tooFarBehind() {
@@ -101,7 +101,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(8, 9);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Should not trigger when opponent >1 behind");
     }
@@ -116,12 +117,13 @@ public class LongestRoadTest {
         // No opponents have roads
         Action action = Action.buildRoad(7, 8);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Should not trigger with no opponents");
     }
     
-    
+    @Test
     void test_nonRoadAction_settlement_returnsNegative() {
     	
         setupRoadChain(player, 1, 8);
@@ -129,7 +131,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildSettlement(5);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Settlement should never trigger constraint");
     }
@@ -145,7 +148,8 @@ public class LongestRoadTest {
         // Road that doesn't connect to existing network
         Action action = Action.buildRoad(30, 31);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Should not trigger if road doesn't extend network");
     }
@@ -160,7 +164,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(7, 8);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Should not trigger when player is behind");
     }
@@ -176,7 +181,8 @@ public class LongestRoadTest {
         
         Action action = Action.pass();
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Pass should never trigger constraint");
     }
@@ -189,13 +195,11 @@ public class LongestRoadTest {
         
         Action action = Action.buildCity(10);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "City should never trigger constraint");
     }
-    
-    
-    
     
     @Test
     void test_constraintInactive_playerHas4Roads_belowThreshold() {
@@ -208,7 +212,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(5, 6);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(-1.0, value, "Should not trigger below 5 roads");
     }
@@ -230,7 +235,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(8, 9);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent, opponent2);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should trigger if ANY opponent is 1 behind");
     }
@@ -245,7 +251,8 @@ public class LongestRoadTest {
         
         Action action = Action.buildRoad(7, 8);
         
-        double value = constraint.evaluate(player, board, action);
+        List<Player> all = java.util.Arrays.asList(player, opponent);
+        double value = constraint.evaluate(player, all, board, action);
         
         assertEquals(120.0, value, "Should trigger when opponent is tied");
     }
@@ -257,7 +264,6 @@ public class LongestRoadTest {
      */
     private void setupRoadChain(Player p, int start, int end) {
         for (int i = start; i < end; i++) {
-            board.placeRoad(p.getPlayerId(), i, i + 1);
             p.recordPlacedRoad(i, i + 1);
             
             // Also place a settlement at each intersection to make it valid on board

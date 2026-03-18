@@ -108,12 +108,18 @@ public class RoadNetworkAnalyzer {
 
 
     /**
-     *  Gets all road edge keys owned by a player
+     * Gets all road edge keys owned by a player.
+     * Uses the player's own record (ownedRoadEdgeKeys) as the correct source.
+     *
      * @param player
-     * @param board
-     * @return the set of roads with the player
+     * @param board  (kept for API compatibility, used as fallback)
+     * @return the set of road edge keys for this player
      */
     private Set<String> getPlayerRoads(Player player, Board board) {
+        Set<String> fromPlayer = player.getOwnedRoadEdgeKeys();
+        if (!fromPlayer.isEmpty()) {
+            return new HashSet<>(fromPlayer);
+        }
         Set<String> roads = new HashSet<>();
         for (Edge edge : board.getAllEdges()) {
             if (edge.isOccupied() && edge.getRoadOwnerId() == player.getPlayerId()) {

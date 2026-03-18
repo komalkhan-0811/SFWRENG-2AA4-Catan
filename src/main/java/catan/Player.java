@@ -347,4 +347,14 @@ public class Player {
     public Map<Integer, Building> getOwnedBuildings(){
     	return new HashMap<>(ownedBuildings);
     }
+
+    /**
+     * Returns the set of road edge keys owned by this player.
+     *
+     * @return set of edge keys e.g. "1-2", "3-4"
+     */
+    public Set<String> getOwnedRoadEdgeKeys() {
+        return java.util.Collections.unmodifiableSet(ownedRoadEdgeKeys);
+    }
+
 }

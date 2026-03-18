@@ -93,8 +93,7 @@ public class RuleBasedDecisionEngine {
 
         value = Math.max(value, cardConstraint.evaluate(player, board, action));
         value = Math.max(value, gapConstraint.evaluate(player, board, action));
-        value = Math.max(value, longestRoad.evaluate(player, board, action));
-
+        value = Math.max(value, longestRoad.evaluate(player, java.util.Collections.emptyList(), board, action));
 
         if (value >= 100.0){
             return value;
