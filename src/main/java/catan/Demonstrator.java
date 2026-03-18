@@ -100,6 +100,18 @@ public class Demonstrator {
 		 */
 		game.setStateOutputDir(java.nio.file.Paths.get("src/visualize"));
 		
+
+
+		// Clear old scraped boards from previous runs
+		java.io.File scrapedDir = new java.io.File("scraped_boards");
+		if (scrapedDir.exists() && scrapedDir.isDirectory()) {
+			java.io.File[] files = scrapedDir.listFiles();
+			if (files != null) {
+				for (java.io.File f : files) {
+					f.delete();
+				}
+			}
+		}
 		/**
 		 * 
 		 * This initializes the game where:
