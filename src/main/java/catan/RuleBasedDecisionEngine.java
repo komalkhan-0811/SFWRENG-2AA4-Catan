@@ -2,6 +2,7 @@ package catan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.datatransfer.SystemFlavorMap;
 import java.security.SecureRandom;
 /**
  * Evaluates all legal actions using a list of Rule objects and chooses
@@ -81,10 +82,33 @@ public class RuleBasedDecisionEngine {
 
 
         if (bestValue >= 100.0){
-            System.out.println("--> CONSTRAINT ACTIVE: Resolving with priority" + bestValue);
+           displayConstraintMessage(player, board, chosen, bestValue);
         }
         return chosen;
 
+    }
+    
+    /**
+     * Displays a detailed message explaining which constraint was triggered
+     * @param player
+     * @param board
+     * @param action
+     * @return
+     */
+    private void displayConstraintMessage(Player player, Board board, Action action, double value) {
+    	if(Math.abs(value - 150.0) < 0.01) {
+    		System.out.println("--> ROAD GAP CONSTRAINT ACTIVE: Connecting the disconneted road segements");
+    	}
+    	else if(Math.abs(value - 120.0) < 0.01){
+    		System.out.println("--> LONGEST ROAD DEFENSE ACTIVE: Defending against close opponent");
+    	}
+    	else if(Math.abs(value - 100.0) < 0.01) {
+    		int cardCount = player.getTotalCardsInHand();
+    		System.out.println("--> SEVEN CARD CONSTRAINT ACTIVE: Player has " + cardCount + " cards, must build");
+    	}
+    	else {
+    		System.out.println("--> CONSTRAINT ACTIVE: Resolving with priority " + value);
+    	}
     }
 
     private double evaluateAction(Player player, Board board, Action action){
