@@ -155,37 +155,9 @@ public interface CommandParser {
                 return new ParsedCommand(CommandType.LIST);
             }
 
-            matcher = BUILD_SETTLEMENT_PATTERN.matcher(raw);
-            if (matcher.matches()) {
-                try {
-                    int nodeId = Integer.parseInt(matcher.group(1));
-                    return new ParsedCommand(CommandType.BUILD_SETTLEMENT, nodeId, -1);
-                } catch (NumberFormatException e) {
-                    return new ParsedCommand(CommandType.UNKNOWN);
-                }
-            }
-
-            // Check for "build city <nodeId>"
-            matcher = BUILD_CITY_PATTERN.matcher(raw);
-            if (matcher.matches()) {
-                try {
-                    int nodeId = Integer.parseInt(matcher.group(1));
-                    return new ParsedCommand(CommandType.BUILD_CITY, nodeId, -1);
-                } catch (NumberFormatException e) {
-                    return new ParsedCommand(CommandType.UNKNOWN);
-                }
-            }
-
-            // Check for "build road <fromNodeId> <toNodeId>"
-            matcher = BUILD_ROAD_PATTERN.matcher(raw);
-            if (matcher.matches()) {
-                try {
-                    int fromNode = Integer.parseInt(matcher.group(1));
-                    int toNode = Integer.parseInt(matcher.group(2));
-                    return new ParsedCommand(CommandType.BUILD_ROAD, fromNode, toNode);
-                } catch (NumberFormatException e) {
-                    return new ParsedCommand(CommandType.UNKNOWN);
-                }
+            ParsedCommand buildCommand = parseBuildCommand(raw);
+            if (buildCommand != null) {
+                return buildCommand;
             }
             
             matcher = UNDO_PATTERN.matcher(raw);
@@ -200,6 +172,45 @@ public interface CommandParser {
 
             // No pattern matched
             return new ParsedCommand(CommandType.UNKNOWN);
+        }
+
+        private ParsedCommand parseBuildCommand(String raw) {
+            Matcher matcher;
+
+            matcher = BUILD_SETTLEMENT_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int nodeId = Integer.parseInt(matcher.group(1));
+                    return new ParsedCommand(CommandType.BUILD_SETTLEMENT, nodeId, -1);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
+                }
+            }
+
+            // Check for build city <nodeId>
+            matcher = BUILD_CITY_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int nodeId = Integer.parseInt(matcher.group(1));
+                    return new ParsedCommand(CommandType.BUILD_CITY, nodeId, -1);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
+                }
+            }
+
+            // Check for build road <fromNodeId> <toNodeId>
+            matcher = BUILD_ROAD_PATTERN.matcher(raw);
+            if (matcher.matches()) {
+                try {
+                    int fromNode = Integer.parseInt(matcher.group(1));
+                    int toNode = Integer.parseInt(matcher.group(2));
+                    return new ParsedCommand(CommandType.BUILD_ROAD, fromNode, toNode);
+                } catch (NumberFormatException e) {
+                    return new ParsedCommand(CommandType.UNKNOWN);
+                }
+            }
+
+            return null;
         }
 
         @Override
