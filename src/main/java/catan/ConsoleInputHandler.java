@@ -3,7 +3,7 @@ package catan;
 import java.util.Scanner;
 
 /**
- * Console-based implementation of InputHandler.
+ * Console based implementation of InputHandler.
  * Reads from System.in and writes to System.out.
  *
  * Swapping this for a test stub requires no changes to HumanPlayer

@@ -64,7 +64,7 @@ public interface CommandParser {
 
 
     /**
-     * R2.1: Regex-based implementation of CommandParser.
+     * R2.1: Regex based implementation of CommandParser.
      * All parsing uses regular expressions with Pattern and Matcher.
      */
     class ConsoleCommandParser implements CommandParser {

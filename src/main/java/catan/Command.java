@@ -6,8 +6,7 @@ package catan;
  * undo/redo functionality as required by R3.1.
  *
  * The Command Pattern encapsulates a request as an object,
- * allowing parameterization of actions, queuing, and reversible
- * operation
+ * allowing parameterization of actions, queuing, and reversible operation
  *
  * @author Rameen Tariq
  */
@@ -15,7 +14,6 @@ public interface Command {
 
 
      //Executes the command, applying the action to the game state.
-
     void execute();
 
     /**

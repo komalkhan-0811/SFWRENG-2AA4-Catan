@@ -1,33 +1,27 @@
 package catan;
 
 /**
- * Encapsulates the action of building a settlement
- * at a specified intersection on the board.
+ * Encapsulates the action of building a settlement at a specified intersection on the board.
  *
  * Implements the Command interface as part of the Command Pattern (R3.1).
- * Supports undo by removing the placed settlement and reversing the
- * associated victory point gain
+ * Supports undo by removing the placed settlement and reversing the associated victory point gain
  *
  * @author Rameen Tariq
  */
 
 public class BuildSettlementCommand implements Command {
 	
-	// The game board on which the settlement is placed
     private final Board board;
 
-    //The player who is building the settlemen
     private final Player player;
 
-    //The intersection ID where the settlement is going to be placed
     private final int intersectionId;
     
     /**
-     * Constructs a BuildSettlementCommand with the given board, player,
-     * and target intersectio.
+     * Constructs a BuildSettlementCommand with the given board, player, and target intersection.
      *
-     * @param board          the game board on which to place the settlement
-     * @param player         the player placing the settlement
+     * @param board: the game board on which to place the settlement
+     * @param player: the player placing the settlement
      * @param intersectionId the ID of the intersection where the settlement is placed
      */
     public BuildSettlementCommand(Board board, Player player, int intersectionId) {
@@ -48,7 +42,7 @@ public class BuildSettlementCommand implements Command {
 
     /**
      * Undoes the command by removing the settlement from the board and
-     * deducting the givrn victory point from the player
+     * deducting the given victory point from the player
      */
     @Override
     public void undo() {

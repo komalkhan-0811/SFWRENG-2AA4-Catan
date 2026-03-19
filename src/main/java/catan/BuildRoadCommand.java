@@ -1,38 +1,32 @@
 package catan;
 
 /**
- *  encapsulates the action of building a road
+ * encapsulates the action of building a road
  * between two intersections on the board
  *
  * Implements the Command interface as part of the Command Pattern (R3.1).
- * Supports undo by removing the placed road from the edge between the
- * two  intersections
+ * Supports undo by removing the placed road from the edge between the two intersections
  *
  * @author Rameen Tariq
  */
 
 public class BuildRoadCommand implements Command {
 	
-	//The game board where the road is placed
 	private final Board board;
 
-    //The player who is building the road
     private final Player player;
 
-    // The ID of the first intersection giving the road's edge
     private final int intersectionA;
 
-    //The ID of the second intersection giving the road's edge
     private final int intersectionB;
     
     /**
-     * Constructs a BuildRoadCommand with the given board, player,
-     * and the two intersections that define the road's edge.
+     * Constructs a BuildRoadCommand with the given board, player, and the two intersections that define the road's edge.
      *
-     * @param board  the game board to place the road
-     * @param player the player placing the road
-     * @param a      the ID of the first intersection
-     * @param b      the ID of the second intersection
+     * @param board: the game board to place the road
+     * @param player: the player placing the road
+     * @param a: the ID of the first intersection
+     * @param b: the ID of the second intersection
      */
     public BuildRoadCommand(Board board, Player player, int a, int b) {
         this.board = board;
@@ -42,8 +36,7 @@ public class BuildRoadCommand implements Command {
     }
 
     /**
-     * Executes the command by placing a road on the edge between
-     * the two intersections.
+     * Executes the command by placing a road on the edge between the two intersections.
      */
     @Override
     public void execute() {
@@ -51,8 +44,7 @@ public class BuildRoadCommand implements Command {
     }
 
     /**
-     * Undoes the command by removing the road from the edge between
-     * the two intersections
+     * Undoes the command by removing the road from the edge between the two intersections
      */
     @Override
     public void undo() {
@@ -68,6 +60,5 @@ public class BuildRoadCommand implements Command {
     public String getDescription() {
         return "Build road between " + intersectionA + " and " + intersectionB;
     }
-	
 
 }
