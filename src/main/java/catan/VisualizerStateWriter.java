@@ -117,45 +117,84 @@ public class VisualizerStateWriter {
     private static String buildJson(Board board, Map<Integer, String> playerColours) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
+        appendRoadsJson(sb, board, playerColours);
+        sb.append(",\n");
+        appendBuildingsJson(sb, board, playerColours);
+        sb.append("}\n");
 
-        // Roads
+        return sb.toString();
+    }
+
+    /**
+     * Appends the roads section of the visualizer JSON.
+     *
+     * @param sb the StringBuilder being written to
+     * @param board the current board
+     * @param playerColours map from player ID to visualizer colour string
+     */
+    private static void appendRoadsJson(StringBuilder sb, Board board, Map<Integer, String> playerColours) {
         sb.append("  \"roads\": [\n");
         boolean firstRoad = true;
-        for (Edge e : board.getAllEdges()) {
-            if (e.isOccupied()) {
-                String colour = playerColours.getOrDefault(e.getRoadOwnerId(), "RED");
-                if (!firstRoad) sb.append(",\n");
-                sb.append("    { \"a\": ").append(e.getIntersectionA())
-                  .append(", \"b\": ").append(e.getIntersectionB())
-                  .append(", \"owner\": \"").append(colour).append("\" }");
-                firstRoad = false;
-            }
-        }
-        if (!firstRoad) sb.append("\n");
-        sb.append("  ],\n");
 
-        //buildings 
+        for (Edge e : board.getAllEdges()) {
+            if (!e.isOccupied()) {
+                continue;
+            }
+
+            String colour = playerColours.getOrDefault(e.getRoadOwnerId(), "RED");
+            if (!firstRoad) {
+                sb.append(",\n");
+            }
+
+            sb.append("    { \"a\": ").append(e.getIntersectionA())
+            .append(", \"b\": ").append(e.getIntersectionB())
+            .append(", \"owner\": \"").append(colour).append("\" }");
+            firstRoad = false;
+        }
+
+        if (!firstRoad) {
+            sb.append("\n");
+        }
+        sb.append("  ]");
+    }
+
+    /**
+     * Appends the buildings section of the visualizer JSON.
+     *
+     * @param sb the StringBuilder being written to
+     * @param board the current board
+     * @param playerColours map from player ID to visualizer colour string
+     */
+    private static void appendBuildingsJson(StringBuilder sb, Board board, Map<Integer, String> playerColours) {
         sb.append("  \"buildings\": [\n");
         boolean firstBuilding = true;
+
         for (int id : board.getAllIntersectionIds()) {
             Intersection inter = board.getIntersection(id);
-            if (inter != null && inter.hasBuilding()) {
-                Integer ownerId       = inter.getBuildingOwnerId();
-                Building buildingType = inter.getBuildingType();
-                if (ownerId != null && buildingType != null) {
-                    String colour = playerColours.getOrDefault(ownerId, "RED");
-                    if (!firstBuilding) sb.append(",\n");
-                    sb.append("    { \"node\": ").append(id)
-                      .append(", \"owner\": \"").append(colour).append("\"")
-                      .append(", \"type\": \"").append(buildingType.name()).append("\" }");
-                    firstBuilding = false;
-                }
+            if (inter == null || !inter.hasBuilding()) {
+                continue;
             }
-        }
-        if (!firstBuilding) sb.append("\n");
-        sb.append("  ]\n");
 
-        sb.append("}\n");
-        return sb.toString();
+            Integer ownerId = inter.getBuildingOwnerId();
+            Building buildingType = inter.getBuildingType();
+            if (ownerId == null || buildingType == null) {
+                continue;
+            }
+
+            String colour = playerColours.getOrDefault(ownerId, "RED");
+            if (!firstBuilding) {
+                sb.append(",\n");
+            }
+
+            sb.append("    { \"node\": ").append(id)
+            .append(", \"owner\": \"").append(colour).append("\"")
+            .append(", \"type\": \"").append(buildingType.name()).append("\" }");
+            firstBuilding = false;
+        }
+
+        if (!firstBuilding) {
+            sb.append("\n");
+        }
+        sb.append("  ]\n");
     }
 }
