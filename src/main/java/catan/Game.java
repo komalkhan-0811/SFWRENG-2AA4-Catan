@@ -28,6 +28,9 @@ public class Game {
     private int roundNumber;
     private int maxRounds;
     private int victoryPointsToWin;
+
+    // Constant to avoid duplicated string literal
+    private static final String PLAYER_PREFIX = "Player ";
     
     /** Manages undo/redo history using the Command Pattern (R3.1). */
     private final GameHistory gameHistory = new GameHistory();
@@ -132,7 +135,7 @@ public class Game {
         }
 
         if (validSettlements.isEmpty()) {
-            System.out.println("Player " + player.getPlayerId() + ": No valid settlement locations!");
+            System.out.println(PLAYER_PREFIX + player.getPlayerId() + ": No valid settlement locations!");
             return;
         }
 
@@ -142,7 +145,7 @@ public class Game {
         player.recordPlacedSettlement(settlementId);
         player.addVictoryPoints(Building.SETTLEMENT.getVictoryPoints());
 
-        System.out.println("Player " + player.getPlayerId()
+        System.out.println(PLAYER_PREFIX + player.getPlayerId()
             + ": Placed initial settlement at intersection " + settlementId);
 
         // Second placement only and give resources from adjacent tiles
@@ -165,7 +168,7 @@ public class Game {
             player.recordPlacedRoad(
                 roadEdge.getIntersectionA(), roadEdge.getIntersectionB());
 
-            System.out.println("Player " + player.getPlayerId()
+            System.out.println(PLAYER_PREFIX + player.getPlayerId()
                 + ": Placed initial road between "
                 + roadEdge.getIntersectionA() + " and " + roadEdge.getIntersectionB());
         }
@@ -316,7 +319,7 @@ public class Game {
         for (Player p : players) {
             if (p instanceof HumanPlayer) {
                 ((HumanPlayer) p).waitForGo(
-                    "Player " + player.getPlayerId() + " finished their turn.");
+                    PLAYER_PREFIX + player.getPlayerId() + " finished their turn.");
             }
         }
         
@@ -449,7 +452,7 @@ public class Game {
     public void printRoundScoreboard() {
         System.out.println("-----Round " + roundNumber + " ----");
         for (Player p : players) {
-            System.out.println("Player " + p.getPlayerId() + " VP: " + p.getVictoryPoints());
+            System.out.println(PLAYER_PREFIX + p.getPlayerId() + " VP: " + p.getVictoryPoints());
         }
     }
 
@@ -471,14 +474,14 @@ public class Game {
         for (Player p : players) {
             if (p.getTotalCardsInHand() > 7) {
                 int discarded = p.discardHalfCards();
-                System.out.println("Player " + p.getPlayerId()
+                System.out.println(PLAYER_PREFIX + p.getPlayerId()
                     + " discarded " + discarded + " cards.");
             }
         }
 
         // Move robber to a random valid tile
         int newRobberTile = moveRobberRandomly();
-        System.out.println("Player " + currentPlayer.getPlayerId()
+        System.out.println(PLAYER_PREFIX + currentPlayer.getPlayerId()
             + " moved robber to tile " + newRobberTile);
 
         //Steal from a random adjacent player
@@ -527,15 +530,15 @@ public class Game {
 
         Resources stolenCard = victim.getRandomResource();
         if (stolenCard == null) {
-            System.out.println("Player " + victimId + " has no cards to steal.");
+            System.out.println(PLAYER_PREFIX + victimId + " has no cards to steal.");
             return;
         }
 
         victim.removeResources(stolenCard, 1);
         thief.addResource(stolenCard, 1);
 
-        System.out.println("Player " + thief.getPlayerId()
-            + " stole 1 " + stolenCard + " from Player " + victimId);
+        System.out.println(PLAYER_PREFIX + thief.getPlayerId()
+            + " stole 1 " + stolenCard + " from " + PLAYER_PREFIX + victimId);
     }
     
     /**
