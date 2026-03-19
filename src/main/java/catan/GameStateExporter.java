@@ -29,7 +29,7 @@ public class GameStateExporter {
      * @return a GameSnapshot representing the current state
      * @throws Exception if reflection fails to access game fields
      */
-    public GameSnapshot exportSnapshot(Game game) throws Exception {
+    public GameSnapshot exportSnapshot(Game game) throws NoSuchFieldException, IllegalAccessException {
     	 // Extract primitive state values via reflection
         int roundNumber = extractRoundNumber(game);
      // Convert each Player to a plain data snapshot
