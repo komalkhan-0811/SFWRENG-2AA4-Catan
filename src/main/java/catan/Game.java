@@ -16,6 +16,7 @@ import java.security.SecureRandom;
  *
  * @author Komal Khan, Rameen Tariq, Alisha Faridi, Maria Shashati
  */
+@SuppressWarnings("java:S106")
 public class Game {
 
     private Board board;

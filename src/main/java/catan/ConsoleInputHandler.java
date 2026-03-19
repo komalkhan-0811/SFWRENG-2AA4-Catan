@@ -11,6 +11,8 @@ import java.util.Scanner;
  *
  * @author Rameen Tariq
  */
+
+@SuppressWarnings("java:S106")
 public class ConsoleInputHandler implements InputHandler {
 
     private final Scanner scanner;

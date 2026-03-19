@@ -15,6 +15,8 @@ import java.security.SecureRandom;
  *
  * @author Maria Shashati
  */
+
+@SuppressWarnings("java:S106")
 public class RuleBasedDecisionEngine {
 
     private final List<Rule> rules;
