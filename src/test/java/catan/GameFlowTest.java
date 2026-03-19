@@ -36,16 +36,14 @@ class GameFlowTest {
 	@Test
     void testTerminationNotReached_afterInit() {
      
-        assertFalse(game.isTerminationReached(),
-            "Game should not be over immediately after initialization");
+        assertFalse(game.isTerminationReached(), "Game should not be over immediately after initialization");
     }
 	
 	@Test
     void testTerminationReached_whenRoundsExceeded() throws Exception {
      
         setPrivateInt(game, "roundNumber", 6); 
-        assertTrue(game.isTerminationReached(),
-            "Game should terminate when roundNumber exceeds maxRounds");
+        assertTrue(game.isTerminationReached(),"Game should terminate when roundNumber exceeds maxRounds");
     }
 
 	  @Test
@@ -53,19 +51,16 @@ class GameFlowTest {
 	        
 	        setPrivateInt(game, "roundNumber", 1);
 	        getFirstPlayer().addVictoryPoints(10);
-	        assertTrue(game.isTerminationReached(),
-	            "Game should terminate when any player reaches 10 VP");
+	        assertTrue(game.isTerminationReached(), "Game should terminate when any player reaches 10 VP");
 	    }
 
 	  @Test
 	    void testRollSeven_noResourcesDistributed() {
 	       
 	        int totalBefore = getTotalResourcesAllPlayers();
-	        assertDoesNotThrow(() -> game.distributeResourcesForRoll(7),
-	            "distributeResourcesForRoll(7) should not throw");
+	        assertDoesNotThrow(() -> game.distributeResourcesForRoll(7), "distributeResourcesForRoll(7) should not throw");
 	        int totalAfter = getTotalResourcesAllPlayers();
-	        assertEquals(totalBefore, totalAfter,
-	            "No resources should be distributed on a roll of 7");
+	        assertEquals(totalBefore, totalAfter, "No resources should be distributed on a roll of 7");
 	    }
 
 	    /**
@@ -75,7 +70,7 @@ class GameFlowTest {
 	     */
 	    @Test
 	    void testTermination_roundLimitBoundaryValues() throws Exception {
-	        setPrivateInt(game, "victoryPointsToWin", 999); // prevent VP from triggering end
+	        setPrivateInt(game, "victoryPointsToWin", 999);
 
 	        // At the boundary, equal to maxRounds, not yet over
 	        setPrivateInt(game, "roundNumber", 5);

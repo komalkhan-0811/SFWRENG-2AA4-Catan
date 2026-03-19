@@ -40,6 +40,7 @@ public class RoadNetworkAnalyzerTest {
     void testExtendsLongestRoad_connectedRoad_returnsTrue() {
         player.recordPlacedRoad(0, 1);
         player.recordPlacedRoad(1, 2);
+        
         // 2-3 touches existing road at 2
         Action action = Action.buildRoad(2, 3);
         assertTrue(analyzer.extendsLongestRoad(player, board, action));
@@ -48,6 +49,7 @@ public class RoadNetworkAnalyzerTest {
     @Test
     void testExtendsLongestRoad_disconnectedRoad_returnsFalse() {
         player.recordPlacedRoad(0, 1);
+        
         // 10-11 does not touch 0 or 1
         Action action = Action.buildRoad(10, 11);
         assertFalse(analyzer.extendsLongestRoad(player, board, action));
@@ -87,9 +89,10 @@ public class RoadNetworkAnalyzerTest {
 
     @Test
     void testWouldConnectNearbySegments_alreadyConnected_returnsFalse() {
-        // Single connected chain: 0-1-2
+       
         player.recordPlacedRoad(0, 1);
         player.recordPlacedRoad(1, 2);
+        
         // Road 0-2 touches already-connected segments
         Action action = Action.buildRoad(0, 2);
         assertFalse(analyzer.wouldConnectNearbySegments(player, board, action));
