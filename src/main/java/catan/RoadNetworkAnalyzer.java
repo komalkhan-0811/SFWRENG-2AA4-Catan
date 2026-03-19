@@ -3,8 +3,9 @@ package catan;
 import java.util.*;
 
 /**
- *
- *
+ * A helper class used in RoadGapConstraint class to help figure out the neary connecting road segments if available
+ * A "calculation" class for the possible road constraints/scenarios
+ * 
  * @author Komal Khan
  */
 public class RoadNetworkAnalyzer {
@@ -22,7 +23,6 @@ public class RoadNetworkAnalyzer {
         if (action.getType() != ActionType.BUILD_ROAD){
             return false;
         }
-
         Set<String> playerRoads = getPlayerRoads(player, board);
 
         //Need to have atleast 2
@@ -32,7 +32,6 @@ public class RoadNetworkAnalyzer {
 
         int a = action.getEdgeIntersectionA();
         int b = action.getEdgeIntersectionB();
-
 
         Set<String> roadsAtA = getRoadsTouchingIntersection(a, playerRoads);
         Set<String> roadsAtB = getRoadsTouchingIntersection(b, playerRoads);
@@ -65,7 +64,6 @@ public class RoadNetworkAnalyzer {
         if (playerRoads.isEmpty()){
             return 0;
         }
-
         int maxConnected = 0;
 
         // Starting from each road and count how many roads are connected
@@ -73,7 +71,6 @@ public class RoadNetworkAnalyzer {
             int connected = countConnectedRoads(startRoad, playerRoads);
             maxConnected = Math.max(maxConnected, connected);
         }
-
         return maxConnected;
     }
 
@@ -112,7 +109,7 @@ public class RoadNetworkAnalyzer {
      * Uses the player's own record (ownedRoadEdgeKeys) as the correct source.
      *
      * @param player
-     * @param board  (kept for API compatibility, used as fallback)
+     * @param board 
      * @return the set of road edge keys for this player
      */
     private Set<String> getPlayerRoads(Player player, Board board) {
@@ -145,8 +142,6 @@ public class RoadNetworkAnalyzer {
 
     /**
      * Checks if two roads are connected (share an intersection or can reach each other).
-     *
-     * checks if they share an intersection or if there's a road that connects to both.
      */
     private boolean areRoadsConnected(String road1, String road2, Set<String> allRoads) {
         if (road1.equals(road2)){
@@ -167,8 +162,6 @@ public class RoadNetworkAnalyzer {
             if (bridgeRoad.equals(road1) || bridgeRoad.equals(road2)) continue;
 
             int[] bridgeEndpoints = parseEdgeKey(bridgeRoad);
-
-
             boolean touchesRoad1 = (bridgeEndpoints[0] == endpoints1[0] || bridgeEndpoints[0] == endpoints1[1] || bridgeEndpoints[1] == endpoints1[0] || bridgeEndpoints[1] == endpoints1[1]);
             boolean touchesRoad2 = (bridgeEndpoints[0] == endpoints2[0] || bridgeEndpoints[0] == endpoints2[1] || bridgeEndpoints[1] == endpoints2[0] || bridgeEndpoints[1] == endpoints2[1]);
 
@@ -176,7 +169,6 @@ public class RoadNetworkAnalyzer {
                 return true;
             }
         }
-
         return false;
     }
 
