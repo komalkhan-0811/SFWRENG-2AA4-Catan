@@ -6,12 +6,12 @@ import java.awt.datatransfer.SystemFlavorMap;
 import java.security.SecureRandom;
 /**
  * Evaluates all legal actions using a list of Rule objects and chooses
- * the highest-value action.
+ * the highest value action.
  *
  * If multiple actions tie for the highest value, one is chosen randomly.
  *
  * This supports R3.2 by replacing random legal-action selection with
- * value-based rule evaluation.
+ * value based rule evaluation.
  *
  * @author Maria Shashati
  */
