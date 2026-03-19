@@ -19,6 +19,7 @@ public class HumanPlayer extends Player {
 
     private final InputHandler inputHandler;
     private final CommandParser parser;
+    private static final String ILLEGAL_STATE_PREFIX = "[ILLEGAL in state ";
 
     /**
      * Constructs a HumanPlayer with console I/O.
@@ -155,7 +156,7 @@ public class HumanPlayer extends Player {
         // ROLL: only legal in START
         if (!state.canRoll()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] You have already rolled this turn.");
+                ILLEGAL_STATE_PREFIX + state + "] You have already rolled this turn.");
             return state;
         }
 
@@ -213,7 +214,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
             return state;
         }
 
@@ -240,7 +241,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
             return state;
         }
 
@@ -268,7 +269,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
             return state;
         }
 
@@ -289,7 +290,7 @@ public class HumanPlayer extends Player {
     private TurnState handleUndoCommand(TurnState state, Game game) {
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] Cannot undo before rolling.");
+                ILLEGAL_STATE_PREFIX + state + "] Cannot undo before rolling.");
             return state;
         }
 
@@ -316,7 +317,7 @@ public class HumanPlayer extends Player {
     private TurnState handleRedoCommand(TurnState state, Game game) {
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] Cannot redo before rolling.");
+                ILLEGAL_STATE_PREFIX + state + "] Cannot redo before rolling.");
             return state;
         }
 
@@ -343,7 +344,7 @@ public class HumanPlayer extends Player {
         // GO: only legal in ROLLED
         if (!state.canGo()) {
             inputHandler.displayMessage(
-                "[ILLEGAL in state " + state + "] You must Roll before ending your turn.");
+                ILLEGAL_STATE_PREFIX + state + "] You must Roll before ending your turn.");
             return state;
         }
 
