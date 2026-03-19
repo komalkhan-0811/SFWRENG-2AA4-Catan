@@ -3,7 +3,7 @@ package catan;
 import java.util.Stack;
 
 /**
- * Manages the execution history of game commands to support undo/redo functionality - R3.1.
+ * Manages the execution history of game commands to support undo/redo functionality for R3.1.
  *
  * Acts as the Invoker in the Command Pattern (Behavioural). 
  * Maintains two stacks: one for executed commands (undo stack) and one for undone
@@ -23,15 +23,11 @@ import java.util.Stack;
 public class GameHistory {
 	
 
-	    /**
-	     * Stack of executed commands that can be undone. The top of the stack is the most recently executed command.
-	     */
+	   
+	     //Stack of executed commands that can be undone
 	    private final Stack<Command> undoStack = new Stack<Command>();
 
-	    /**
-	     * Stack of undone commands that can be redone.
-	     * The top of the stack is the most recently undone command.
-	     */
+	   
 	    private final Stack<Command> redoStack = new Stack<Command>();
 
 	    /**

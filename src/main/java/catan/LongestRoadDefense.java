@@ -18,24 +18,31 @@ public class LongestRoadDefense {
 
 
     /**
-     * evaluates if this road defends the players 1 longest road advantage
+     * Evaluates if this road defends the player's 1 longest road advantage
      * @param player
      * @param board
      * @param action
      * @return
      * 120.0 if:
-     * - Action is BUILD_ROAD and Player has longest road >= 5 and opponent is only 1 road behind and road extends the players longest path
+     *  Action is BUILD_ROAD and Player has longest road >= 5 and opponent is only 1 road behind and road extends the players longest path
      *
      * otherwise returns -1.0
      */
     public double evaluate(Player player, List<Player> allPlayers, Board board, Action action) {
-        if (action.getType() != ActionType.BUILD_ROAD) return -1.0;
+    	
+        if (action.getType() != ActionType.BUILD_ROAD) {
+        	return -1.0;
+        }
 
         int myLongestRoad = analyzer.calculateLongestRoad(player, board);
-        if (myLongestRoad < 5) return -1.0;
+        if (myLongestRoad < 5) {
+        	return -1.0;
+        }
 
         for (Player opponent : allPlayers) {
-            if (opponent.getPlayerId() == player.getPlayerId()) continue;
+            if (opponent.getPlayerId() == player.getPlayerId()) {
+            	continue;
+            }
             int opponentLongest = analyzer.calculateLongestRoad(opponent, board);
             if (opponentLongest >= myLongestRoad - 1 && opponentLongest <= myLongestRoad) {
                 return analyzer.extendsLongestRoad(player, board, action) ? 120.0 : -1.0;

@@ -3,7 +3,7 @@ package catan;
 import java.util.Map;
 
 /**
- * Represents a human-controlled player in the Catan simulator.
+ * Represents a human controlled player in the Catan simulator.
  *
  * Extends Player (Open/Closed Principle: Player is not modified).
  * Depends on InputHandler and CommandParser abstractions, never on
@@ -38,12 +38,12 @@ public class HumanPlayer extends Player {
     }
 
     /**
-     * Constructs a HumanPlayer with an injected parser
+     * Constructs a HumanPlayer with the parser
      *
-     * @param playerId unique player identifier
-     * @param colour colour assigned to this player
-     * @param inputHandler abstraction over the input/output source
-     * @param parser command parser implementation to use
+     * @param playerId
+     * @param colour 
+     * @param inputHandler: abstraction over the input/output source
+     * @param parser: command parser implementation to use
      * @throws IllegalArgumentException if inputHandler or parser is null
      */
     public HumanPlayer(int playerId, Colour colour, InputHandler inputHandler, CommandParser parser) {
