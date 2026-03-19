@@ -249,24 +249,66 @@ public class Game {
             return;
         }
 
-        // Computer player turn
+        handleComputerRoll(player);
 
-     
+        List<Action> validActions = getFilteredValidActions(player);
+        Action chosen = decisionEngine.chooseBestAction(player, board, validActions);
+
+        processChosenAction(player, chosen);
+        waitForHumanStepForward(player);
+        writeVisualizerStateSafely();
+    }
+
+    /**
+     * Handles the computer player's dice roll and applies its effects.
+     *
+     * R2.5: A roll of 7 triggers robber handling.
+     * Otherwise, resources are distributed normally.
+     *
+     * @param player the computer player taking the turn
+     */
+    private void handleComputerRoll(Player player) {
         int roll = rollDice();
 
-      
         if (roll == 7) {
             handleSevenRoll(player);
         } else {
             distributeResourcesForRoll(roll);
         }
+    }
 
-        // R1.8: If player has more than 7 cards, they MUST try to build
+    /**
+     * Collects valid actions and applies the existing affordability
+     * and must-build filters.
+     *
+     * R1.8: If the player has more than 7 cards, they must try to build.
+     * R3.2: These filtered actions are later evaluated by the decision engine.
+     *
+     * @param player the player whose actions are being evaluated
+     * @return filtered list of valid actions
+     */
+    private List<Action> getFilteredValidActions(Player player) {
         boolean mustBuild = player.getTotalCardsInHand() > 7;
         List<Action> validActions = rules.getValidActionsByLinearScan(player, board);
 
+        validActions = filterAffordableActions(player, validActions);
 
-        // Ensure the AI only evaluates actions that the player can actually afford.
+        if (mustBuild) {
+            validActions = filterMustBuildActions(validActions);
+        }
+
+        return validActions;
+    }
+
+    /**
+     * Ensures the AI only evaluates actions that the player can actually afford.
+     * PASS is always allowed.
+     *
+     * @param player the player whose resources are checked
+     * @param validActions the current valid actions
+     * @return affordable subset of valid actions
+     */
+    private List<Action> filterAffordableActions(Player player, List<Action> validActions) {
         List<Action> affordableActions = new ArrayList<>();
 
         for (Action action : validActions) {
@@ -279,27 +321,43 @@ public class Game {
                 }
             }
         }
-        validActions = affordableActions;
 
-        // R1.8: Filter out PASS if player has > 7 cards and build actions exist
-        if (mustBuild) {
-            List<Action> buildActions = new ArrayList<>();
-            for (Action action : validActions) {
-                if (action.getType() != ActionType.PASS) buildActions.add(action);
+        return affordableActions;
+    }
+
+    /**
+     * R1.8: If the player has more than 7 cards, PASS must be filtered out
+     * when at least one build action exists.
+     *
+     * @param validActions the current valid actions
+     * @return build-only actions if available; otherwise the original list
+     */
+    private List<Action> filterMustBuildActions(List<Action> validActions) {
+        List<Action> buildActions = new ArrayList<>();
+
+        for (Action action : validActions) {
+            if (action.getType() != ActionType.PASS) {
+                buildActions.add(action);
             }
-            if (!buildActions.isEmpty()) validActions = buildActions;
         }
 
+        if (!buildActions.isEmpty()) {
+            return buildActions;
+        }
 
-        // commenting for now but changing the random action to the decision engine deciding 
-        // Action chosen = rules.chooseRandomAction(validActions, rng);
+        return validActions;
+    }
 
-
-        // Instead of choosing a random valid action, selecting action with highest value after evaluating (R3.2)
-        // If actions tie a random one is chose 
-        Action chosen = decisionEngine.chooseBestAction(player, board, validActions);
-
-        
+    /**
+     * Executes or logs the chosen action.
+     *
+     * R3.2: The chosen action is the one selected by the rule-based
+     * decision engine after evaluating valid actions.
+     *
+     * @param player the player taking the action
+     * @param chosen the selected action
+     */
+    private void processChosenAction(Player player, Action chosen) {
         if (chosen != null && chosen.getType() != ActionType.PASS) {
             Map<Resources, Integer> cost = rules.getCost(chosen.getType());
             if (player.hasEnoughResources(cost)) {
@@ -313,24 +371,34 @@ public class Game {
         } else {
             GameLogger.printTurnAction(roundNumber, player.getPlayerId(), "Passed");
         }
+    }
 
-        // R2.4: pause after each computer player turn so the
-        // human can read what happened before the next turn begins
+    /**
+     * R2.4: Pauses after each computer player turn so the
+     * human can read what happened before the next turn begins.
+     *
+     * @param player the player who just finished their turn
+     */
+    private void waitForHumanStepForward(Player player) {
         for (Player p : players) {
             if (p instanceof HumanPlayer) {
                 ((HumanPlayer) p).waitForGo(
                     PLAYER_PREFIX + player.getPlayerId() + " finished their turn.");
             }
         }
-        
+    }
+
+    /**
+     * Writes the visualizer state while keeping the original error handling.
+     */
+    private void writeVisualizerStateSafely() {
         try {
-        	VisualizerStateWriter.write(this, stateOutputDir);
-        	
-        }
-        catch (Exception e){
-        	System.out.println("Failed to write visualizer state: " + e.getMessage());
+            VisualizerStateWriter.write(this, stateOutputDir);
+        } catch (Exception e) {
+            System.out.println("Failed to write visualizer state: " + e.getMessage());
         }
     }
+
 
     /**
      * Rolls two six-sided dice and returns the sum.
