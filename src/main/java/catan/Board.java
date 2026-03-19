@@ -200,7 +200,7 @@ public class Board {
     }
 
     /**
-     * Returns an array of all valid intersection IDs (0–53).
+     * Returns an array of all valid intersection IDs (0 to 53).
      *
      * @return array of all intersection IDs
      */
@@ -411,6 +411,7 @@ public class Board {
     public String edgeKey(int intersectionA, int intersectionB) {
         return Edge.edgeKey(intersectionA, intersectionB);
     }
+    
     /**
      * Removes the settlement at the specified intersection.
      * Used by undo operations in the Command Pattern (R3.1).

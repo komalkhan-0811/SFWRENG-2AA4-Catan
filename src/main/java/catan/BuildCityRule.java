@@ -1,7 +1,7 @@
 package catan;
 
 /**
- * Rule that evaluates build-city actions.
+ * Rule that evaluates build city actions.
  *
  * A city earns a victory point immediately, so its value is 1.0.
  *
@@ -21,7 +21,7 @@ public class BuildCityRule extends Rule {
     }
 
     /**
-     * Computes the value of a city-building action.
+     * Computes the value of a city building action.
      *
      * @param player the player whose action is being evaluated
      * @param board the current board state

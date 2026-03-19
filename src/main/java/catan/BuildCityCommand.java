@@ -12,21 +12,18 @@ package catan;
 
 public class BuildCityCommand implements Command{
 	
-	//The game board on which the city is upgraded
+	
     private final Board board;
 
-    //The player who is upgrading the settlement to a city
     private final Player player;
 
-    //The intersection ID where the city is going to be built
     private final int intersectionId;
 
     /**
-     * Constructs a BuildCityCommand with the given board, player,
-     * and target intersection.
+     * Constructs a BuildCityCommand with the given board, player, and target intersection.
      *
-     * @param board          the game board on which to upgrade the settlement
-     * @param player         the player upgrading to a city
+     * @param board: the game board on which to upgrade the settlement
+     * @param player: the player upgrading to a city
      * @param intersectionId the ID of the intersection where the city is built
      */
     public BuildCityCommand(Board board, Player player, int intersectionId) {
