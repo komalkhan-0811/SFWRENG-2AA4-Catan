@@ -13,6 +13,8 @@ import java.util.List;
  * @author Alisha Faridi
  * 
  */
+
+@SuppressWarnings("java:S3011") // reflection needed to access private fields
 public class GameStateExporter {
 
     /**
@@ -42,7 +44,7 @@ public class GameStateExporter {
      * @return the current round number
      * @throws Exception if the roundNumber field cannot be accessed
      */
-    private int extractRoundNumber(Game game) throws Exception {
+    private int extractRoundNumber(Game game) throws NoSuchFieldException, IllegalAccessException {
         Field f = Game.class.getDeclaredField("roundNumber");
         f.setAccessible(true);
         return (int) f.get(game);
@@ -58,7 +60,7 @@ public class GameStateExporter {
      */
  // Game.players is always List<Player>
     @SuppressWarnings("unchecked")
-    private List<GameSnapshot.PlayerSnapshot> extractPlayers(Game game) throws Exception {
+    private List<GameSnapshot.PlayerSnapshot> extractPlayers(Game game) throws NoSuchFieldException, IllegalAccessException {
         Field f = Game.class.getDeclaredField("players");
      // setAccessible bypasses private modifier, which is required since Game fields are not exposed
         f.setAccessible(true);
