@@ -72,123 +72,283 @@ public class HumanPlayer extends Player {
      * ANY: [List]
      *
      * @param roundNumber the current round number
-     * @param game        the Game instance
-     * @param board       the Board instance
-     * @param rules       the Rules instance
+     * @param game the Game instance
+     * @param board the Board instance
+     * @param rules the Rules instance
      */
     public void takeTurn(int roundNumber, Game game, Board board, Rules rules) {
-        //Automaton starts in START state for every fresh turn
-    	TurnState state = TurnState.START;
+        // Automaton starts in START state for every fresh turn
+        TurnState state = TurnState.START;
 
-    	inputHandler.displayMessage("\n=== Player " + getPlayerId()+ " (" + getColour().getDisplayName() + ") — your turn ===");
-           
-    	inputHandler.displayMessage("State: " + state + " | " + parser.usageHint());
+        inputHandler.displayMessage(
+            "\n=== Player " + getPlayerId() + " (" + getColour().getDisplayName() + ") — your turn ===");
+
+        inputHandler.displayMessage("State: " + state + " | " + parser.usageHint());
 
         while (!state.isDone()) {
             String raw = inputHandler.readLine("> ");
             CommandParser.ParsedCommand cmd = parser.parse(raw);
-
-            switch (cmd.type) {
-            
-            	//ROLL: only legal in START
-                case ROLL:
-                    if (!state.canRoll()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You have already rolled this turn.");
-                        break;
-                    }
-                    int roll = game.rollDice();
-                    GameLogger.printTurnAction(roundNumber, getPlayerId(), "Rolled " + roll);
-                    if (roll == 7) {
-                        inputHandler.displayMessage("Rolled 7 — robber activated, no resources distributed.");
-                    } 
-                    else {
-                        game.distributeResourcesForRoll(roll);
-                        inputHandler.displayMessage("Resources distributed for roll of " + roll + ".");
-                    }
-                    
-                    //Transition
-                    state = TurnState.ROLLED;
-                    inputHandler.displayMessage("State:" + state);
-                    break;
-                    
-                 //LIST : always legal, no state change
-                case LIST:
-                	
-                	if(!state.canList()) {
-                		inputHandler.displayMessage("[ILLEGAL] Cannot list in state " + state);
-                		break;
-                	}
-                    inputHandler.displayMessage(describeHand());
-                    break;
-                    
-                //BUILD commands: only legal is ROLLED
-                case BUILD_SETTLEMENT:
-                    if (!state.canBuild()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
-                        break;
-                    }
-                    handleBuildSettlement(roundNumber, game, board, rules, cmd.nodeA);
-                    break;
-
-                case BUILD_CITY:
-                    if (!state.canBuild()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
-                        break;
-                    }
-                    handleBuildCity(roundNumber, game, board, rules, cmd.nodeA);
-                    break;
-
-                case BUILD_ROAD:
-                    if (!state.canBuild()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before building.");
-                        break;
-                    }
-                    handleBuildRoad(roundNumber, game, board, rules, cmd.nodeA, cmd.nodeB);
-                    break;
-                    
-                case UNDO:
-                    if (!state.canBuild()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] Cannot undo before rolling.");
-                        break;
-                    }
-                    if (game.getGameHistory().canUndo()) {
-                        game.getGameHistory().undo();
-                        inputHandler.displayMessage("Undo successful. Last action reversed.");
-                    } else {
-                        inputHandler.displayMessage("Nothing to undo.");
-                    }
-                    break;
-
-                case REDO:
-                    if (!state.canBuild()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] Cannot redo before rolling.");
-                        break;
-                    }
-                    if (game.getGameHistory().canRedo()) {
-                        game.getGameHistory().redo();
-                        inputHandler.displayMessage("Redo successful. Action re-applied.");
-                    } else {
-                        inputHandler.displayMessage("Nothing to redo.");
-                    }
-                    break;
-
-                // GO: Only legal in ROLLED
-                case GO:
-                    if (!state.canGo()) {
-                        inputHandler.displayMessage("[ILLEGAL in state " + state + "] You must Roll before ending your turn.");
-                        break;
-                    }
-                    GameLogger.printTurnAction(roundNumber, getPlayerId(), "Passed");
-                    state = TurnState.DONE;
-                    break;
-
-                //UNKNOWN: reject with usage hint no state change
-                case UNKNOWN:
-                default:
-                    inputHandler.displayMessage("[ILLEGAL] Unknown command.\n" + parser.usageHint());
-                    break;
-            }
+            state = handleTurnCommand(state, cmd, roundNumber, game, board, rules);
         }
+    }
+
+    /**
+     * Dispatches a parsed command to the appropriate handler based on its type.
+     *
+     * @param state the current turn state
+     * @param cmd the parsed command entered by the user
+     * @param roundNumber the current round number
+     * @param game the Game instance
+     * @param board the Board instance
+     * @param rules the Rules instance
+     * @return the updated turn state after executing the command
+     */
+    private TurnState handleTurnCommand(TurnState state, CommandParser.ParsedCommand cmd,
+            int roundNumber, Game game, Board board, Rules rules) {
+
+        switch (cmd.type) {
+            case ROLL:
+                return handleRollCommand(state, roundNumber, game);
+
+            case LIST:
+                return handleListCommand(state);
+
+            case BUILD_SETTLEMENT:
+                return handleBuildSettlementCommand(state, roundNumber, game, board, rules, cmd.nodeA);
+
+            case BUILD_CITY:
+                return handleBuildCityCommand(state, roundNumber, game, board, rules, cmd.nodeA);
+
+            case BUILD_ROAD:
+                return handleBuildRoadCommand(state, roundNumber, game, board, rules, cmd.nodeA, cmd.nodeB);
+
+            case UNDO:
+                return handleUndoCommand(state, game);
+
+            case REDO:
+                return handleRedoCommand(state, game);
+
+            case GO:
+                return handleGoCommand(state, roundNumber);
+
+            case UNKNOWN:
+            default:
+                inputHandler.displayMessage("[ILLEGAL] Unknown command.\n" + parser.usageHint());
+                return state;
+        }
+    }
+
+    /**
+     * Handles the ROLL command for a human player.
+     *
+     * R2.5: If a 7 is rolled, the robber is activated and no resources are distributed.
+     * Otherwise, resources are distributed according to the roll.
+     *
+     * Only valid in the START state.
+     *
+     * @param state the current turn state
+     * @param roundNumber the current round number
+     * @param game the Game instance
+     * @return the updated turn state (ROLLED if successful, unchanged otherwise)
+     */
+    private TurnState handleRollCommand(TurnState state, int roundNumber, Game game) {
+        // ROLL: only legal in START
+        if (!state.canRoll()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] You have already rolled this turn.");
+            return state;
+        }
+
+        int roll = game.rollDice();
+        GameLogger.printTurnAction(roundNumber, getPlayerId(), "Rolled " + roll);
+
+        if (roll == 7) {
+            inputHandler.displayMessage("Rolled 7 — robber activated, no resources distributed.");
+        } else {
+            game.distributeResourcesForRoll(roll);
+            inputHandler.displayMessage("Resources distributed for roll of " + roll + ".");
+        }
+
+        TurnState nextState = TurnState.ROLLED;
+        inputHandler.displayMessage("State:" + nextState);
+        return nextState;
+    }
+
+    /**
+     * Handles the LIST command.
+     *
+     * Displays the player's current hand without changing the turn state.
+     * This command is always legal in any state.
+     *
+     * @param state the current turn state
+     * @return the unchanged turn state
+     */
+    private TurnState handleListCommand(TurnState state) {
+        // LIST: always legal, no state change
+        if (!state.canList()) {
+            inputHandler.displayMessage("[ILLEGAL] Cannot list in state " + state);
+            return state;
+        }
+
+        inputHandler.displayMessage(describeHand());
+        return state;
+    }
+
+    /**
+     * Handles the BUILD SETTLEMENT command.
+     *
+     * Only valid in the ROLLED state.
+     *
+     * @param state the current turn state
+     * @param roundNumber the current round number
+     * @param game the Game instance
+     * @param board the Board instance
+     * @param rules the Rules instance
+     * @param nodeId the intersection ID for the settlement
+     * @return the unchanged turn state
+     */
+    private TurnState handleBuildSettlementCommand(TurnState state, int roundNumber,
+            Game game, Board board, Rules rules, int nodeId) {
+
+        // BUILD commands: only legal in ROLLED
+        if (!state.canBuild()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] You must Roll before building.");
+            return state;
+        }
+
+        handleBuildSettlement(roundNumber, game, board, rules, nodeId);
+        return state;
+    }
+
+    /**
+     * Handles the BUILD CITY command.
+     *
+     * Only valid in the ROLLED state. 
+     *
+     * @param state the current turn state
+     * @param roundNumber the current round number
+     * @param game the Game instance
+     * @param board the Board instance
+     * @param rules the Rules instance
+     * @param nodeId the intersection ID for the city
+     * @return the unchanged turn state
+     */
+    private TurnState handleBuildCityCommand(TurnState state, int roundNumber,
+            Game game, Board board, Rules rules, int nodeId) {
+
+        // BUILD commands: only legal in ROLLED
+        if (!state.canBuild()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] You must Roll before building.");
+            return state;
+        }
+
+        handleBuildCity(roundNumber, game, board, rules, nodeId);
+        return state;
+    }
+
+    /**
+     * Handles the BUILD ROAD command.
+     *
+     * Only valid in the ROLLED state. 
+     *
+     * @param state the current turn state
+     * @param roundNumber the current round number
+     * @param game the Game instance
+     * @param board the Board instance
+     * @param rules the Rules instance
+     * @param fromNode the starting intersection ID
+     * @param toNode the ending intersection ID
+     * @return the unchanged turn state
+     */
+    private TurnState handleBuildRoadCommand(TurnState state, int roundNumber,
+            Game game, Board board, Rules rules, int fromNode, int toNode) {
+
+        // BUILD commands: only legal in ROLLED
+        if (!state.canBuild()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] You must Roll before building.");
+            return state;
+        }
+
+        handleBuildRoad(roundNumber, game, board, rules, fromNode, toNode);
+        return state;
+    }
+
+    /**
+     * Handles the UNDO command.
+     *
+     * R3.1: Uses the Command Pattern via GameHistory to undo the last action.
+     * Only valid after rolling (ROLLED state).
+     *
+     * @param state the current turn state
+     * @param game the Game instance
+     * @return the unchanged turn state
+     */
+    private TurnState handleUndoCommand(TurnState state, Game game) {
+        if (!state.canBuild()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] Cannot undo before rolling.");
+            return state;
+        }
+
+        if (game.getGameHistory().canUndo()) {
+            game.getGameHistory().undo();
+            inputHandler.displayMessage("Undo successful. Last action reversed.");
+        } else {
+            inputHandler.displayMessage("Nothing to undo.");
+        }
+
+        return state;
+    }
+
+    /**
+     * Handles the REDO command.
+     *
+     * R3.1: Uses the Command Pattern via GameHistory to redo the last undone action.
+     * Only valid after rolling (ROLLED state).
+     *
+     * @param state the current turn state
+     * @param game the Game instance
+     * @return the unchanged turn state
+     */
+    private TurnState handleRedoCommand(TurnState state, Game game) {
+        if (!state.canBuild()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] Cannot redo before rolling.");
+            return state;
+        }
+
+        if (game.getGameHistory().canRedo()) {
+            game.getGameHistory().redo();
+            inputHandler.displayMessage("Redo successful. Action re-applied.");
+        } else {
+            inputHandler.displayMessage("Nothing to redo.");
+        }
+
+        return state;
+    }
+
+    /**
+     * Handles the GO command to end the player's turn.
+     *
+     * Only valid in the ROLLED state. Transitions the turn to DONE.
+     *
+     * @param state the current turn state
+     * @param roundNumber the current round number
+     * @return the updated turn state (DONE if successful, unchanged otherwise)
+     */
+    private TurnState handleGoCommand(TurnState state, int roundNumber) {
+        // GO: only legal in ROLLED
+        if (!state.canGo()) {
+            inputHandler.displayMessage(
+                "[ILLEGAL in state " + state + "] You must Roll before ending your turn.");
+            return state;
+        }
+
+        GameLogger.printTurnAction(roundNumber, getPlayerId(), "Passed");
+        return TurnState.DONE;
     }
 
     /**
