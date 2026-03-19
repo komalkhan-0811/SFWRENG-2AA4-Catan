@@ -20,6 +20,9 @@ public class HumanPlayer extends Player {
     private final InputHandler inputHandler;
     private final CommandParser parser;
     private static final String ILLEGAL_STATE_PREFIX = "[ILLEGAL in state ";
+    private static final String MUST_ROLL_BEFORE_BUILD_MSG = "] You must Roll before building.";
+    private static final String NOT_ENOUGH_RESOURCES_PREFIX = "Not enough resources. Need: ";
+    private static final String YOU_HAVE_SUFFIX = " | You have: ";
 
     /**
      * Constructs a HumanPlayer with console I/O.
@@ -214,7 +217,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + MUST_ROLL_BEFORE_BUILD_MSG);
             return state;
         }
 
@@ -241,7 +244,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + MUST_ROLL_BEFORE_BUILD_MSG);
             return state;
         }
 
@@ -269,7 +272,7 @@ public class HumanPlayer extends Player {
         // BUILD commands: only legal in ROLLED
         if (!state.canBuild()) {
             inputHandler.displayMessage(
-                ILLEGAL_STATE_PREFIX + state + "] You must Roll before building.");
+                ILLEGAL_STATE_PREFIX + state + MUST_ROLL_BEFORE_BUILD_MSG);
             return state;
         }
 
@@ -391,7 +394,7 @@ public class HumanPlayer extends Player {
         }
         
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
+            inputHandler.displayMessage(NOT_ENOUGH_RESOURCES_PREFIX + describeCost(cost) + YOU_HAVE_SUFFIX + describeHand());
             return;
         }
         
@@ -419,7 +422,7 @@ public class HumanPlayer extends Player {
             return;
         }
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
+            inputHandler.displayMessage(NOT_ENOUGH_RESOURCES_PREFIX + describeCost(cost) + YOU_HAVE_SUFFIX + describeHand());
             return;
         }
         payCost(cost);
@@ -453,7 +456,7 @@ public class HumanPlayer extends Player {
             return;
         }
         if (!hasEnoughResources(cost)) {
-            inputHandler.displayMessage("Not enough resources. Need: " + describeCost(cost) + " | You have: " + describeHand());
+            inputHandler.displayMessage(NOT_ENOUGH_RESOURCES_PREFIX + describeCost(cost) + YOU_HAVE_SUFFIX + describeHand());
             return;
         }
         payCost(cost);
