@@ -6,12 +6,14 @@ package catan;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * This class demonstrates the complete functionality of the Catan game simulator.
  * It initializes and runs a simulation that satisfies all assignment requirements
  * @author Komal Khan, Alisha Faridi
  */
+@SuppressWarnings("java:S106")
 public class Demonstrator {
 
 	/**
@@ -108,8 +110,11 @@ public class Demonstrator {
 			java.io.File[] files = scrapedDir.listFiles();
 			if (files != null) {
 				for (java.io.File f : files) {
-					if (!f.delete()) {
-    					System.out.println("Warning: Failed to delete file " + f.getName());
+					try {
+						Files.delete(f.toPath()); // use NIO delete for better error reporting
+					} catch (IOException e) {
+						System.out.println("Warning: Failed to delete file " 
+							+ f.getName() + " (" + e.getMessage() + ")");
 					}
 				}
 			}
