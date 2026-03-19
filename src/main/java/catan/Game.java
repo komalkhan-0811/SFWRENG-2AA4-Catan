@@ -421,29 +421,56 @@ public class Game {
         List<Tile> producingTiles = board.getTilesProducingOnRoll(roll);
 
         for (Tile tile : producingTiles) {
-            Resources resource = tile.getResource();
-            List<Integer> adjacentIntersections =
-                board.getIntersectionsAdjacentToTile(tile.getTileId());
-
-            for (int intersectionId : adjacentIntersections) {
-                Intersection intersection = board.getIntersection(intersectionId);
-
-                if (intersection != null && intersection.hasBuilding()) {
-                    Integer ownerId = intersection.getBuildingOwnerId();
-                    Building buildingType = intersection.getBuildingType();
-
-                    if (ownerId != null) {
-                        Player owner = getPlayerById(ownerId);
-                        if (owner != null) {
-
-                            // Cities produce 2 resources, settlements produce 1
-                            int amount = (buildingType == Building.CITY) ? 2 : 1;
-                            owner.addResource(resource, amount);
-                        }
-                    }
-                }
-            }
+            distributeResourcesForTile(tile);
         }
+    }
+
+    /**
+     * Distributes resources for one producing tile to all adjacent buildings.
+     *
+     * Settlements receive 1 resource; cities receive 2.
+     *
+     * @param tile the tile producing resources
+     */
+    private void distributeResourcesForTile(Tile tile) {
+        Resources resource = tile.getResource();
+        List<Integer> adjacentIntersections =
+            board.getIntersectionsAdjacentToTile(tile.getTileId());
+
+        for (int intersectionId : adjacentIntersections) {
+            distributeResourcesForIntersection(intersectionId, resource);
+        }
+    }
+
+    /**
+     * Gives the appropriate amount of a resource to the owner of a building
+     * at the given intersection, if one exists.
+     *
+     * @param intersectionId the intersection to inspect
+     * @param resource the resource to award
+     */
+    private void distributeResourcesForIntersection(int intersectionId, Resources resource) {
+        Intersection intersection = board.getIntersection(intersectionId);
+
+        if (intersection == null || !intersection.hasBuilding()) {
+            return;
+        }
+
+        Integer ownerId = intersection.getBuildingOwnerId();
+        if (ownerId == null) {
+            return;
+        }
+
+        Player owner = getPlayerById(ownerId);
+        if (owner == null) {
+            return;
+        }
+
+        Building buildingType = intersection.getBuildingType();
+
+        // Cities produce 2 resources, settlements produce 1
+        int amount = (buildingType == Building.CITY) ? 2 : 1;
+        owner.addResource(resource, amount);
     }
 
     /**
